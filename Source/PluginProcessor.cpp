@@ -379,6 +379,8 @@ void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         auto message = metadata.getMessage();
         if (patchInfos[currentProgram].drums)
             message.setChannel(10);
+        else
+            message.setChannel(1);
         mcu->postMidiSC55(message.getRawData(), message.getRawDataSize());
     }
  
