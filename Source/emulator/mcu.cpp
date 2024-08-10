@@ -1047,6 +1047,7 @@ void MCU::MCU_PatchROM(void)
     //rom2[0x1333] = 0x11;
     //rom2[0x1334] = 0x19;
     //rom1[0x622d] = 0x19;
+
     rom2[0x318f7] = 0x19;
 }
 
@@ -1228,13 +1229,7 @@ int MCU::startSC55(const char* s_rom1, const char* s_rom2, const char* s_waverom
 
     free(tempbuf);
 
-    lcd.LCD_Init();
-    MCU_Init();
-    MCU_PatchROM();
-    MCU_Reset();
-    sub_mcu.SM_Reset();
-    pcm.PCM_Reset();
-    mcu_timer.TIMER_Reset();
+    SC55_Reset();
 
     // std::string nvramFilePath = *basePath + "/nvram.bin";
     // FILE *nvramFile = fopen(nvramFilePath.c_str(), "rb");

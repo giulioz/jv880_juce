@@ -27,14 +27,14 @@ Jv880_juceAudioProcessorEditor::~Jv880_juceAudioProcessorEditor()
 //==============================================================================
 void Jv880_juceAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::black);
-
     uint8_t* bitmapResult = (uint8_t*)audioProcessor.mcu->lcd.LCD_Update();
+    for (size_t i = 0; i < 1024 * 1024; i++)
+        bitmapResult[i * 4 + 3] = 0xff;
     juce::Image image = { juce::Image::PixelFormat::ARGB, 820, 100, false};
     juce::Image::BitmapData pixelMap(image, juce::Image::BitmapData::readWrite);
     for (int y = 0; y < pixelMap.height; y++)
         memcpy(pixelMap.getLinePointer(y), bitmapResult + (y * 1024 * 4), (size_t)pixelMap.lineStride);
-    g.drawImageAt(image, 0, 0, true);
+    g.drawImageAt(image, 0, 0);
 }
 
 void Jv880_juceAudioProcessorEditor::resized()

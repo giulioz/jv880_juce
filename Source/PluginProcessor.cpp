@@ -112,6 +112,7 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         currentPatchI++;
     }
     patchInfos[currentPatchI].name = "Drums Internal User";
+    patchInfos[currentPatchI].ptr = &BinaryData::jv880_rom2_bin[0x00e760];
     patchInfos[currentPatchI].nameLength = 21;
     patchInfos[currentPatchI].expansionI = 0xff;
     patchInfos[currentPatchI].patchI = 0;
@@ -131,6 +132,7 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         currentPatchI++;
     }
     patchInfos[currentPatchI].name = "Drums Internal A";
+    patchInfos[currentPatchI].ptr = &BinaryData::jv880_rom2_bin[0x016760];
     patchInfos[currentPatchI].nameLength = 21;
     patchInfos[currentPatchI].expansionI = 0xff;
     patchInfos[currentPatchI].patchI = 0;
@@ -150,6 +152,7 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         currentPatchI++;
     }
     patchInfos[currentPatchI].name = "Drums Internal B";
+    patchInfos[currentPatchI].ptr = &BinaryData::jv880_rom2_bin[0x01e760];
     patchInfos[currentPatchI].nameLength = 21;
     patchInfos[currentPatchI].expansionI = 0xff;
     patchInfos[currentPatchI].patchI = 0;
@@ -188,6 +191,24 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
             patchInfos[currentPatchI].expansionI = i;
             patchInfos[currentPatchI].patchI = j;
             patchInfos[currentPatchI].present = true;
+            currentPatchI++;
+        }
+
+        // get drumkits
+        int nDrumkits = expansionsDescr[i][0x69] | expansionsDescr[i][0x68] << 8;
+        for (int j = 0; j < nDrumkits; j++)
+        {
+            size_t patchesOffset = expansionsDescr[i][0x93] | expansionsDescr[i][0x92] << 8
+                | expansionsDescr[i][0x91] << 16 | expansionsDescr[i][0x90] << 24;
+            char* namePtr = (char*)calloc(32, 1);
+            patchInfos[currentPatchI].name = namePtr;
+            sprintf(namePtr, "Expansion %d Drums %d", i, j);
+            patchInfos[currentPatchI].ptr = (const char*)&expansionsDescr[i][patchesOffset + j * 0xa7c];
+            patchInfos[currentPatchI].nameLength = strlen(namePtr);
+            patchInfos[currentPatchI].expansionI = i;
+            patchInfos[currentPatchI].patchI = j;
+            patchInfos[currentPatchI].present = true;
+            patchInfos[currentPatchI].drums = true;
             currentPatchI++;
         }
 
@@ -271,22 +292,33 @@ void Jv880_juceAudioProcessor::setCurrentProgram (int index)
         mcu->SC55_Reset();
     }
 
-    if (patchInfos[index].drums && mcu->nvram[0x11] != 1)
-    {
-        mcu->lcd.LCD_SendButton(MCU_BUTTON_PATCH_PERFORM, 1);
-        keyupTimer.startTimer(200);
-    }
-    else
+    if (patchInfos[index].drums)
     {
         if (mcu->nvram[0x11] != 0)
         {
             mcu->lcd.LCD_SendButton(MCU_BUTTON_PATCH_PERFORM, 1);
             keyupTimer.startTimer(200);
         }
-
-        memcpy(&mcu->nvram[0x0d70], (uint8_t*)patchInfos[index].name, 0x16a);
-        uint8_t buffer[2] = {0xC0, 0x00};
-        mcu->postMidiSC55(buffer, sizeof(buffer));
+        else
+        {
+            memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[currentProgram].ptr, 0xa7c);
+            uint8_t buffer[2] = { 0xCA, 0x00 };
+            mcu->postMidiSC55(buffer, sizeof(buffer));
+        }
+    }
+    else
+    {
+        if (mcu->nvram[0x11] != 1)
+        {
+            mcu->lcd.LCD_SendButton(MCU_BUTTON_PATCH_PERFORM, 1);
+            keyupTimer.startTimer(200);
+        }
+        else
+        {
+            memcpy(&mcu->nvram[0x0d70], (uint8_t*)patchInfos[index].name, 0x16a);
+            uint8_t buffer[2] = { 0xC0, 0x00 };
+            mcu->postMidiSC55(buffer, sizeof(buffer));
+        }
     }
 }
 
