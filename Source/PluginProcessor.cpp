@@ -258,6 +258,9 @@ int Jv880_juceAudioProcessor::getCurrentProgram()
 
 void Jv880_juceAudioProcessor::setCurrentProgram (int index)
 {
+    if (index < 0 || index >= getNumPrograms())
+        return;
+
     currentProgram = index;
 
     int expansionI = patchInfos[index].expansionI;

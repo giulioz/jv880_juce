@@ -67,7 +67,7 @@ public:
     };
 
     MCU *mcu;
-    int currentProgram;
+    int currentProgram = 0;
     int currentExpansion = 0;
     const uint8_t* expansionsDescr[NUM_EXPS];
     PatchInfos patchInfos[192 + 256 * NUM_EXPS] = {0};
