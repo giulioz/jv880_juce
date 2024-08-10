@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="DSwmeO" name="jv880_juce" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="Roland"
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginManufacturerCode="RLND" pluginCode="JV80" maxBinaryFileSize="20971520"
+              cppLanguageStandard="20">
+  <MAINGROUP id="U4zWTk" name="jv880_juce">
+    <GROUP id="{308E331D-69A5-28C8-DB64-8BF0DE41502D}" name="Roms">
+      <FILE id="CfGM37" name="SR-JV80-01 Pop - CS 0x3F1CF705.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-01 Pop - CS 0x3F1CF705.bin"/>
+      <FILE id="QcOljD" name="SR-JV80-02 Orchestral - CS 0x3F0E09E2.BIN"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-02 Orchestral - CS 0x3F0E09E2.BIN"/>
+      <FILE id="zxfSBh" name="SR-JV80-03 Piano - CS 0x3F8DB303.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-03 Piano - CS 0x3F8DB303.bin"/>
+      <FILE id="AgMOYt" name="SR-JV80-04 Vintage Synth - CS 0x3E23B90C.BIN"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-04 Vintage Synth - CS 0x3E23B90C.BIN"/>
+      <FILE id="qoTyMv" name="SR-JV80-05 World - CS 0x3E8E8A0D.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-05 World - CS 0x3E8E8A0D.bin"/>
+      <FILE id="epALCy" name="SR-JV80-06 Dance - CS 0x3EC462E0.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-06 Dance - CS 0x3EC462E0.bin"/>
+      <FILE id="vqGjQp" name="SR-JV80-07 Super Sound Set - CS 0x3F1EE208.bin"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-07 Super Sound Set - CS 0x3F1EE208.bin"/>
+      <FILE id="G8eYGc" name="SR-JV80-08 Keyboards of the 60s and 70s - CS 0x3F1E3F0A.BIN"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-08 Keyboards of the 60s and 70s - CS 0x3F1E3F0A.BIN"/>
+      <FILE id="HZbf8i" name="SR-JV80-09 Session - CS 0x3F381791.BIN" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-09 Session - CS 0x3F381791.BIN"/>
+      <FILE id="oPS38J" name="SR-JV80-10 Bass &amp; Drum - CS 0x3D83D02A.BIN"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-10 Bass &amp; Drum - CS 0x3D83D02A.BIN"/>
+      <FILE id="pcI88Y" name="SR-JV80-11 Techno - CS 0x3F046250.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-11 Techno - CS 0x3F046250.bin"/>
+      <FILE id="uI6Ckx" name="SR-JV80-12 HipHop - CS 0x3EA08A19.BIN" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-12 HipHop - CS 0x3EA08A19.BIN"/>
+      <FILE id="AFXBNA" name="SR-JV80-13 Vocal - CS 0x3ECE78AA.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-13 Vocal - CS 0x3ECE78AA.bin"/>
+      <FILE id="f5evds" name="SR-JV80-14 Asia - CS 0x3C8A1582.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-14 Asia - CS 0x3C8A1582.bin"/>
+      <FILE id="yWhZuz" name="SR-JV80-15 Special FX - CS 0x3F591CE4.bin"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-15 Special FX - CS 0x3F591CE4.bin"/>
+      <FILE id="txrzVt" name="SR-JV80-16 Orchestral II - CS 0x3F35B03B.bin"
+            compile="0" resource="1" file="expansions_desc/SR-JV80-16 Orchestral II - CS 0x3F35B03B.bin"/>
+      <FILE id="SAZart" name="SR-JV80-17 Country - CS 0x3ED75089.bin" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-17 Country - CS 0x3ED75089.bin"/>
+      <FILE id="yiqOAi" name="SR-JV80-18 Latin - CS 0x3EA51033.BIN" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-18 Latin - CS 0x3EA51033.BIN"/>
+      <FILE id="aHsiXO" name="SR-JV80-19 House - CS 0x3E330C41.BIN" compile="0"
+            resource="1" file="expansions_desc/SR-JV80-19 House - CS 0x3E330C41.BIN"/>
+      <FILE id="vjiGbx" name="jv880_nvram.bin" compile="0" resource="1" file="../Nuked-SC55/build/jv880_nvram.bin"/>
+      <FILE id="EUVY9i" name="jv880_rom1.bin" compile="0" resource="1" file="../Nuked-SC55/build/jv880_rom1.bin"/>
+      <FILE id="L8QdDY" name="jv880_rom2.bin" compile="0" resource="1" file="../Nuked-SC55/build/jv880_rom2.bin"/>
+      <FILE id="PHWGRf" name="jv880_waverom1.bin" compile="0" resource="1"
+            file="../Nuked-SC55/build/jv880_waverom1.bin"/>
+      <FILE id="lJV04d" name="jv880_waverom2.bin" compile="0" resource="1"
+            file="../Nuked-SC55/build/jv880_waverom2.bin"/>
+    </GROUP>
+    <GROUP id="{A9A4FE8C-A726-5731-A9C6-45A227C17A55}" name="Source">
+      <GROUP id="{436EDB6B-328E-333A-C94F-A87566346041}" name="emulator">
+        <GROUP id="{48413998-A5DB-16F9-A292-C661211DD610}" name="resample">
+          <FILE id="NOqhM2" name="config.h" compile="0" resource="0" file="Source/emulator/resample/config.h"/>
+          <FILE id="X21jvF" name="configtemplate.h" compile="0" resource="0"
+                file="Source/emulator/resample/configtemplate.h"/>
+          <FILE id="kyxLRk" name="filterkit.c" compile="1" resource="0" file="Source/emulator/resample/filterkit.c"/>
+          <FILE id="JGSLzi" name="filterkit.h" compile="0" resource="0" file="Source/emulator/resample/filterkit.h"/>
+          <FILE id="cDqlt4" name="libresample.h" compile="0" resource="0" file="Source/emulator/resample/libresample.h"/>
+          <FILE id="OcszIS" name="resample.c" compile="1" resource="0" file="Source/emulator/resample/resample.c"/>
+          <FILE id="nGtFts" name="resample_defs.h" compile="0" resource="0" file="Source/emulator/resample/resample_defs.h"/>
+          <FILE id="hF1LBy" name="resamplesubs.c" compile="1" resource="0" file="Source/emulator/resample/resamplesubs.c"/>
+        </GROUP>
+        <FILE id="kuG1wZ" name="lcd.cpp" compile="1" resource="0" file="Source/emulator/lcd.cpp"/>
+        <FILE id="d5DSyq" name="lcd.h" compile="0" resource="0" file="Source/emulator/lcd.h"/>
+        <FILE id="lU2R0j" name="lcd_font.h" compile="0" resource="0" file="Source/emulator/lcd_font.h"/>
+        <FILE id="a6NYDw" name="mcu.cpp" compile="1" resource="0" file="Source/emulator/mcu.cpp"/>
+        <FILE id="Ex6mb0" name="mcu.h" compile="0" resource="0" file="Source/emulator/mcu.h"/>
+        <FILE id="IZqfps" name="mcu_interrupt.cpp" compile="1" resource="0"
+              file="Source/emulator/mcu_interrupt.cpp"/>
+        <FILE id="shnWkK" name="mcu_interrupt.h" compile="0" resource="0" file="Source/emulator/mcu_interrupt.h"/>
+        <FILE id="E7OhIi" name="mcu_opcodes.cpp" compile="1" resource="0" file="Source/emulator/mcu_opcodes.cpp"/>
+        <FILE id="FrJty9" name="mcu_opcodes.h" compile="0" resource="0" file="Source/emulator/mcu_opcodes.h"/>
+        <FILE id="KVayfz" name="mcu_timer.cpp" compile="1" resource="0" file="Source/emulator/mcu_timer.cpp"/>
+        <FILE id="lIPD7k" name="mcu_timer.h" compile="0" resource="0" file="Source/emulator/mcu_timer.h"/>
+        <FILE id="jMpxoQ" name="pcm.cpp" compile="1" resource="0" file="Source/emulator/pcm.cpp"/>
+        <FILE id="NEiq2f" name="pcm.h" compile="0" resource="0" file="Source/emulator/pcm.h"/>
+        <FILE id="HCKsU3" name="submcu.cpp" compile="1" resource="0" file="Source/emulator/submcu.cpp"/>
+        <FILE id="foDrQH" name="submcu.h" compile="0" resource="0" file="Source/emulator/submcu.h"/>
+      </GROUP>
+      <FILE id="AJqnYv" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="wRIi0Q" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="PSvqSL" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="yg8Z9N" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_animation" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="jv880_juce"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="jv880_juce"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_animation" path="../../../Downloads/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <XCODE_IPHONE targetFolder="Builds/iOS">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_animation" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_IPHONE>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_animation" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_animation" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
