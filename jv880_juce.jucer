@@ -45,13 +45,13 @@
             resource="1" file="expansions_desc/SR-JV80-18 Latin - CS 0x3EA51033.BIN"/>
       <FILE id="aHsiXO" name="SR-JV80-19 House - CS 0x3E330C41.BIN" compile="0"
             resource="1" file="expansions_desc/SR-JV80-19 House - CS 0x3E330C41.BIN"/>
-      <FILE id="vjiGbx" name="jv880_nvram.bin" compile="0" resource="1" file="../Nuked-SC55/build/jv880_nvram.bin"/>
-      <FILE id="EUVY9i" name="jv880_rom1.bin" compile="0" resource="1" file="../Nuked-SC55/build/jv880_rom1.bin"/>
-      <FILE id="L8QdDY" name="jv880_rom2.bin" compile="0" resource="1" file="../Nuked-SC55/build/jv880_rom2.bin"/>
+      <FILE id="vjiGbx" name="jv880_nvram.bin" compile="0" resource="1" file="jv880_nvram.bin"/>
+      <FILE id="EUVY9i" name="jv880_rom1.bin" compile="0" resource="1" file="jv880_rom1.bin"/>
+      <FILE id="L8QdDY" name="jv880_rom2.bin" compile="0" resource="1" file="jv880_rom2.bin"/>
       <FILE id="PHWGRf" name="jv880_waverom1.bin" compile="0" resource="1"
-            file="../Nuked-SC55/build/jv880_waverom1.bin"/>
+            file="jv880_waverom1.bin"/>
       <FILE id="lJV04d" name="jv880_waverom2.bin" compile="0" resource="1"
-            file="../Nuked-SC55/build/jv880_waverom2.bin"/>
+            file="jv880_waverom2.bin"/>
     </GROUP>
     <GROUP id="{A9A4FE8C-A726-5731-A9C6-45A227C17A55}" name="Source">
       <GROUP id="{436EDB6B-328E-333A-C94F-A87566346041}" name="emulator">
