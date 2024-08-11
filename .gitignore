@@ -2,3 +2,4 @@
 .vscode
 Builds
 JuceLibraryCode
+*.bin
