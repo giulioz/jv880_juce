@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="Roland"
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturerCode="RLND" pluginCode="JV80" maxBinaryFileSize="20971520"
-              cppLanguageStandard="20">
+              cppLanguageStandard="20" pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3">
   <MAINGROUP id="U4zWTk" name="jv880_juce">
     <GROUP id="{308E331D-69A5-28C8-DB64-8BF0DE41502D}" name="Roms">
       <FILE id="CfGM37" name="SR-JV80-01 Pop - CS 0x3F1CF705.bin" compile="0"

@@ -90,7 +90,7 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), keyupTimer(this)
+                       )
 #endif
 {
     mcu = new MCU();
@@ -294,24 +294,17 @@ void Jv880_juceAudioProcessor::setCurrentProgram (int index)
 
     if (patchInfos[index].drums)
     {
-        if (mcu->nvram[0x11] != 0)
-        {
-            mcu->lcd.LCD_SendButton(MCU_BUTTON_PATCH_PERFORM, 1);
-            keyupTimer.startTimer(200);
-        }
-        else
-        {
-            memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[currentProgram].ptr, 0xa7c);
-            uint8_t buffer[2] = { 0xCA, 0x00 };
-            mcu->postMidiSC55(buffer, sizeof(buffer));
-        }
+        mcu->nvram[0x11] = 0;
+        memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[currentProgram].ptr, 0xa7c);
+        mcu->SC55_Reset();
     }
     else
     {
         if (mcu->nvram[0x11] != 1)
         {
-            mcu->lcd.LCD_SendButton(MCU_BUTTON_PATCH_PERFORM, 1);
-            keyupTimer.startTimer(200);
+            mcu->nvram[0x11] = 0;
+            memcpy(&mcu->nvram[0x0d70], (uint8_t*)patchInfos[index].name, 0x16a);
+            mcu->SC55_Reset();
         }
         else
         {
