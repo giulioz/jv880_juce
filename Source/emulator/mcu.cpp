@@ -1244,7 +1244,20 @@ int MCU::startSC55(const char* s_rom1, const char* s_rom2, const char* s_waverom
 }
 
 void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFrames, int destSampleRate) {
-    const unsigned int renderBufferFrames = ceil((double)nFrames / destSampleRate * 64000);
+    double renderBufferFramesFloat = (double)nFrames / destSampleRate * 64000;
+    unsigned int renderBufferFrames = ceil(renderBufferFramesFloat);
+    double currentError = renderBufferFrames - renderBufferFramesFloat;
+
+    int limit = nFrames / 2;
+    if (samplesError > limit) {
+        // printf("compensating neg %d\n", limit);
+        renderBufferFrames -= limit;
+        currentError -= limit;
+    }else if (-samplesError > limit) {
+        // printf("compensating pos %d\n", limit);
+        renderBufferFrames += limit;
+        currentError += limit;
+    }
     
     if (audio_buffer_size < renderBufferFrames) {
         printf("Audio buffer size is too small. (%d requested)\n", renderBufferFrames);
@@ -1273,9 +1286,6 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
 
         mcu.cycles += 12; // FIXME: assume 12 cycles per instruction
 
-        // if (mcu.cycles % 24000000 == 0)
-        //     printf("seconds: %i\n", (int)(mcu.cycles / 24000000));
-
         pcm.PCM_Update(mcu.cycles);
 
         mcu_timer.TIMER_Clock(mcu.cycles);
@@ -1302,8 +1312,21 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
 
     int inUsedL = 0;
     int inUsedR = 0;
-    resample_process(resampleL, ratio, sample_buffer_l, renderBufferFrames, false, &inUsedL, dataL, nFrames);
-    resample_process(resampleR, ratio, sample_buffer_r, renderBufferFrames, false, &inUsedR, dataR, nFrames);
+    int outL = 0;
+    int outR = 0;
+
+    outL = resample_process(resampleL, ratio, sample_buffer_l, renderBufferFrames, false, &inUsedL, dataL, nFrames);
+    outR = resample_process(resampleR, ratio, sample_buffer_r, renderBufferFrames, false, &inUsedR, dataR, nFrames);
+
+    samplesError += currentError;
+    // printf("error: %f total: %f\n", currentError, samplesError);
+
+    if (inUsedL == 0 || inUsedR == 0) {
+        samplesError = 0;
+        printf("click: %d %d\n", outL, outR);
+    }
+
+    // printf("req %d to render %d rendered %d resampled %d %d output %d %d\n", nFrames, renderBufferFrames, sample_write_ptr, inUsedL, inUsedR, outL, outR);
 }
 
 void MCU::SC55_Reset() {

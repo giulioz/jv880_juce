@@ -371,6 +371,7 @@ struct MCU {
     void* resampleL = 0;
     void* resampleR = 0;
     int savedDestSampleRate = 0;
+    double samplesError = 0;
 
     MCU();
 

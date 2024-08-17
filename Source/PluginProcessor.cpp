@@ -274,7 +274,7 @@ int Jv880_juceAudioProcessor::getNumPrograms()
 
 int Jv880_juceAudioProcessor::getCurrentProgram()
 {
-    return currentProgram;
+    return status.currentProgram;
 }
 
 void Jv880_juceAudioProcessor::setCurrentProgram (int index)
@@ -282,7 +282,7 @@ void Jv880_juceAudioProcessor::setCurrentProgram (int index)
     if (index < 0 || index >= getNumPrograms())
         return;
 
-    currentProgram = index;
+    status.currentProgram = index;
 
     int expansionI = patchInfos[index].expansionI;
     if (expansionI != 0xff && currentExpansion != expansionI)
@@ -295,7 +295,7 @@ void Jv880_juceAudioProcessor::setCurrentProgram (int index)
     if (patchInfos[index].drums)
     {
         mcu->nvram[0x11] = 0;
-        memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[currentProgram].ptr, 0xa7c);
+        memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[status.currentProgram].ptr, 0xa7c);
         mcu->SC55_Reset();
     }
     else
@@ -350,8 +350,7 @@ bool Jv880_juceAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
     // In this template code we only support mono or stereo.
     // Some plugin hosts, such as certain GarageBand versions, will only
     // load plugins that support stereo bus layouts.
-    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
     // This checks if the input layout matches the output layout
@@ -370,7 +369,7 @@ void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     for (const auto metadata : midiMessages)
     {
         auto message = metadata.getMessage();
-        if (patchInfos[currentProgram].drums)
+        if (patchInfos[status.currentProgram].drums)
             message.setChannel(10);
         else
             message.setChannel(1);
@@ -393,19 +392,6 @@ void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     float* channelDataL = buffer.getWritePointer(0);
     float* channelDataR = buffer.getWritePointer(1);
     mcu->updateSC55WithSampleRate(channelDataL, channelDataR, buffer.getNumSamples(), getSampleRate());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    // for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    // {
-    //     auto* channelData = buffer.getWritePointer (channel);
-
-    //     // ..do something to the data...
-    // }
 }
 
 //==============================================================================
@@ -422,15 +408,14 @@ juce::AudioProcessorEditor* Jv880_juceAudioProcessor::createEditor()
 //==============================================================================
 void Jv880_juceAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    destData.ensureSize(sizeof(DataToSave));
+    destData.replaceAll(&status, sizeof(DataToSave));
 }
 
 void Jv880_juceAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    memcpy(&status, data, sizeof(DataToSave));
+    setCurrentProgram(status.currentProgram);
 }
 
 //==============================================================================
