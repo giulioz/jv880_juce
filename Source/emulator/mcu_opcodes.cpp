@@ -1059,7 +1059,7 @@ void MCU_Opcode_LDC(MCU *mcu, uint8_t opcode, uint8_t opcode_reg)
         uint32_t data = MCU_Operand_Read(mcu);
         mcu->MCU_ControlRegisterWrite(opcode_reg, mcu->operand_size, data);
     }
-    mcu.ex_ignore = 1;
+    mcu->mcu.ex_ignore = 1;
 }
 
 void MCU_Opcode_STC(MCU *mcu, uint8_t opcode, uint8_t opcode_reg)

@@ -40,36 +40,22 @@
 
 Pcm::Pcm(MCU *mcu): mcu(mcu) {}
 
-uint8_t Pcm::PCM_ReadROM(uint32_t address)
+inline uint8_t Pcm::PCM_ReadROM(uint32_t address)
 {
-    int bank;
-    if (pcm.config_reg_3d & 0x20)
-        bank = (address >> 21) & 7;
-    else
-        bank = (address >> 19) & 7;
+    int bank = (address >> 21) & 7;
     switch (bank)
     {
         case 0:
-            if (mcu->mcu_mk1)
-                return waverom1[address & 0xfffff];
-            else
-                return waverom1[address & 0x1fffff];
+            return waverom1[address & 0x1fffff];
         case 1:
-            if (!mcu->mcu_jv880)
-                return waverom2[address & 0xfffff];
-            else
-                return waverom2[address & 0x1fffff];
+            return waverom2[address & 0x1fffff];
         case 2:
-            if (mcu->mcu_jv880)
-                return waverom_card[address & 0x1fffff];
-            else
-                return waverom3[address & 0xfffff];
+            return waverom_card[address & 0x1fffff];
         case 3:
         case 4:
         case 5:
         case 6:
-            if (mcu->mcu_jv880)
-                return waverom_exp[(address & 0x1fffff) + (bank - 3) * 0x200000];
+            return waverom_exp[(address & 0x1fffff) + (bank - 3) * 0x200000];
         default:
             break;
     }
@@ -270,29 +256,20 @@ void Pcm::PCM_Reset(void)
     memset(&pcm, 0, sizeof(pcm));
 }
 
-inline uint32_t addclip20(uint32_t add1, uint32_t add2, uint32_t cin)
+// Sign-extends a 20-bit signed integer to a 32-bit signed integer.
+constexpr inline int32_t sx20(int32_t in)
 {
-    uint32_t sum = (add1 + add2 + cin) & 0xfffff;
-    if ((add1 & 0x80000) != 0 && (add2 & 0x80000) != 0 && (sum & 0x80000) == 0)
-        sum = 0x80000;
-    else if ((add1 & 0x80000) == 0 && (add2 & 0x80000) == 0 && (sum & 0x80000) != 0)
-        sum = 0x7ffff;
-    return sum;
+    return (in << 12) >> 12;
+}
+
+inline int32_t addclip20(int32_t add1, int32_t add2, int32_t cin)
+{
+    return sx20(add1) + sx20(add2) + cin;
 }
 
 inline int32_t multi(int32_t val1, int8_t val2)
 {
-    if (val1 & 0x80000)
-        val1 |= ~0xfffff;
-    else
-        val1 &= 0x7ffff;
-
-    val1 *= val2;
-    if (val1 & 0x8000000)
-        val1 |= ~0x1ffffff;
-    else
-        val1 &= 0x1ffffff;
-    return val1;
+    return sx20(val1) * val2;
 }
 
 static const int interp_lut[3][128] = {
@@ -324,90 +301,40 @@ static const int interp_lut[3][128] = {
     484, 497, 510, 523, 536, 549, 563, 577, 591, 605, 619, 634, 648, 663, 679, 694,
 };
 
+static uint8_t flip_nibble_lut[16] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
+static uint8_t tvc_lut[4] = {3,15,63,127};
+
 inline void calc_tv(pcm_t *pcm, int e, int adjust, uint16_t *levelcur, int active, int *volmul)
 {
     // int adjust = ram2[3+e];
     // int levelcur = ram2[9+e] & 0x7fff;
     *levelcur &= 0x7fff;
-    int speed = adjust & 0xff;
-    int target = (adjust >> 8) & 0xff;
 
-                
-    int w1 = (speed & 0xf0) == 0;
-    int w2 = w1 || (speed & 0x10) != 0;
-    int w3 = pcm->nfs &&
-        ((speed & 0x80) == 0 || ((speed & 0x40) == 0 && (!w2 || (speed & 0x20) == 0)));
+    uint8_t speed = adjust & 0xff;
+    uint8_t speed_and_0x20 = speed & 0x20;
+    uint8_t speed_and_0x40 = speed & 0x40;
+    uint8_t speed_and_0x80 = speed & 0x80;
+    uint16_t target = (adjust >> 8) & 0xff;
 
-    int type = w2 | (w3 << 3);
-    if (speed & 0x20)
+    uint8_t w1 = !(speed & 0xf0);
+    uint8_t w2 = w1 || (speed & 0x10);
+    uint8_t w3 = (!speed_and_0x80 || (!speed_and_0x40 && (!w2 || !speed_and_0x20)));
+
+    uint8_t type = w2 | (w3 << 3);
+    if (speed_and_0x20)
         type |= 2;
-    if ((speed & 0x80) == 0 || (speed & 0x40) == 0)
+    if (!speed_and_0x80 || !speed_and_0x40)
         type |= 4;
 
-
-    int write = !active;
-    int addlow = 0;
-    if (type & 4)
-    {
-        if (pcm->tv_counter & 8)
-            addlow |= 1;
-        if (pcm->tv_counter & 4)
-            addlow |= 2;
-        if (pcm->tv_counter & 2)
-            addlow |= 4;
-        if (pcm->tv_counter & 1)
-            addlow |= 8;
+    uint8_t write = !active;
+    uint8_t addlow = 0;
+    if (type & 4) {
+        addlow = flip_nibble_lut[pcm->tv_counter & 0x0f];
         write |= 1;
-    }
-    else
-    {
-        switch (type & 3)
-        {
-        case 0:
-            if (pcm->tv_counter & 0x20)
-                addlow |= 1;
-            if (pcm->tv_counter & 0x10)
-                addlow |= 2;
-            if (pcm->tv_counter & 8)
-                addlow |= 4;
-            if (pcm->tv_counter & 4)
-                addlow |= 8;
-            write |= (pcm->tv_counter & 3) == 0;
-            break;
-        case 1:
-            if (pcm->tv_counter & 0x80)
-                addlow |= 1;
-            if (pcm->tv_counter & 0x40)
-                addlow |= 2;
-            if (pcm->tv_counter & 0x20)
-                addlow |= 4;
-            if (pcm->tv_counter & 0x10)
-                addlow |= 8;
-            write |= (pcm->tv_counter & 15) == 0;
-            break;
-        case 2:
-            if (pcm->tv_counter & 0x200)
-                addlow |= 1;
-            if (pcm->tv_counter & 0x100)
-                addlow |= 2;
-            if (pcm->tv_counter & 0x80)
-                addlow |= 4;
-            if (pcm->tv_counter & 0x40)
-                addlow |= 8;
-            write |= (pcm->tv_counter & 63) == 0;
-            break;
-        case 3:
-            if (pcm->tv_counter & 0x800)
-                addlow |= 1;
-            if (pcm->tv_counter & 0x400)
-                addlow |= 2;
-            if (pcm->tv_counter & 0x200)
-                addlow |= 4;
-            if (pcm->tv_counter & 0x100)
-                addlow |= 8;
-            write |= (pcm->tv_counter & 127) == 0;
-            break;
-        }
+    } else {
+        uint8_t t = type & 3;
+        addlow = flip_nibble_lut[(pcm->tv_counter >> (2 * t + 2)) & 0x0f];
+        write |= !(pcm->tv_counter & tvc_lut[t]);
     }
 
     if ((type & 8) == 0)
@@ -418,7 +345,6 @@ inline void calc_tv(pcm_t *pcm, int e, int adjust, uint16_t *levelcur, int activ
         int sum1 = (target << 11); // 5
         if (e != 2 || active)
             sum1 -= (*levelcur << 4); // 6
-        int neg = (sum1 & 0x80000) != 0;
 
         int preshift = sum1;
 
@@ -426,17 +352,11 @@ inline void calc_tv(pcm_t *pcm, int e, int adjust, uint16_t *levelcur, int activ
         shifted -= sum1;
 
         int sum2 = (target << 11) + addlow + shifted;
-        if (write && pcm->nfs)
+        if (write)
             *levelcur = (sum2 >> 4) & 0x7fff;
 
-        if (e == 0)
-        {
+        if (e < 2)
             *volmul = (sum2 >> 4) & 0x7ffe;
-        }
-        else if (e == 1)
-        {
-            *volmul = (sum2 >> 4) & 0x7ffe;
-        }
     }
     else
     {
@@ -466,7 +386,7 @@ inline void calc_tv(pcm_t *pcm, int e, int adjust, uint16_t *levelcur, int activ
         int neg2 = (sum3 & 0x80000) != 0;
         int xnor = !(neg2 ^ neg);
 
-        if (write && pcm->nfs)
+        if (write)
         {
             if (xnor)
                 *levelcur = sum2_l & 0x7fff;
@@ -531,61 +451,8 @@ void Pcm::PCM_Update(uint64_t cycles)
         { // final mixing
             int noise_mask = 0;
             int orval = 0;
-            int write_mask = 0;
-            int dac_mask = 0;
-            if ((pcm.config_reg_3c & 0x30) != 0)
-            {
-                switch ((pcm.config_reg_3c >> 2) & 3)
-                {
-                    case 1:
-                        noise_mask = 3;
-                        break;
-                    case 2:
-                        noise_mask = 7;
-                        break;
-                    case 3:
-                        noise_mask = 15;
-                        break;
-                }
-                switch (pcm.config_reg_3c & 3)
-                {
-                    case 1:
-                        orval |= 1 << 8;
-                        break;
-                    case 2:
-                        orval |= 1 << 10;
-                        break;
-                }
-                write_mask = 15;
-                dac_mask = ~15;
-            }
-            else
-            {
-                switch ((pcm.config_reg_3c >> 2) & 3)
-                {
-                    case 2:
-                        noise_mask = 1;
-                        break;
-                    case 3:
-                        noise_mask = 3;
-                        break;
-                }
-                switch (pcm.config_reg_3c & 3)
-                {
-                    case 1:
-                        orval |= 1 << 6;
-                        break;
-                    case 2:
-                        orval |= 1 << 8;
-                        break;
-                }
-                write_mask = 3;
-                dac_mask = ~3;
-            }
-            if ((pcm.config_reg_3c & 0x80) == 0)
-                write_mask = 0;
-            if ((pcm.config_reg_3c & 0x30) == 0x30)
-                orval |= 1 << 12;
+            int write_mask = 3;
+            // int dac_mask = -4;
 
 
             int shifter = pcm.ram2[30][10];
@@ -623,7 +490,9 @@ void Pcm::PCM_Update(uint64_t cycles)
             pcm.ram1[30][5] = addclip20(pcm.accum_r,
                 orval | (shifter & noise_mask), 0);
 
-            if (pcm.config_reg_3c & 0x40) // oversampling
+            // if (pcm.config_reg_3c & 0x40) // oversampling
+            if (true) // oversampling
+            // if (false) // oversampling
             {
                 pcm.ram2[30][10] = shifter;
 

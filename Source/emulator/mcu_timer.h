@@ -34,43 +34,36 @@
 #pragma once
 #include <stdint.h>
 
-struct frt_t {
-    uint8_t tcr;
-    uint8_t tcsr;
-    uint16_t frc;
-    uint16_t ocra;
-    uint16_t ocrb;
-    uint16_t icr;
-    uint8_t status_rd;
-};
-
-struct mcu_timer_t {
-    uint8_t tcr;
-    uint8_t tcsr;
-    uint8_t tcora;
-    uint8_t tcorb;
-    uint8_t tcnt;
-    uint8_t status_rd;
-};
-
 struct MCU;
 
 struct MCU_Timer {
     MCU *mcu;
     MCU_Timer(MCU *mcu): mcu(mcu) {}
 
-    uint64_t timer_cycles;
     uint8_t timer_tempreg;
 
-    frt_t frt[3];
-    mcu_timer_t timer;
+    bool timer8_enabled;
+    bool timer8_cmiea;
+    bool timer8_cmfa;
+    bool timer8_cmfa_read;
+    uint8_t timer8_tcora;
+    uint8_t timer8_tcnt;
 
-    uint8_t timer_lut1[4] = {3,7,31,1};
-    uint8_t timer_mk1_lut1[4] = {3,7,31,3};
-    uint8_t* p_timer_lut1;
-    uint16_t timer_lut2[8] = {0,7,63,1023,0,1,1,1};
-    uint16_t timer_mk1_lut2[8] = {0,7,63,1023,0,3,3,3};
-    uint16_t* p_timer_lut2;
+    uint16_t timer0_ocra;
+    uint16_t timer1_ocra;
+    uint16_t timer2_ocra;
+    uint16_t timer0_frc;
+    uint16_t timer1_frc;
+    uint16_t timer2_frc;
+    bool timer0_ocfa;
+    bool timer1_ocfa;
+    bool timer2_ocfa;
+    bool timer0_ocfa_read;
+    bool timer1_ocfa_read;
+    bool timer2_ocfa_read;
+    bool timer0_ociea;
+    bool timer1_ociea;
+    bool timer2_ociea;
 
     void TIMER_Reset(void);
     void TIMER_Write(uint32_t address, uint8_t data);
