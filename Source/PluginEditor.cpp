@@ -11,34 +11,28 @@
 
 //==============================================================================
 Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor (Jv880_juceAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), redrawTimer (this)
+    : AudioProcessorEditor (&p), audioProcessor (p),
+      lcd (p),
+      tabs (juce::TabbedButtonBar::TabsAtTop),
+      patchBrowser (p),
+      editTab (),
+      settingsTab ()
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (820, 100);
+    addAndMakeVisible(lcd);
+    addAndMakeVisible(tabs);
+    setSize(820, 800);
 
-    redrawTimer.startTimerHz(60/2);
+    tabs.addTab("Browse", getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), &patchBrowser, false);
+    tabs.addTab("Edit", getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), &editTab, false);
+    tabs.addTab("Settings", getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), &settingsTab, false);
 }
 
 Jv880_juceAudioProcessorEditor::~Jv880_juceAudioProcessorEditor()
 {
 }
 
-//==============================================================================
-void Jv880_juceAudioProcessorEditor::paint (juce::Graphics& g)
-{
-    uint8_t* bitmapResult = (uint8_t*)audioProcessor.mcu->lcd.LCD_Update();
-    for (size_t i = 0; i < 1024 * 1024; i++)
-        bitmapResult[i * 4 + 3] = 0xff;
-    juce::Image image = { juce::Image::PixelFormat::ARGB, 820, 100, false};
-    juce::Image::BitmapData pixelMap(image, juce::Image::BitmapData::readWrite);
-    for (int y = 0; y < pixelMap.height; y++)
-        memcpy(pixelMap.getLinePointer(y), bitmapResult + (y * 1024 * 4), (size_t)pixelMap.lineStride);
-    g.drawImageAt(image, 0, 0);
-}
-
 void Jv880_juceAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    lcd.setBounds(0, 0, 820, 100);
+    tabs.setBounds(0, 100, 820, 700);
 }

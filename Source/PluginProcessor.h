@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include <vector>
 #include <JuceHeader.h>
 #include "emulator/mcu.h"
 
-constexpr int NUM_EXPS = 19;
+constexpr int NUM_EXPS = 21;
 
 //==============================================================================
 /**
@@ -56,7 +57,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    struct PatchInfos
+    struct PatchInfo
     {
         const char* name;
         const char* ptr;
@@ -65,6 +66,7 @@ public:
         int patchI;
         bool present = false;
         bool drums = false;
+        int iInList;
     };
 
     struct DataToSave
@@ -77,7 +79,8 @@ public:
     MCU *mcu;
     int currentExpansion = 0;
     const uint8_t* expansionsDescr[NUM_EXPS];
-    PatchInfos patchInfos[192 + 256 * NUM_EXPS] = {0};
+    PatchInfo patchInfos[192 + 256 * NUM_EXPS] = {0};
+    std::vector<std::vector<PatchInfo*>> patchInfoPerGroup;
     int totalPatchesExp = 0;
 
 private:

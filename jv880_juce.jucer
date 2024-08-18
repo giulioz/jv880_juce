@@ -7,6 +7,12 @@
               cppLanguageStandard="20" pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3">
   <MAINGROUP id="U4zWTk" name="jv880_juce">
     <GROUP id="{308E331D-69A5-28C8-DB64-8BF0DE41502D}" name="Roms">
+      <FILE id="SXboyJ" name="rd500_expansion.bin" compile="0" resource="1"
+            file="expansions_desc/rd500_expansion.bin"/>
+      <FILE id="EP0BVR" name="rd500_patches.bin" compile="0" resource="1"
+            file="expansions_desc/rd500_patches.bin"/>
+      <FILE id="zYr9Ei" name="jd990_expansion.bin" compile="0" resource="1"
+            file="expansions_desc/jd990_expansion.bin"/>
       <FILE id="CfGM37" name="SR-JV80-01 Pop - CS 0x3F1CF705.bin" compile="0"
             resource="1" file="expansions_desc/SR-JV80-01 Pop - CS 0x3F1CF705.bin"/>
       <FILE id="QcOljD" name="SR-JV80-02 Orchestral - CS 0x3F0E09E2.BIN"
@@ -54,6 +60,17 @@
             file="jv880_waverom2.bin"/>
     </GROUP>
     <GROUP id="{A9A4FE8C-A726-5731-A9C6-45A227C17A55}" name="Source">
+      <GROUP id="{C418E418-6F93-9901-9FC9-85CA2D362048}" name="ui">
+        <FILE id="GtK9Bu" name="EditTab.cpp" compile="1" resource="0" file="Source/ui/EditTab.cpp"/>
+        <FILE id="MIWAMX" name="EditTab.h" compile="0" resource="0" file="Source/ui/EditTab.h"/>
+        <FILE id="xZezD6" name="JV880LCD.cpp" compile="1" resource="0" file="Source/ui/JV880LCD.cpp"/>
+        <FILE id="VvaWWL" name="JV880LCD.h" compile="0" resource="0" file="Source/ui/JV880LCD.h"/>
+        <FILE id="Ii334A" name="PatchBrowser.cpp" compile="1" resource="0"
+              file="Source/ui/PatchBrowser.cpp"/>
+        <FILE id="m3M1A9" name="PatchBrowser.h" compile="0" resource="0" file="Source/ui/PatchBrowser.h"/>
+        <FILE id="Xb1Kc5" name="SettingsTab.cpp" compile="1" resource="0" file="Source/ui/SettingsTab.cpp"/>
+        <FILE id="IRgLIQ" name="SettingsTab.h" compile="0" resource="0" file="Source/ui/SettingsTab.h"/>
+      </GROUP>
       <GROUP id="{436EDB6B-328E-333A-C94F-A87566346041}" name="emulator">
         <GROUP id="{48413998-A5DB-16F9-A292-C661211DD610}" name="resample">
           <FILE id="NOqhM2" name="config.h" compile="0" resource="0" file="Source/emulator/resample/config.h"/>

@@ -10,6 +10,8 @@
 #include "PluginEditor.h"
 
 static const uint8_t* expansions[] = {
+    (const uint8_t*)BinaryData::rd500_expansion_bin,
+    (const uint8_t*)BinaryData::jd990_expansion_bin,
     (const uint8_t*)BinaryData::SRJV8001_Pop__CS_0x3F1CF705_bin,
     (const uint8_t*)BinaryData::SRJV8002_Orchestral__CS_0x3F0E09E2_BIN,
     (const uint8_t*)BinaryData::SRJV8003_Piano__CS_0x3F8DB303_bin,
@@ -29,28 +31,6 @@ static const uint8_t* expansions[] = {
     (const uint8_t*)BinaryData::SRJV8017_Country__CS_0x3ED75089_bin,
     (const uint8_t*)BinaryData::SRJV8018_Latin__CS_0x3EA51033_BIN,
     (const uint8_t*)BinaryData::SRJV8019_House__CS_0x3E330C41_BIN
-};
-
-static const char* expansionNames[] = {
-    "======== SR-JV80: 01 Pop ========",
-    "======== SR-JV80: 02 Orchestral ========",
-    "======== SR-JV80: 03 Piano ========",
-    "======== SR-JV80: 04 Vintage Synth ========",
-    "======== SR-JV80: 05 World ========",
-    "======== SR-JV80: 06 Dance ========",
-    "======== SR-JV80: 07 Super Sound Set ========",
-    "======== SR-JV80: 08 Keyboards of the 60s and 70s ========",
-    "======== SR-JV80: 09 Session ========",
-    "======== SR-JV80: 10 Bass & Drum ========",
-    "======== SR-JV80: 11 Techno ========",
-    "======== SR-JV80: 12 HipHop ========",
-    "======== SR-JV80: 13 Vocal ========",
-    "======== SR-JV80: 14 Asia ========",
-    "======== SR-JV80: 15 Special FX ========",
-    "======== SR-JV80: 16 Orchestral II ========",
-    "======== SR-JV80: 17 Country ========",
-    "======== SR-JV80: 18 Latin ========",
-    "======== SR-JV80: 19 House ========",
 };
 
 // static void unscramble(const uint8_t *src, uint8_t *dst, int len)
@@ -98,9 +78,22 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
                    BinaryData::jv880_waverom1_bin, BinaryData::jv880_waverom2_bin,
                    BinaryData::jv880_nvram_bin);
 
+    // unscramble
+    // FILE *f;
+    // f = fopen("/Users/giuliozausa/personal/programming/jv880_juce/expansions/rd500_expansion.bin", "rb");
+    // uint8_t* src = (uint8_t*) malloc(0x800000);
+    // fread(src, 0x800000, 1, f);
+    // fclose(f);
+    // uint8_t* dest = (uint8_t*) malloc(0x800000);
+    // unscramble(src, dest, 0x800000);
+    // f = fopen("/Users/giuliozausa/personal/programming/jv880_juce/expansions_desc/rd500_expansion.bin", "wb");
+    // fwrite(dest, 0x800000, 1, f);
+    // fclose(f);
+
     int currentPatchI = 0;
 
     // Internal User
+    patchInfoPerGroup.push_back(std::vector<PatchInfo*>());
     for (int j = 0; j < 64; j++)
     {
         patchInfos[currentPatchI].name = (const char*)&BinaryData::jv880_rom2_bin[0x008ce0 + j * 0x16a];
@@ -109,6 +102,8 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         patchInfos[currentPatchI].patchI = j;
         patchInfos[currentPatchI].present = true;
         patchInfos[currentPatchI].drums = false;
+        patchInfos[currentPatchI].iInList = currentPatchI;
+        patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
         currentPatchI++;
     }
     patchInfos[currentPatchI].name = "Drums Internal User";
@@ -118,6 +113,8 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
     patchInfos[currentPatchI].patchI = 0;
     patchInfos[currentPatchI].present = true;
     patchInfos[currentPatchI].drums = true;
+    patchInfos[currentPatchI].iInList = currentPatchI;
+    patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
     currentPatchI++;
     
     // Internal A
@@ -129,6 +126,8 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         patchInfos[currentPatchI].patchI = j;
         patchInfos[currentPatchI].present = true;
         patchInfos[currentPatchI].drums = false;
+        patchInfos[currentPatchI].iInList = currentPatchI;
+        patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
         currentPatchI++;
     }
     patchInfos[currentPatchI].name = "Drums Internal A";
@@ -138,6 +137,8 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
     patchInfos[currentPatchI].patchI = 0;
     patchInfos[currentPatchI].present = true;
     patchInfos[currentPatchI].drums = true;
+    patchInfos[currentPatchI].iInList = currentPatchI;
+    patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
     currentPatchI++;
     
     // Internal B
@@ -149,6 +150,8 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         patchInfos[currentPatchI].patchI = j;
         patchInfos[currentPatchI].present = true;
         patchInfos[currentPatchI].drums = false;
+        patchInfos[currentPatchI].iInList = currentPatchI;
+        patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
         currentPatchI++;
     }
     patchInfos[currentPatchI].name = "Drums Internal B";
@@ -158,57 +161,64 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
     patchInfos[currentPatchI].patchI = 0;
     patchInfos[currentPatchI].present = true;
     patchInfos[currentPatchI].drums = true;
+    patchInfos[currentPatchI].iInList = currentPatchI;
+    patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
     currentPatchI++;
 
     for (int i = 0; i < NUM_EXPS; i++)
     {
+        patchInfoPerGroup.push_back(std::vector<PatchInfo*>());
+
         expansionsDescr[i] = expansions[i];
-
-        // unscramble
-        // uint8_t* dest = (uint8_t*) malloc(0x800000);
-        // unscramble(expansions[i], dest, 0x800000);
-        // FILE* f = fopen((juce::String("/Users/giuliozausa/personal/programming/jv880_juce/expansions_desc/") + BinaryData::originalFilenames[i]).toRawUTF8(), "wb");
-        // fwrite(dest, 0x800000, 1, f);
-        // fclose(f);
-
-        // header patch
-        patchInfos[currentPatchI].name = expansionNames[i];
-        patchInfos[currentPatchI].nameLength = strlen(expansionNames[i]);
-        patchInfos[currentPatchI].expansionI = i;
-        patchInfos[currentPatchI].patchI = 0;
-        patchInfos[currentPatchI].present = true;
-        patchInfos[currentPatchI].drums = false;
-        currentPatchI++;
 
         // get patches
         int nPatches = expansionsDescr[i][0x67] | expansionsDescr[i][0x66] << 8;
+        if (i == 0) nPatches = 192; // RD-500
         for (int j = 0; j < nPatches; j++)
         {
             size_t patchesOffset = expansionsDescr[i][0x8f] | expansionsDescr[i][0x8e] << 8
                                  | expansionsDescr[i][0x8d] << 16 | expansionsDescr[i][0x8c] << 24;
+            // RD-500
+            if (i == 0 && j < 64) patchesOffset = 0x0ce0;
+            else if (i == 0 && j < 128) patchesOffset = 0x8370;
+            else if (i == 0) patchesOffset = 0x12b82;
             patchInfos[currentPatchI].name = (const char*)&expansionsDescr[i][patchesOffset + j * 0x16a];
+            if (i == 0)
+                patchInfos[currentPatchI].name = (const char*)&BinaryData::rd500_patches_bin[patchesOffset + (j % 64) * 0x16a];
             patchInfos[currentPatchI].nameLength = 0xc;
             patchInfos[currentPatchI].expansionI = i;
             patchInfos[currentPatchI].patchI = j;
             patchInfos[currentPatchI].present = true;
+            patchInfos[currentPatchI].drums = false;
+            patchInfos[currentPatchI].iInList = currentPatchI;
+            patchInfoPerGroup[i + 1].push_back(&patchInfos[currentPatchI]);
             currentPatchI++;
         }
 
         // get drumkits
         int nDrumkits = expansionsDescr[i][0x69] | expansionsDescr[i][0x68] << 8;
+        if (i == 0) nDrumkits = 3; // RD-500
         for (int j = 0; j < nDrumkits; j++)
         {
             size_t patchesOffset = expansionsDescr[i][0x93] | expansionsDescr[i][0x92] << 8
                 | expansionsDescr[i][0x91] << 16 | expansionsDescr[i][0x90] << 24;
+            // RD-500
+            if (i == 0 && j < 64) patchesOffset = 0x6760;
+            else if (i == 0 && j < 128) patchesOffset = 0xd2a0;
+            else if (i == 0) patchesOffset = 0x18602;
             char* namePtr = (char*)calloc(32, 1);
             patchInfos[currentPatchI].name = namePtr;
-            sprintf(namePtr, "Expansion %d Drums %d", i, j);
+            sprintf(namePtr, "Exp %d Drums %d", i, j);
             patchInfos[currentPatchI].ptr = (const char*)&expansionsDescr[i][patchesOffset + j * 0xa7c];
+            if (i == 0)
+                patchInfos[currentPatchI].ptr = (const char*)&BinaryData::rd500_patches_bin[patchesOffset];
             patchInfos[currentPatchI].nameLength = strlen(namePtr);
             patchInfos[currentPatchI].expansionI = i;
             patchInfos[currentPatchI].patchI = j;
             patchInfos[currentPatchI].present = true;
             patchInfos[currentPatchI].drums = true;
+            patchInfos[currentPatchI].iInList = currentPatchI;
+            patchInfoPerGroup[i + 1].push_back(&patchInfos[currentPatchI]);
             currentPatchI++;
         }
 
@@ -302,7 +312,7 @@ void Jv880_juceAudioProcessor::setCurrentProgram (int index)
     {
         if (mcu->nvram[0x11] != 1)
         {
-            mcu->nvram[0x11] = 0;
+            mcu->nvram[0x11] = 1;
             memcpy(&mcu->nvram[0x0d70], (uint8_t*)patchInfos[index].name, 0x16a);
             mcu->SC55_Reset();
         }
