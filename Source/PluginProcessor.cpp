@@ -62,16 +62,10 @@ static const uint8_t* expansions[] = {
 
 //==============================================================================
 Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
-#endif
+                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+                      )
 {
     mcu = new MCU();
     mcu->startSC55(BinaryData::jv880_rom1_bin, BinaryData::jv880_rom2_bin,
@@ -225,8 +219,6 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
         // total count
         totalPatchesExp += nPatches;
     }
-
-    memcpy(mcu->pcm.waverom_exp, expansionsDescr[currentExpansion], 0x800000);
 }
 
 Jv880_juceAudioProcessor::~Jv880_juceAudioProcessor()
@@ -243,29 +235,17 @@ const juce::String Jv880_juceAudioProcessor::getName() const
 
 bool Jv880_juceAudioProcessor::acceptsMidi() const
 {
-   #if JucePlugin_WantsMidiInput
     return true;
-   #else
-    return false;
-   #endif
 }
 
 bool Jv880_juceAudioProcessor::producesMidi() const
 {
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
     return false;
-   #endif
 }
 
 bool Jv880_juceAudioProcessor::isMidiEffect() const
 {
-   #if JucePlugin_IsMidiEffect
-    return true;
-   #else
     return false;
-   #endif
 }
 
 double Jv880_juceAudioProcessor::getTailLengthSeconds() const
@@ -284,7 +264,7 @@ int Jv880_juceAudioProcessor::getNumPrograms()
 
 int Jv880_juceAudioProcessor::getCurrentProgram()
 {
-    return status.currentProgram;
+    return 0; // TODO
 }
 
 void Jv880_juceAudioProcessor::setCurrentProgram (int index)
@@ -292,33 +272,36 @@ void Jv880_juceAudioProcessor::setCurrentProgram (int index)
     if (index < 0 || index >= getNumPrograms())
         return;
 
-    status.currentProgram = index;
-
     int expansionI = patchInfos[index].expansionI;
-    if (expansionI != 0xff && currentExpansion != expansionI)
+    if (expansionI != 0xff && status.currentExpansion != expansionI)
     {
-        currentExpansion = expansionI;
+        status.currentExpansion = expansionI;
         memcpy(mcu->pcm.waverom_exp, expansionsDescr[expansionI], 0x800000);
         mcu->SC55_Reset();
     }
 
     if (patchInfos[index].drums)
     {
+        status.isDrums = true;
         mcu->nvram[0x11] = 0;
-        memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[status.currentProgram].ptr, 0xa7c);
+        memcpy(&mcu->nvram[0x67f0], (uint8_t*)patchInfos[index].ptr, 0xa7c);
+        memcpy(status.drums, &mcu->nvram[0x67f0], 0xa7c);
         mcu->SC55_Reset();
     }
     else
     {
+        status.isDrums = false;
         if (mcu->nvram[0x11] != 1)
         {
             mcu->nvram[0x11] = 1;
             memcpy(&mcu->nvram[0x0d70], (uint8_t*)patchInfos[index].name, 0x16a);
+            memcpy(status.patch, &mcu->nvram[0x0d70], 0x16a);
             mcu->SC55_Reset();
         }
         else
         {
             memcpy(&mcu->nvram[0x0d70], (uint8_t*)patchInfos[index].name, 0x16a);
+            memcpy(status.patch, &mcu->nvram[0x0d70], 0x16a);
             uint8_t buffer[2] = { 0xC0, 0x00 };
             mcu->postMidiSC55(buffer, sizeof(buffer));
         }
@@ -349,37 +332,21 @@ void Jv880_juceAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-#ifndef JucePlugin_PreferredChannelConfigurations
 bool Jv880_juceAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
-  #if JucePlugin_IsMidiEffect
-    juce::ignoreUnused (layouts);
-    return true;
-  #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
-    // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
-    if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
-        return false;
-   #endif
-
     return true;
-  #endif
 }
-#endif
 
 void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     for (const auto metadata : midiMessages)
     {
+        // TODO: handle samplePosition in midi messages
         auto message = metadata.getMessage();
-        if (patchInfos[status.currentProgram].drums)
+        if (status.isDrums)
             message.setChannel(10);
         else
             message.setChannel(1);
@@ -390,12 +357,6 @@ void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
@@ -407,7 +368,7 @@ void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 //==============================================================================
 bool Jv880_juceAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return true;
 }
 
 juce::AudioProcessorEditor* Jv880_juceAudioProcessor::createEditor()
@@ -418,6 +379,10 @@ juce::AudioProcessorEditor* Jv880_juceAudioProcessor::createEditor()
 //==============================================================================
 void Jv880_juceAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
+    status.masterTune = mcu->nvram[0x00];
+    status.reverbEnabled = ((mcu->nvram[0x02] >> 0) & 1) == 1;
+    status.chorusEnabled = ((mcu->nvram[0x02] >> 1) & 1) == 1;
+    
     destData.ensureSize(sizeof(DataToSave));
     destData.replaceAll(&status, sizeof(DataToSave));
 }
@@ -425,7 +390,47 @@ void Jv880_juceAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 void Jv880_juceAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     memcpy(&status, data, sizeof(DataToSave));
-    setCurrentProgram(status.currentProgram);
+
+    mcu->nvram[0x0d] |= 1 << 5; // LastSet
+    mcu->nvram[0x00] = status.masterTune;
+    mcu->nvram[0x02] = status.reverbEnabled | status.chorusEnabled << 1;
+
+    memcpy(mcu->pcm.waverom_exp, expansionsDescr[status.currentExpansion], 0x800000);
+    mcu->nvram[0x11] = status.isDrums ? 0 : 1;
+    memcpy(&mcu->nvram[0x67f0], status.drums, 0xa7c);
+    memcpy(&mcu->nvram[0x0d70], status.patch, 0x16a);
+}
+
+void Jv880_juceAudioProcessor::sendSysexParamChange(uint32_t address, uint8_t value)
+{
+    uint8_t data[5];
+    data[0] = (address >> 21) & 127; // address MSB
+    data[1] = (address >> 14) & 127; // address
+    data[2] = (address >> 7) & 127;  // address
+    data[3] = (address >> 0) & 127;  // address LSB
+    data[4] = value;  // data
+    uint32_t checksum = 0;
+    for (size_t i = 0; i < 5; i++) {
+        checksum += data[i];
+        if (checksum >= 128) {
+            checksum -= 128;
+        }
+    }
+
+    uint8_t buf[12];
+    buf[0] = 0xf0;
+    buf[1] = 0x41;
+    buf[2] = 0x10; // unit number
+    buf[3] = 0x46;
+    buf[4] = 0x12; // command
+    checksum = 128 - checksum;
+    for (size_t i = 0; i < 5; i++) {
+        buf[i + 5] = data[i];
+    }
+    buf[10] = checksum;
+    buf[11] = 0xf7;
+
+    mcu->postMidiSC55(buf, 12);
 }
 
 //==============================================================================

@@ -11,19 +11,30 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "../PluginProcessor.h"
 
 //==============================================================================
 /*
 */
-class SettingsTab  : public juce::Component
+class SettingsTab  : public juce::Component, public juce::Slider::Listener, public juce::Button::Listener
 {
 public:
-    SettingsTab();
+    SettingsTab(Jv880_juceAudioProcessor&);
     ~SettingsTab() override;
 
-    void paint (juce::Graphics&) override;
+    void visibilityChanged() override;
     void resized() override;
+    void sliderValueChanged (juce::Slider*) override;
+    void buttonClicked (juce::Button*) override;
+    void buttonStateChanged (juce::Button*) override;
 
 private:
+    Jv880_juceAudioProcessor& audioProcessor;
+
+    juce::Slider masterTuneSlider;
+    juce::Label masterTuneLabel;
+    juce::ToggleButton reverbToggle;
+    juce::ToggleButton chorusToggle;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsTab)
 };

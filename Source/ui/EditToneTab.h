@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    EditTab.h
-    Created: 18 Aug 2024 1:04:53pm
+    EditToneTab.h
+    Created: 20 Aug 2024 2:34:06pm
     Author:  Giulio Zausa
 
   ==============================================================================
@@ -12,26 +12,20 @@
 
 #include <JuceHeader.h>
 #include "../PluginProcessor.h"
-#include "EditCommonTab.h"
-#include "EditToneTab.h"
 
 //==============================================================================
 /*
 */
-class EditTab  : public juce::Component
+class EditToneTab  : public juce::Component
 {
 public:
-    EditTab(Jv880_juceAudioProcessor&);
-    ~EditTab() override;
+    EditToneTab(Jv880_juceAudioProcessor&);
+    ~EditToneTab() override;
 
     void resized() override;
 
 private:
     Jv880_juceAudioProcessor& audioProcessor;
 
-    juce::TabbedComponent tabs;
-    EditCommonTab editCommon;
-    EditToneTab editTone;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditTab)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditToneTab)
 };

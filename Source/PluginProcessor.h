@@ -28,9 +28,7 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
-   #ifndef JucePlugin_PreferredChannelConfigurations
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
-   #endif
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
@@ -57,6 +55,9 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //==============================================================================
+    void sendSysexParamChange(uint32_t address, uint8_t value);
+
     struct PatchInfo
     {
         const char* name;
@@ -71,13 +72,18 @@ public:
 
     struct DataToSave
     {
-      int currentProgram = 0;
+        int8_t masterTune = 0;
+        bool reverbEnabled = 1;
+        bool chorusEnabled = 1;
+
+        int currentExpansion = 0;
+        bool isDrums = false;
+        uint8_t patch[0x16a] = {0};
+        uint8_t drums[0xa7c] = {0};
     };
 
     DataToSave status;
-
     MCU *mcu;
-    int currentExpansion = 0;
     const uint8_t* expansionsDescr[NUM_EXPS];
     PatchInfo patchInfos[192 + 256 * NUM_EXPS] = {0};
     std::vector<std::vector<PatchInfo*>> patchInfoPerGroup;

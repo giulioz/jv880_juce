@@ -15,8 +15,8 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor (Jv880_juceAudioP
       lcd (p),
       tabs (juce::TabbedButtonBar::TabsAtTop),
       patchBrowser (p),
-      editTab (),
-      settingsTab ()
+      editTab (p),
+      settingsTab (p)
 {
     addAndMakeVisible(lcd);
     addAndMakeVisible(tabs);

@@ -57,7 +57,7 @@ private:
 
     class CategoriesListModel : public juce::ListBoxModel, public juce::ChangeBroadcaster {
       int getNumRows() override {
-        return 20;
+        return 22;
       }
 
       void paintListBoxItem(int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override {
@@ -66,7 +66,7 @@ private:
 
         g.setColour (rowIsSelected ? juce::Colours::black : juce::Colours::white);
 
-        if (rowNumber < 20)
+        if (rowNumber < 22)
             g.drawFittedText (groupNames[rowNumber], { 5, 0, width, height - 2 }, juce::Justification::left, 1);
 
         g.setColour (juce::Colours::white.withAlpha (0.4f));

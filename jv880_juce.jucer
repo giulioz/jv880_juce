@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="DSwmeO" name="jv880_juce" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="Roland"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
-              pluginManufacturerCode="RLND" pluginCode="JV80" maxBinaryFileSize="20971520"
-              cppLanguageStandard="20" pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3">
-  <MAINGROUP id="U4zWTk" name="jv880_juce">
+<JUCERPROJECT id="DSwmeO" name="virtual_jv" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginManufacturerCode="VRJV" pluginCode="VRJV" cppLanguageStandard="20"
+              pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3" pluginName="VirtualJV"
+              pluginDesc="VirtualJV" companyName="VirtualJV">
+  <MAINGROUP id="U4zWTk" name="virtual_jv">
     <GROUP id="{308E331D-69A5-28C8-DB64-8BF0DE41502D}" name="Roms">
       <FILE id="SXboyJ" name="rd500_expansion.bin" compile="0" resource="1"
             file="expansions_desc/rd500_expansion.bin"/>
@@ -60,9 +60,16 @@
             file="jv880_waverom2.bin"/>
     </GROUP>
     <GROUP id="{A9A4FE8C-A726-5731-A9C6-45A227C17A55}" name="Source">
+      <FILE id="gPg4hs" name="dataStructures.h" compile="0" resource="0"
+            file="Source/dataStructures.h"/>
       <GROUP id="{C418E418-6F93-9901-9FC9-85CA2D362048}" name="ui">
+        <FILE id="CEIonD" name="EditCommonTab.cpp" compile="1" resource="0"
+              file="Source/ui/EditCommonTab.cpp"/>
+        <FILE id="nokpbG" name="EditCommonTab.h" compile="0" resource="0" file="Source/ui/EditCommonTab.h"/>
         <FILE id="GtK9Bu" name="EditTab.cpp" compile="1" resource="0" file="Source/ui/EditTab.cpp"/>
         <FILE id="MIWAMX" name="EditTab.h" compile="0" resource="0" file="Source/ui/EditTab.h"/>
+        <FILE id="CNC19E" name="EditToneTab.cpp" compile="1" resource="0" file="Source/ui/EditToneTab.cpp"/>
+        <FILE id="Ue4xl7" name="EditToneTab.h" compile="0" resource="0" file="Source/ui/EditToneTab.h"/>
         <FILE id="xZezD6" name="JV880LCD.cpp" compile="1" resource="0" file="Source/ui/JV880LCD.cpp"/>
         <FILE id="VvaWWL" name="JV880LCD.h" compile="0" resource="0" file="Source/ui/JV880LCD.h"/>
         <FILE id="Ii334A" name="PatchBrowser.cpp" compile="1" resource="0"
