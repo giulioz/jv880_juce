@@ -1276,6 +1276,13 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
             break;
         }
 
+       for (int i = 0; i < midiQueue.size(); i++) {
+           if (!midiQueue[i].processed && midiQueue[i].samplePos <= sample_write_ptr) {
+               postMidiSC55(midiQueue[i].data, midiQueue[i].length);
+               midiQueue[i].processed = true;
+           }
+       }
+
         if (!mcu.ex_ignore)
             MCU_Interrupt_Handle(this);
         else
@@ -1327,6 +1334,15 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
     }
 
     // printf("req %d to render %d rendered %d resampled %d %d output %d %d\n", nFrames, renderBufferFrames, sample_write_ptr, inUsedL, inUsedR, outL, outR);
+
+    // Flush the midi buffer
+    for (int i = 0; i < midiQueue.size(); i++) {
+        if (!midiQueue[i].processed) {
+            postMidiSC55(midiQueue[i].data, midiQueue[i].length);
+            midiQueue[i].processed = true;
+        }
+    }
+    midiQueue.clear();
 }
 
 void MCU::SC55_Reset() {
@@ -1368,4 +1384,12 @@ void MCU::postMidiSC55(const uint8_t* message, int length) {
     for (int i = 0; i < length; i++) {
         MCU_PostUART(message[i]);
     }
+}
+
+void MCU::enqueueMidiSC55(const uint8_t* message, int length, int samplePos) {
+    MidiEvent event = {0};
+    event.length = length;
+    event.samplePos = samplePos;
+    memcpy(&event.data, message, length);
+    midiQueue.push_back(event);
 }

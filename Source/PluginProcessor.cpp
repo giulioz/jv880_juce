@@ -344,13 +344,13 @@ void Jv880_juceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 {
     for (const auto metadata : midiMessages)
     {
-        // TODO: handle samplePosition in midi messages
         auto message = metadata.getMessage();
         if (status.isDrums)
             message.setChannel(10);
         else
             message.setChannel(1);
-        mcu->postMidiSC55(message.getRawData(), message.getRawDataSize());
+        int samplePos = (double)metadata.samplePosition / getSampleRate() * 64000;
+        mcu->enqueueMidiSC55(message.getRawData(), message.getRawDataSize(), samplePos);
     }
  
     juce::ScopedNoDenormals noDenormals;

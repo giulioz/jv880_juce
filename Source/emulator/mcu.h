@@ -372,6 +372,14 @@ struct MCU {
     void* resampleR = 0;
     int savedDestSampleRate = 0;
     double samplesError = 0;
+    
+    struct MidiEvent {
+        uint8_t data[32];
+        int length;
+        int samplePos;
+        bool processed;
+    };
+    std::vector<MidiEvent> midiQueue;
 
     MCU();
 
@@ -398,6 +406,7 @@ struct MCU {
     int startSC55(const char* s_rom1, const char* s_rom2, const char* s_waverom1, const char* s_waverom2, const char* s_nvram);
     void updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFrames, int destSampleRate);
     void postMidiSC55(const uint8_t* message, int length);
+    void enqueueMidiSC55(const uint8_t* message, int length, int samplePos);
     void SC55_Reset();
 
     uint8_t RCU_Read(void);
