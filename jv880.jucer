@@ -19,18 +19,8 @@
         <FILE id="nokpbG" name="EditCommonTab.h" compile="0" resource="0" file="Source/ui/EditCommonTab.h"/>
         <FILE id="GtK9Bu" name="EditTab.cpp" compile="1" resource="0" file="Source/ui/EditTab.cpp"/>
         <FILE id="MIWAMX" name="EditTab.h" compile="0" resource="0" file="Source/ui/EditTab.h"/>
-        <FILE id="CNC19E" name="EditTone1Tab.cpp" compile="1" resource="0"
-              file="Source/ui/EditTone1Tab.cpp"/>
-        <FILE id="Ue4xl7" name="EditTone1Tab.h" compile="0" resource="0" file="Source/ui/EditTone1Tab.h"/>
-        <FILE id="KabbKX" name="EditTone2Tab.cpp" compile="1" resource="0"
-              file="Source/ui/EditTone2Tab.cpp"/>
-        <FILE id="CRtB8u" name="EditTone2Tab.h" compile="0" resource="0" file="Source/ui/EditTone2Tab.h"/>
-        <FILE id="MNu1xL" name="EditTone3Tab.cpp" compile="1" resource="0"
-              file="Source/ui/EditTone3Tab.cpp"/>
-        <FILE id="HQC9Ua" name="EditTone3Tab.h" compile="0" resource="0" file="Source/ui/EditTone3Tab.h"/>
-        <FILE id="B19Ko2" name="EditTone4Tab.cpp" compile="1" resource="0"
-              file="Source/ui/EditTone4Tab.cpp"/>
-        <FILE id="mR1XBh" name="EditTone4Tab.h" compile="0" resource="0" file="Source/ui/EditTone4Tab.h"/>
+        <FILE id="CNC19E" name="EditToneTab.cpp" compile="1" resource="0" file="Source/ui/EditToneTab.cpp"/>
+        <FILE id="Ue4xl7" name="EditToneTab.h" compile="0" resource="0" file="Source/ui/EditToneTab.h"/>
         <FILE id="xZezD6" name="JV880LCD.cpp" compile="1" resource="0" file="Source/ui/JV880LCD.cpp"/>
         <FILE id="VvaWWL" name="JV880LCD.h" compile="0" resource="0" file="Source/ui/JV880LCD.h"/>
         <FILE id="Ii334A" name="PatchBrowser.cpp" compile="1" resource="0"

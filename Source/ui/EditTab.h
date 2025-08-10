@@ -13,10 +13,7 @@
 #include <JuceHeader.h>
 #include "../PluginProcessor.h"
 #include "EditCommonTab.h"
-#include "EditTone1Tab.h"
-#include "EditTone2Tab.h"
-#include "EditTone3Tab.h"
-#include "EditTone4Tab.h"
+#include "EditToneTab.h"
 
 //==============================================================================
 /*
@@ -34,10 +31,10 @@ private:
 
     juce::TabbedComponent tabs;
     EditCommonTab editCommon;
-    EditTone1Tab editTone1;
-    EditTone2Tab editTone2;
-    EditTone3Tab editTone3;
-    EditTone4Tab editTone4;
+    EditToneTab editTone1;
+    EditToneTab editTone2;
+    EditToneTab editTone3;
+    EditToneTab editTone4;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditTab)
 };

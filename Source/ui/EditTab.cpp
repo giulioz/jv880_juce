@@ -16,10 +16,10 @@ EditTab::EditTab(Jv880_juceAudioProcessor& p) :
   audioProcessor (p),
   tabs (juce::TabbedButtonBar::TabsAtTop),
   editCommon (p),
-  editTone1 (p),
-  editTone2 (p),
-  editTone3 (p),
-  editTone4 (p)
+  editTone1 (p, 0),
+  editTone2 (p, 1),
+  editTone3 (p, 2),
+  editTone4 (p, 3)
 {
     addAndMakeVisible(tabs);
     setSize(820, 1000);

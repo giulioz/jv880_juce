@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    EditTone4Tab.cpp
+    EditToneTab.cpp
     Created: 20 Aug 2024 2:34:06pm
     Author:  Giulio Zausa
 
@@ -9,11 +9,11 @@
 */
 
 #include <JuceHeader.h>
-#include "EditTone4Tab.h"
+#include "EditToneTab.h"
 #include "../dataStructures.h"
 
 //==============================================================================
-EditTone4Tab::EditTone4Tab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
+EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioProcessor (p), toneCount(toneIn)
 {
     addAndMakeVisible(waveGroupLabel);
     waveGroupLabel.setText ("Wave Group", juce::dontSendNotification);
@@ -1082,14 +1082,14 @@ EditTone4Tab::EditTone4Tab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     
 }
 
-EditTone4Tab::~EditTone4Tab()
+EditToneTab::~EditToneTab()
 {
 }
 
-void EditTone4Tab::updateValues()
+void EditToneTab::updateValues()
 {
     Patch* patch = (Patch*) audioProcessor.status.patch;
-    Tone tone = patch->tones[3];
+    Tone tone = patch->tones[toneCount];
     waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3) + 0, juce::dontSendNotification);
     waveformSlider.setValue((tone.waveNumber & 0xff) + 1, juce::dontSendNotification);
     toneSwitchToggle.setToggleState(((tone.flags >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
@@ -1211,12 +1211,12 @@ void EditTone4Tab::updateValues()
     
 }
 
-void EditTone4Tab::visibilityChanged()
+void EditToneTab::visibilityChanged()
 {
     updateValues();
 }
 
-void EditTone4Tab::resized()
+void EditToneTab::resized()
 {
     auto top = 30;
     auto sliderLeft1 = 100;
@@ -1344,31 +1344,31 @@ void EditTone4Tab::resized()
 
 }
 
-void EditTone4Tab::sliderValueChanged (juce::Slider* slider)
+void EditToneTab::sliderValueChanged (juce::Slider* slider)
 {
     sendSysexPatchToneChange();
 }
 
-void EditTone4Tab::buttonClicked (juce::Button* button)
+void EditToneTab::buttonClicked (juce::Button* button)
 {
     sendSysexPatchToneChange();
 }
 
-void EditTone4Tab::buttonStateChanged (juce::Button* button)
+void EditToneTab::buttonStateChanged (juce::Button* button)
 {
 }
 
-void EditTone4Tab::comboBoxChanged (juce::ComboBox* button)
+void EditToneTab::comboBoxChanged (juce::ComboBox* button)
 {
     sendSysexPatchToneChange();
 }
 
-void EditTone4Tab::sendSysexPatchToneChange1(uint32_t address, uint8_t value)
+void EditToneTab::sendSysexPatchToneChange1(uint32_t address, uint8_t value)
 {
       uint8_t data[5];
       data[0] = 0x00; // address MSB
       data[1] = 0x08; // address
-      data[2] = 0x28 + 3;  // address
+      data[2] = 0x28 + toneCount;  // address
       data[3] = address & 127;  // address LSB
       data[4] = value;                 // data
       uint32_t checksum = 0;
@@ -1397,12 +1397,12 @@ void EditTone4Tab::sendSysexPatchToneChange1(uint32_t address, uint8_t value)
       audioProcessor.mcuLock.exit();
 }
 
-void EditTone4Tab::sendSysexPatchToneChange2(uint32_t address, uint8_t value)
+void EditToneTab::sendSysexPatchToneChange2(uint32_t address, uint8_t value)
 {
       uint8_t data[6];
       data[0] = 0x00; // address MSB
       data[1] = 0x08; // address
-      data[2] = 0x28 + 3;  // address
+      data[2] = 0x28 + toneCount;  // address
       data[3] = address & 127;  // address LSB
       data[4] = (value & 0xf0) >> 4;                 // data
       data[5] = value & 0x0f;                 // data
@@ -1433,7 +1433,7 @@ void EditTone4Tab::sendSysexPatchToneChange2(uint32_t address, uint8_t value)
 }
 
 
-void EditTone4Tab::sendSysexPatchToneChange()
+void EditToneTab::sendSysexPatchToneChange()
 {
         sendSysexPatchToneChange2(1,(uint8_t(waveformSlider.getValue() - 1)));
         sendSysexPatchToneChange1(5,(uint8_t(FXMDepthSlider.getValue() - 1)));
@@ -1546,7 +1546,7 @@ void EditTone4Tab::sendSysexPatchToneChange()
         sendSysexPatchToneChange1(104,(aenvTimeKFSensComboBox.getSelectedItemIndex() - 0));
         sendSysexPatchToneChange1(115,(outputComboBox.getSelectedItemIndex() - 0));
     Patch* patch = (Patch*) audioProcessor.status.patch;
-    Tone* tone = &patch->tones[3];
+    Tone* tone = &patch->tones[toneCount];
     
     tone->flags = uint8_t(waveGroupComboBox.getSelectedItemIndex() + (toneSwitchToggle.getToggleState() << 7));
     tone->waveNumber = uint8_t(waveformSlider.getValue() - 1);

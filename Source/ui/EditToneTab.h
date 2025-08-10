@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    EditTone2Tab.h
+    EditToneTab.h
     Created: 20 Aug 2024 2:34:06pm
     Author:  Giulio Zausa
 
@@ -16,11 +16,11 @@
 //==============================================================================
 /*
 */
-class EditTone2Tab  : public juce::Component, public juce::Slider::Listener, public juce::Button::Listener, public juce::ComboBox::Listener
+class EditToneTab  : public juce::Component, public juce::Slider::Listener, public juce::Button::Listener, public juce::ComboBox::Listener
 {
 public:
-    EditTone2Tab(Jv880_juceAudioProcessor&);
-    ~EditTone2Tab() override;
+    EditToneTab(Jv880_juceAudioProcessor&, uint8_t toneIn);
+    ~EditToneTab() override;
     
     void updateValues();
 
@@ -36,6 +36,8 @@ public:
 
 private:
     Jv880_juceAudioProcessor& audioProcessor;
+    uint8_t toneCount;
+    
     juce::ComboBox waveGroupComboBox;
     juce::Label waveGroupLabel;
     juce::Slider waveformSlider;
@@ -270,5 +272,5 @@ private:
     juce::ComboBox outputComboBox;
     juce::Label outputLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditTone2Tab)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditToneTab)
 };
