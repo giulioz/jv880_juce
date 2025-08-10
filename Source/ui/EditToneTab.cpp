@@ -1509,6 +1509,7 @@ void EditToneTab::sendSysexPatchToneChange()
         sendSysexPatchToneChange1(40,(lfo1FadeToggle.getToggleStateValue() == 1 ? 0x01 : 0x00));
         sendSysexPatchToneChange1(47,(lfo2SyncToggle.getToggleStateValue() == 1 ? 0x01 : 0x00));
         sendSysexPatchToneChange1(51,(lfo2FadeToggle.getToggleStateValue() == 1 ? 0x01 : 0x00));
+        sendSysexPatchToneChange1(0,(waveGroupComboBox.getSelectedItemIndex() - 0));
         sendSysexPatchToneChange1(10,(modDestAComboBox.getSelectedItemIndex() - 0));
         sendSysexPatchToneChange1(12,(modDestBComboBox.getSelectedItemIndex() - 0));
         sendSysexPatchToneChange1(14,(modDestCComboBox.getSelectedItemIndex() - 0));
