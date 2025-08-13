@@ -14,6 +14,7 @@
 //==============================================================================
 SettingsTab::SettingsTab(Jv880_juceAudioProcessor &p) : audioProcessor(p) {
   addAndMakeVisible(masterTuneSlider);
+
   masterTuneSlider.setRange(1, 127);
   masterTuneSlider.setTextValueSuffix(" Hz");
   masterTuneSlider.addListener(this);
@@ -32,11 +33,11 @@ SettingsTab::SettingsTab(Jv880_juceAudioProcessor &p) : audioProcessor(p) {
 
   addAndMakeVisible(reverbToggle);
   reverbToggle.addListener(this);
-  reverbToggle.setButtonText("Reverb Enabled");
+  reverbToggle.setButtonText("Reverb");
 
   addAndMakeVisible(chorusToggle);
   chorusToggle.addListener(this);
-  chorusToggle.setButtonText("Chorus Enabled");
+  chorusToggle.setButtonText("Chorus");
 }
 
 SettingsTab::~SettingsTab() {}

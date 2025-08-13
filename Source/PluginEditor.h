@@ -12,7 +12,8 @@
 #include "PluginProcessor.h"
 #include "ui/JV880LCD.h"
 #include "ui/PatchBrowser.h"
-#include "ui/EditTab.h"
+#include "ui/EditCommonTab.h"
+#include "ui/EditToneTab.h"
 #include "ui/SettingsTab.h"
 
 //==============================================================================
@@ -34,7 +35,11 @@ private:
     JV880LCD lcd;
     juce::TabbedComponent tabs;
     PatchBrowser patchBrowser;
-    EditTab editTab;
+    EditCommonTab editCommonTab;
+    EditToneTab editTone1Tab;
+    EditToneTab editTone2Tab;
+    EditToneTab editTone3Tab;
+    EditToneTab editTone4Tab;
     SettingsTab settingsTab;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Jv880_juceAudioProcessorEditor)

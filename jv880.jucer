@@ -17,8 +17,6 @@
         <FILE id="CEIonD" name="EditCommonTab.cpp" compile="1" resource="0"
               file="Source/ui/EditCommonTab.cpp"/>
         <FILE id="nokpbG" name="EditCommonTab.h" compile="0" resource="0" file="Source/ui/EditCommonTab.h"/>
-        <FILE id="GtK9Bu" name="EditTab.cpp" compile="1" resource="0" file="Source/ui/EditTab.cpp"/>
-        <FILE id="MIWAMX" name="EditTab.h" compile="0" resource="0" file="Source/ui/EditTab.h"/>
         <FILE id="CNC19E" name="EditToneTab.cpp" compile="1" resource="0" file="Source/ui/EditToneTab.cpp"/>
         <FILE id="Ue4xl7" name="EditToneTab.h" compile="0" resource="0" file="Source/ui/EditToneTab.h"/>
         <FILE id="xZezD6" name="JV880LCD.cpp" compile="1" resource="0" file="Source/ui/JV880LCD.cpp"/>

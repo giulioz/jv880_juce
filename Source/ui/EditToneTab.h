@@ -30,11 +30,13 @@ public:
     void buttonClicked (juce::Button*) override;
     void buttonStateChanged (juce::Button*) override;
     void comboBoxChanged (juce::ComboBox*) override;
-    void sendSysexPatchToneChange1(uint32_t address, uint8_t value);
-    void sendSysexPatchToneChange2(uint32_t address, uint8_t value);
+    void sendSysexPatchToneChange1Byte(uint8_t address, uint8_t value);
+    void sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value);
     void sendSysexPatchToneChange();
 
 private:
+    void addMenuEntriesFromArray(juce::ComboBox &menu, const std::vector<std::string> &array);
+
     Jv880_juceAudioProcessor& audioProcessor;
     uint8_t toneCount;
     
@@ -49,10 +51,9 @@ private:
     juce::Slider FXMDepthSlider;
     juce::Label FXMDepthLabel;
     
+    juce::Label velRangeLabel;
     juce::Slider velRangeLowSlider;
-    juce::Label velRangeLowLabel;
     juce::Slider velRangeHighSlider;
-    juce::Label velRangeHighLabel;
     
     juce::ToggleButton volumeSwitchToggle;
     juce::Label volumeSwitchLabel;
@@ -191,7 +192,6 @@ private:
     juce::Slider filterResoSlider;
     juce::Label filterResoLabel;
     juce::ComboBox filterResoModeComboBox;
-    juce::Label filterResoModeLabel;
     juce::ComboBox filterKFComboBox;
     juce::Label filterKFLabel;
     juce::ComboBox fenvVelCurveComboBox;
