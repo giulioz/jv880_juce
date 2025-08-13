@@ -10,36 +10,39 @@
 
 #pragma once
 
-#include <JuceHeader.h>
 #include "../PluginProcessor.h"
+#include <JuceHeader.h>
 
 //==============================================================================
-/*
-*/
-class EditToneTab  : public juce::Component, public juce::Slider::Listener, public juce::Button::Listener, public juce::ComboBox::Listener
+
+class EditToneTab : public juce::Component,
+                    public juce::Slider::Listener,
+                    public juce::Button::Listener,
+                    public juce::ComboBox::Listener
 {
 public:
-    EditToneTab(Jv880_juceAudioProcessor&, uint8_t toneIn);
+    EditToneTab(Jv880_juceAudioProcessor &, uint8_t toneIn);
     ~EditToneTab() override;
-    
+
     void updateValues();
 
     void visibilityChanged() override;
     void resized() override;
-    void sliderValueChanged (juce::Slider*) override;
-    void buttonClicked (juce::Button*) override;
-    void buttonStateChanged (juce::Button*) override;
-    void comboBoxChanged (juce::ComboBox*) override;
+    void sliderValueChanged(juce::Slider *) override;
+    void buttonClicked(juce::Button *) override;
+    void buttonStateChanged(juce::Button *) override;
+    void comboBoxChanged(juce::ComboBox *) override;
     void sendSysexPatchToneChange1Byte(uint8_t address, uint8_t value);
     void sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value);
     void sendSysexPatchToneChange();
 
 private:
-    void addMenuEntriesFromArray(juce::ComboBox &menu, const std::vector<std::string> &array);
+    void addMenuEntriesFromArray(juce::ComboBox &menu,
+    const std::vector<std::string> &array);
 
-    Jv880_juceAudioProcessor& audioProcessor;
+    Jv880_juceAudioProcessor &audioProcessor;
     uint8_t toneCount;
-    
+
     juce::ComboBox waveGroupComboBox;
     juce::Label waveGroupLabel;
     juce::Slider waveformSlider;
@@ -50,11 +53,11 @@ private:
     juce::Label FXMSwitchLabel;
     juce::Slider FXMDepthSlider;
     juce::Label FXMDepthLabel;
-    
+
     juce::Label velRangeLabel;
     juce::Slider velRangeLowSlider;
     juce::Slider velRangeHighSlider;
-    
+
     juce::ToggleButton volumeSwitchToggle;
     juce::Label volumeSwitchLabel;
     juce::ToggleButton holdSwitchToggle;
@@ -107,7 +110,7 @@ private:
     juce::Label expSensDLabel;
     juce::ComboBox expDestDComboBox;
     juce::Label expDestDLabel;
-    
+
     juce::ComboBox lfo1FormComboBox;
     juce::Label lfo1FormLabel;
     juce::ComboBox lfo1OffsetComboBox;
@@ -128,7 +131,7 @@ private:
     juce::Label lfo1TVFDepthLabel;
     juce::Slider lfo1TVADepthSlider;
     juce::Label lfo1TVADepthLabel;
-    
+
     juce::ComboBox lfo2FormComboBox;
     juce::Label lfo2FormLabel;
     juce::ComboBox lfo2OffsetComboBox;
@@ -149,7 +152,7 @@ private:
     juce::Label lfo2TVFDepthLabel;
     juce::Slider lfo2TVADepthSlider;
     juce::Label lfo2TVADepthLabel;
-    
+
     juce::Slider pitchCoarseSlider;
     juce::Label pitchCoarseLabel;
     juce::Slider pitchFineSlider;
@@ -184,7 +187,7 @@ private:
     juce::Label penv4TimeLabel;
     juce::Slider penv4LevelSlider;
     juce::Label penv4LevelLabel;
-    
+
     juce::ComboBox filterModeComboBox;
     juce::Label filterModeLabel;
     juce::Slider filterCutoffSlider;
@@ -222,7 +225,7 @@ private:
     juce::Label fenv4TimeLabel;
     juce::Slider fenv4LevelSlider;
     juce::Label fenv4LevelLabel;
-    
+
     juce::Slider levelSlider;
     juce::Label levelLabel;
     juce::ComboBox levelKFComboBox;
@@ -261,8 +264,7 @@ private:
     juce::Label aenv3LevelLabel;
     juce::Slider aenv4TimeSlider;
     juce::Label aenv4TimeLabel;
-    
-    
+
     juce::Slider drySlider;
     juce::Label dryLabel;
     juce::Slider reverbSlider;
@@ -272,5 +274,5 @@ private:
     juce::ComboBox outputComboBox;
     juce::Label outputLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditToneTab)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditToneTab)
 };

@@ -59,7 +59,8 @@ void SettingsTab::resized() {
 }
 
 void SettingsTab::sliderValueChanged(juce::Slider *slider) {
-  if (slider == &masterTuneSlider) {
+  if (slider == &masterTuneSlider)
+  {
     uint32_t address = 0x01;
     uint8_t value = (uint8_t)masterTuneSlider.getValue();
     audioProcessor.sendSysexParamChange(address, value);
@@ -67,14 +68,16 @@ void SettingsTab::sliderValueChanged(juce::Slider *slider) {
 }
 
 void SettingsTab::buttonClicked(juce::Button *button) {
-  if (button == &reverbToggle) {
+  if (button == &reverbToggle)
+  {
     uint32_t address = 0x04;
-    uint8_t value = reverbToggle.getToggleState() ? 1 : 0;
+    uint8_t value = reverbToggle.getToggleState() ? 1U : 0U;
     audioProcessor.sendSysexParamChange(address, value);
   }
-  if (button == &chorusToggle) {
+  else if (button == &chorusToggle)
+  {
     uint32_t address = 0x05;
-    uint8_t value = chorusToggle.getToggleState() ? 1 : 0;
+    uint8_t value = chorusToggle.getToggleState() ? 1U : 0U;
     audioProcessor.sendSysexParamChange(address, value);
   }
 }

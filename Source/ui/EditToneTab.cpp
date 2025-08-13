@@ -807,43 +807,43 @@ void EditToneTab::updateValues()
 {
     Patch* patch = (Patch*)audioProcessor.status.patch;
     Tone tone = patch->tones[toneCount];
-    waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3), juce::dontSendNotification);
+    waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3) + 0, juce::dontSendNotification);
     waveformSlider.setValue((tone.waveNumber & 0xff) + 1, juce::dontSendNotification);
     toneSwitchToggle.setToggleState(((tone.flags >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     FXMSwitchToggle.setToggleState(((tone.fxmConfig >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     FXMDepthSlider.setValue(((tone.fxmConfig) & 0x0f) + 1, juce::dontSendNotification);
-    velRangeLowSlider.setValue(((tone.velocityRangeLow) & 0x7f), juce::dontSendNotification);
-    velRangeHighSlider.setValue(((tone.velocityRangeUp) & 0x7f), juce::dontSendNotification);
+    velRangeLowSlider.setValue(((tone.velocityRangeLow) & 0x7f) + 0, juce::dontSendNotification);
+    velRangeHighSlider.setValue(((tone.velocityRangeUp) & 0x7f) + 0, juce::dontSendNotification);
 
     volumeSwitchToggle.setToggleState(((tone.tvaEnvTime1 >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     holdSwitchToggle.setToggleState(((tone.tvaEnvLevel1 >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
 
-    modDestAComboBox.setSelectedItemIndex((tone.matrixModDestAB & 0xf), juce::dontSendNotification);
-    modDestBComboBox.setSelectedItemIndex(((tone.matrixModDestAB & 0xf0) >> 4), juce::dontSendNotification);
-    modDestCComboBox.setSelectedItemIndex((tone.matrixModDestCB & 0xf), juce::dontSendNotification);
-    modDestDComboBox.setSelectedItemIndex(((tone.matrixModDestCB & 0xf0) >> 4), juce::dontSendNotification);
+    modDestAComboBox.setSelectedItemIndex((tone.matrixModDestAB & 0xf) + 0, juce::dontSendNotification);
+    modDestBComboBox.setSelectedItemIndex(((tone.matrixModDestAB & 0xf0) >> 4) + 0, juce::dontSendNotification);
+    modDestCComboBox.setSelectedItemIndex((tone.matrixModDestCB & 0xf) + 0, juce::dontSendNotification);
+    modDestDComboBox.setSelectedItemIndex(((tone.matrixModDestCB & 0xf0) >> 4) + 0, juce::dontSendNotification);
     modSensASlider.setValue(int8_t((tone.matrixModSensA)), juce::dontSendNotification);
     modSensBSlider.setValue(int8_t((tone.matrixModSensB)), juce::dontSendNotification);
     modSensCSlider.setValue(int8_t((tone.matrixModSensC)), juce::dontSendNotification);
     modSensDSlider.setValue(int8_t((tone.matrixModSensD)), juce::dontSendNotification);
-    aftDestAComboBox.setSelectedItemIndex((tone.matrixAftDestAB & 0xf), juce::dontSendNotification);
-    aftDestBComboBox.setSelectedItemIndex(((tone.matrixAftDestAB & 0xf0) >> 4), juce::dontSendNotification);
-    aftDestCComboBox.setSelectedItemIndex((tone.matrixAftDestCD & 0xf), juce::dontSendNotification);
-    aftDestDComboBox.setSelectedItemIndex(((tone.matrixAftDestCD & 0xf0) >> 4), juce::dontSendNotification);
+    aftDestAComboBox.setSelectedItemIndex((tone.matrixAftDestAB & 0xf) + 0, juce::dontSendNotification);
+    aftDestBComboBox.setSelectedItemIndex(((tone.matrixAftDestAB & 0xf0) >> 4) + 0, juce::dontSendNotification);
+    aftDestCComboBox.setSelectedItemIndex((tone.matrixAftDestCD & 0xf) + 0, juce::dontSendNotification);
+    aftDestDComboBox.setSelectedItemIndex(((tone.matrixAftDestCD & 0xf0) >> 4) + 0, juce::dontSendNotification);
     aftSensASlider.setValue(int8_t((tone.matrixAftSensA)), juce::dontSendNotification);
     aftSensBSlider.setValue(int8_t((tone.matrixAftSensB)), juce::dontSendNotification);
     aftSensCSlider.setValue(int8_t((tone.matrixAftSensC)), juce::dontSendNotification);
     aftSensDSlider.setValue(int8_t((tone.matrixAftSensD)), juce::dontSendNotification);
-    expDestAComboBox.setSelectedItemIndex((tone.matrixExpDestAB & 0xf), juce::dontSendNotification);
-    expDestBComboBox.setSelectedItemIndex(((tone.matrixExpDestAB & 0xf0) >> 4), juce::dontSendNotification);
-    expDestCComboBox.setSelectedItemIndex((tone.matrixExpDestCD & 0xf), juce::dontSendNotification);
-    expDestDComboBox.setSelectedItemIndex(((tone.matrixExpDestCD & 0xf0) >> 4), juce::dontSendNotification);
+    expDestAComboBox.setSelectedItemIndex((tone.matrixExpDestAB & 0xf) + 0, juce::dontSendNotification);
+    expDestBComboBox.setSelectedItemIndex(((tone.matrixExpDestAB & 0xf0) >> 4) + 0, juce::dontSendNotification);
+    expDestCComboBox.setSelectedItemIndex((tone.matrixExpDestCD & 0xf) + 0, juce::dontSendNotification);
+    expDestDComboBox.setSelectedItemIndex(((tone.matrixExpDestCD & 0xf0) >> 4) + 0, juce::dontSendNotification);
     expSensASlider.setValue(int8_t((tone.matrixExpSensA)), juce::dontSendNotification);
     expSensBSlider.setValue(int8_t((tone.matrixExpSensB)), juce::dontSendNotification);
     expSensCSlider.setValue(int8_t((tone.matrixExpSensC)), juce::dontSendNotification);
     expSensDSlider.setValue(int8_t((tone.matrixExpSensD)), juce::dontSendNotification);
 
-    lfo1FormComboBox.setSelectedItemIndex((tone.lfo1Flags & 0x7), juce::dontSendNotification);
+    lfo1FormComboBox.setSelectedItemIndex((tone.lfo1Flags & 0x7) + 0, juce::dontSendNotification);
     lfo1OffsetComboBox.setSelectedItemIndex((tone.lfo1Flags & 0x38) >> 3, juce::dontSendNotification);
     lfo1SyncToggle.setToggleState(((tone.lfo1Flags & 0x40) >> 6) ? 1 : 0, juce::dontSendNotification);
     lfo1FadeToggle.setToggleState(((tone.lfo1Flags & 0x80) >> 7) ? 1 : 0, juce::dontSendNotification);
@@ -854,7 +854,7 @@ void EditToneTab::updateValues()
     lfo1TVFDepthSlider.setValue(int8_t((tone.lfo1TvfDepth)), juce::dontSendNotification);
     lfo1TVADepthSlider.setValue(int8_t((tone.lfo1TvaDepth)), juce::dontSendNotification);
 
-    lfo2FormComboBox.setSelectedItemIndex((tone.lfo2Flags & 0x7), juce::dontSendNotification);
+    lfo2FormComboBox.setSelectedItemIndex((tone.lfo2Flags & 0x7) + 0, juce::dontSendNotification);
     lfo2OffsetComboBox.setSelectedItemIndex((tone.lfo2Flags & 0x38) >> 3, juce::dontSendNotification);
     lfo2SyncToggle.setToggleState(((tone.lfo2Flags & 0x40) >> 6) ? 1 : 0, juce::dontSendNotification);
     lfo2FadeToggle.setToggleState(((tone.lfo2Flags & 0x80) >> 7) ? 1 : 0, juce::dontSendNotification);
