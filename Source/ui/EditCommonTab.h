@@ -36,7 +36,6 @@ public:
   void sendSysexPatchCommonChange();
 
 private:
-
   Jv880_juceAudioProcessor &audioProcessor;
 
   juce::TextEditor patchNameEditor;
@@ -79,8 +78,9 @@ private:
   juce::ComboBox keyAssignComboBox;
   juce::ToggleButton soloLegatoToggle;
   juce::ToggleButton portamentoToggle;
-  juce::Label portamentoModeTypeLabel;
+  juce::Label portamentoModeLabel;
   juce::ComboBox portamentoModeComboBox;
+  juce::Label portamentoTypeLabel;
   juce::ComboBox portamentoTypeComboBox;
   juce::Slider portamentoTimeSlider;
   juce::Label portamentoTimeLabel;

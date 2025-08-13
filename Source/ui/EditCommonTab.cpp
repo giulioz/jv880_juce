@@ -25,10 +25,10 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
 
     addAndMakeVisible(velocitySwitchToggle);
     velocitySwitchToggle.addListener(this);
-    velocitySwitchToggle.setButtonText ("Velocity");
+    velocitySwitchToggle.setButtonText ("Velocity Switch");
 
     addAndMakeVisible(reverbTypeLabel);
-    reverbTypeLabel.setText("Reverb Type", juce::dontSendNotification);
+    reverbTypeLabel.setText("Reverb", juce::dontSendNotification);
     reverbTypeLabel.attachToComponent(&reverbTypeComboBox, true);
     addAndMakeVisible(reverbTypeComboBox);
     reverbTypeComboBox.addListener(this);
@@ -47,7 +47,7 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     reverbLevelSlider.setRange (0, 127, 1);
     reverbLevelSlider.addListener(this);
     addAndMakeVisible(reverbLevelLabel);
-    reverbLevelLabel.setText("Reverb Level", juce::dontSendNotification);
+    reverbLevelLabel.setText("Level", juce::dontSendNotification);
     reverbLevelLabel.attachToComponent(&reverbLevelSlider, true);
 
     addAndMakeVisible(reverbTimeSlider);
@@ -55,7 +55,7 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     reverbTimeSlider.setRange (0, 127, 1);
     reverbTimeSlider.addListener(this);
     addAndMakeVisible(reverbTimeLabel);
-    reverbTimeLabel.setText("Reverb Time", juce::dontSendNotification);
+    reverbTimeLabel.setText("Time", juce::dontSendNotification);
     reverbTimeLabel.attachToComponent(&reverbTimeSlider, true);
 
     addAndMakeVisible(delayFeedbackSlider);
@@ -63,25 +63,25 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     delayFeedbackSlider.setRange (0, 127, 1);
     delayFeedbackSlider.addListener(this);
     addAndMakeVisible(delayFeedbackLabel);
-    delayFeedbackLabel.setText("Delay Feedback", juce::dontSendNotification);
+    delayFeedbackLabel.setText("Feedback", juce::dontSendNotification);
     delayFeedbackLabel.attachToComponent(&delayFeedbackSlider, true);
 
     addAndMakeVisible(chorusTypeLabel);
-    chorusTypeLabel.setText("Chorus Type", juce::dontSendNotification);
+    chorusTypeLabel.setText("Chorus", juce::dontSendNotification);
     chorusTypeLabel.attachToComponent(&chorusTypeComboBox, true);
     addAndMakeVisible(chorusTypeComboBox);
     chorusTypeComboBox.addListener(this);
     chorusTypeComboBox.setScrollWheelEnabled (true);
-    chorusTypeComboBox.addItem("Chorus 1", 1);
-    chorusTypeComboBox.addItem("Chorus 2", 2);
-    chorusTypeComboBox.addItem("Chorus 3", 3);
+    chorusTypeComboBox.addItem("Type 1", 1);
+    chorusTypeComboBox.addItem("Type 2", 2);
+    chorusTypeComboBox.addItem("Type 3", 3);
     
     addAndMakeVisible(chorusLevelSlider);
     chorusLevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
     chorusLevelSlider.setRange (0, 127, 1);
     chorusLevelSlider.addListener(this);
     addAndMakeVisible(chorusLevelLabel);
-    chorusLevelLabel.setText("Chorus Level", juce::dontSendNotification);
+    chorusLevelLabel.setText("Level", juce::dontSendNotification);
     chorusLevelLabel.attachToComponent(&chorusLevelSlider, true);
     
     addAndMakeVisible(chorusDepthSlider);
@@ -89,7 +89,7 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     chorusDepthSlider.setRange (0, 127, 1);
     chorusDepthSlider.addListener(this);
     addAndMakeVisible(chorusDepthLabel);
-    chorusDepthLabel.setText("Chorus Depth", juce::dontSendNotification);
+    chorusDepthLabel.setText("Depth", juce::dontSendNotification);
     chorusDepthLabel.attachToComponent(&chorusDepthSlider, true);
     
     addAndMakeVisible(chorusRateSlider);
@@ -97,7 +97,7 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     chorusRateSlider.setRange (0, 127, 1);
     chorusRateSlider.addListener(this);
     addAndMakeVisible(chorusRateSlider);
-    chorusRateLabel.setText("Chorus Rate", juce::dontSendNotification);
+    chorusRateLabel.setText("Rate", juce::dontSendNotification);
     chorusRateLabel.attachToComponent(&chorusRateSlider, true);
     
     addAndMakeVisible(chorusFeedbackSlider);
@@ -105,11 +105,11 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     chorusFeedbackSlider.setRange (0, 127, 1);
     chorusFeedbackSlider.addListener(this);
     addAndMakeVisible(chorusFeedbackLabel);
-    chorusFeedbackLabel.setText("Chorus Feedback", juce::dontSendNotification);
+    chorusFeedbackLabel.setText("Feedback", juce::dontSendNotification);
     chorusFeedbackLabel.attachToComponent(&chorusFeedbackSlider, true);
 
     addAndMakeVisible(chorusOutputLabel);
-    chorusOutputLabel.setText("Chorus Output", juce::dontSendNotification);
+    chorusOutputLabel.setText("Output", juce::dontSendNotification);
     chorusOutputLabel.attachToComponent(&chorusOutputComboBox, true);
     addAndMakeVisible(chorusOutputComboBox);
     chorusOutputComboBox.addListener(this);
@@ -172,15 +172,18 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     portamentoToggle.addListener(this);
     portamentoToggle.setButtonText ("Portamento");
 
-    addAndMakeVisible(portamentoModeTypeLabel);
-    portamentoModeTypeLabel.setText("Mode | Type", juce::dontSendNotification);
-    portamentoModeTypeLabel.attachToComponent(&portamentoModeComboBox, true);
+    addAndMakeVisible(portamentoModeLabel);
+    portamentoModeLabel.setText("Mode", juce::dontSendNotification);
+    portamentoModeLabel.attachToComponent(&portamentoModeComboBox, true);
     addAndMakeVisible(portamentoModeComboBox);
     portamentoModeComboBox.addListener(this);
     portamentoModeComboBox.setScrollWheelEnabled (true);
     portamentoModeComboBox.addItem("Legato", 1);
     portamentoModeComboBox.addItem("Normal", 2);
 
+    addAndMakeVisible(portamentoTypeLabel);
+    portamentoTypeLabel.setText("Type", juce::dontSendNotification);
+    portamentoTypeLabel.attachToComponent(&portamentoTypeComboBox, true);
     addAndMakeVisible(portamentoTypeComboBox);
     portamentoTypeComboBox.addListener(this);
     portamentoTypeComboBox.setScrollWheelEnabled (true);
@@ -244,7 +247,8 @@ void EditCommonTab::resized()
     const auto height = 24;
     const auto vMargin = 24;
 
-    patchNameEditor        .setBounds(sliderLeft1, top + height * 0 + vMargin * 0, width, height);
+    patchNameEditor        .setBounds(sliderLeft1, top + height * 0 + vMargin * 0, halfWidth, height);
+    velocitySwitchToggle   .setBounds(sliderLeft1 + halfWidth, top + height * 0 + vMargin * 0, halfWidth, height);
 
     reverbTypeComboBox     .setBounds(sliderLeft1, top + height * 1 + vMargin * 1, width, height);
     reverbLevelSlider      .setBounds(sliderLeft1, top + height * 2 + vMargin * 1, width, height);
@@ -260,19 +264,18 @@ void EditCommonTab::resized()
     
     levelSlider            .setBounds(sliderLeft2, top + height * 0 + vMargin * 0, width, height);
     panSlider              .setBounds(sliderLeft2, top + height * 1 + vMargin * 0, width, height);
-    velocitySwitchToggle   .setBounds(sliderLeft2, top + height * 2 + vMargin * 0, width, height);
 
-    analogFeelSlider       .setBounds(sliderLeft2, top + height * 3 + vMargin * 1, width, height);
+    analogFeelSlider       .setBounds(sliderLeft2, top + height * 2 + vMargin * 1, width, height);
 
-    bendRangeDownSlider    .setBounds(sliderLeft2, top + height * 4 + vMargin * 2, halfWidth, height);
-    bendRangeUpSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 4 + vMargin * 2, halfWidth, height);
+    bendRangeDownSlider    .setBounds(sliderLeft2, top + height * 3 + vMargin * 2, halfWidth, height);
+    bendRangeUpSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 3 + vMargin * 2, halfWidth, height);
 
-    keyAssignComboBox      .setBounds(sliderLeft2, top + height * 5 + vMargin * 3, halfWidth, height);
-    soloLegatoToggle       .setBounds(sliderLeft2 + halfWidth, top + height * 5 + vMargin * 3, halfWidth, height);
+    keyAssignComboBox      .setBounds(sliderLeft2, top + height * 4 + vMargin * 3, halfWidth, height);
+    soloLegatoToggle       .setBounds(sliderLeft2 + halfWidth, top + height * 4 + vMargin * 3, halfWidth, height);
 
-    portamentoToggle       .setBounds(sliderLeft2, top + height * 6 + vMargin * 4, width, height);
-    portamentoModeComboBox .setBounds(sliderLeft2, top + height * 7 + vMargin * 4, halfWidth, height);
-    portamentoTypeComboBox .setBounds(sliderLeft2 + halfWidth, top + height * 7 + vMargin * 4, halfWidth, height);
+    portamentoToggle       .setBounds(sliderLeft2, top + height * 5 + vMargin * 4, width, height);
+    portamentoModeComboBox .setBounds(sliderLeft2, top + height * 6 + vMargin * 4, width, height);
+    portamentoTypeComboBox .setBounds(sliderLeft2, top + height * 7 + vMargin * 4, width, height);
     portamentoTimeSlider   .setBounds(sliderLeft2, top + height * 8 + vMargin * 4, width, height);
 }
 
