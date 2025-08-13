@@ -20,7 +20,7 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
   addAndMakeVisible(lcd);
   addAndMakeVisible(tabs);
 
-  setSize(850, 950);
+  setSize(820, 900);
 
   const auto bgColor = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
 
@@ -56,6 +56,6 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
 Jv880_juceAudioProcessorEditor::~Jv880_juceAudioProcessorEditor() {}
 
 void Jv880_juceAudioProcessorEditor::resized() {
-  lcd.setBounds(0, 0, 850, 100);
-  tabs.setBounds(0, 100, 850, 900);
+  lcd.setBounds(0, 0, 820, 100);
+  tabs.setBounds(0, 100, 820, 800);
 }

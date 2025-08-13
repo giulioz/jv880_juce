@@ -17,6 +17,8 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
 {
     addAndMakeVisible(patchNameEditor);
     patchNameEditor.addListener(this);
+    patchNameEditor.setInputRestrictions(MAX_PATCH_NAME_CHARS,
+                                         " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*/#!,.");
     addAndMakeVisible(patchNameLabel);
     patchNameLabel.setText("Patch Name", juce::dontSendNotification);
     patchNameLabel.attachToComponent(&patchNameEditor, true);
@@ -143,17 +145,15 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     bendRangeDownSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
     bendRangeDownSlider.setRange (-48, 0, 1);
     bendRangeDownSlider.addListener(this);
-    addAndMakeVisible(bendRangeDownLabel);
-    bendRangeDownLabel.setText("Bend Range Down", juce::dontSendNotification);
-    bendRangeDownLabel.attachToComponent(&bendRangeDownSlider, true);
+
+    addAndMakeVisible(bendRangeLabel);
+    bendRangeLabel.setText("Bend Range", juce::dontSendNotification);
+    bendRangeLabel.attachToComponent(&bendRangeDownSlider, true);
     
     addAndMakeVisible(bendRangeUpSlider);
     bendRangeUpSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
     bendRangeUpSlider.setRange (0, 12, 1);
     bendRangeUpSlider.addListener(this);
-    addAndMakeVisible(bendRangeUpLabel);
-    bendRangeUpLabel.setText("Bend Range Up", juce::dontSendNotification);
-    bendRangeUpLabel.attachToComponent(&bendRangeUpSlider, true);
 
     addAndMakeVisible(keyAssignLabel);
     keyAssignLabel.setText("Key Assign", juce::dontSendNotification);
@@ -172,18 +172,15 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     portamentoToggle.addListener(this);
     portamentoToggle.setButtonText ("Portamento");
 
-    addAndMakeVisible(portamentoModeLabel);
-    portamentoModeLabel.setText("Portamento Mode", juce::dontSendNotification);
-    portamentoModeLabel.attachToComponent(&portamentoModeComboBox, true);
+    addAndMakeVisible(portamentoModeTypeLabel);
+    portamentoModeTypeLabel.setText("Mode | Type", juce::dontSendNotification);
+    portamentoModeTypeLabel.attachToComponent(&portamentoModeComboBox, true);
     addAndMakeVisible(portamentoModeComboBox);
     portamentoModeComboBox.addListener(this);
     portamentoModeComboBox.setScrollWheelEnabled (true);
     portamentoModeComboBox.addItem("Legato", 1);
     portamentoModeComboBox.addItem("Normal", 2);
 
-    addAndMakeVisible(portamentoTypeLabel);
-    portamentoTypeLabel.setText("Portamento Type", juce::dontSendNotification);
-    portamentoTypeLabel.attachToComponent(&portamentoTypeComboBox, true);
     addAndMakeVisible(portamentoTypeComboBox);
     portamentoTypeComboBox.addListener(this);
     portamentoTypeComboBox.setScrollWheelEnabled (true);
@@ -195,7 +192,7 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     portamentoTimeSlider.setRange (0, 127, 1);
     portamentoTimeSlider.addListener(this);
     addAndMakeVisible(portamentoTimeLabel);
-    portamentoTimeLabel.setText("Portamento Time", juce::dontSendNotification);
+    portamentoTimeLabel.setText("Time", juce::dontSendNotification);
     portamentoTimeLabel.attachToComponent(&portamentoTimeSlider, true);
 }
 
@@ -242,40 +239,41 @@ void EditCommonTab::resized()
     const auto top = 30;
     const auto sliderLeft1 = 120;
     const auto width = getWidth() / 2 - sliderLeft1 - 10;
+    const auto halfWidth = width / 2;
     const auto sliderLeft2 = getWidth() / 2 + sliderLeft1 + 0;
     const auto height = 24;
-    const auto groupMargin = 24;
+    const auto vMargin = 24;
 
-    patchNameEditor        .setBounds(sliderLeft1, top + height * 0 + groupMargin * 0, width, height);
+    patchNameEditor        .setBounds(sliderLeft1, top + height * 0 + vMargin * 0, width, height);
 
-    reverbTypeComboBox     .setBounds(sliderLeft1, top + height * 1 + groupMargin * 1, width, height);
-    reverbLevelSlider      .setBounds(sliderLeft1, top + height * 2 + groupMargin * 1, width, height);
-    reverbTimeSlider       .setBounds(sliderLeft1, top + height * 3 + groupMargin * 1, width, height);
-    delayFeedbackSlider    .setBounds(sliderLeft1, top + height * 4 + groupMargin * 1, width, height);
+    reverbTypeComboBox     .setBounds(sliderLeft1, top + height * 1 + vMargin * 1, width, height);
+    reverbLevelSlider      .setBounds(sliderLeft1, top + height * 2 + vMargin * 1, width, height);
+    reverbTimeSlider       .setBounds(sliderLeft1, top + height * 3 + vMargin * 1, width, height);
+    delayFeedbackSlider    .setBounds(sliderLeft1, top + height * 4 + vMargin * 1, width, height);
     
-    chorusTypeComboBox     .setBounds(sliderLeft1, top + height * 5 + groupMargin * 2, width, height);
-    chorusLevelSlider      .setBounds(sliderLeft1, top + height * 6 + groupMargin * 2, width, height);
-    chorusDepthSlider      .setBounds(sliderLeft1, top + height * 7 + groupMargin * 2, width, height);
-    chorusRateSlider       .setBounds(sliderLeft1, top + height * 8 + groupMargin * 2, width, height);
-    chorusFeedbackSlider   .setBounds(sliderLeft1, top + height * 9 + groupMargin * 2, width, height);
-    chorusOutputComboBox   .setBounds(sliderLeft1, top + height * 10 + groupMargin * 2, width, height);
+    chorusTypeComboBox     .setBounds(sliderLeft1, top + height * 5 + vMargin * 2, width, height);
+    chorusLevelSlider      .setBounds(sliderLeft1, top + height * 6 + vMargin * 2, width, height);
+    chorusDepthSlider      .setBounds(sliderLeft1, top + height * 7 + vMargin * 2, width, height);
+    chorusRateSlider       .setBounds(sliderLeft1, top + height * 8 + vMargin * 2, width, height);
+    chorusFeedbackSlider   .setBounds(sliderLeft1, top + height * 9 + vMargin * 2, width, height);
+    chorusOutputComboBox   .setBounds(sliderLeft1, top + height * 10 + vMargin * 2, width, height);
     
-    levelSlider            .setBounds(sliderLeft2, top + height * 0 + groupMargin * 0, width, height);
-    panSlider              .setBounds(sliderLeft2, top + height * 1 + groupMargin * 0, width, height);
+    levelSlider            .setBounds(sliderLeft2, top + height * 0 + vMargin * 0, width, height);
+    panSlider              .setBounds(sliderLeft2, top + height * 1 + vMargin * 0, width, height);
+    velocitySwitchToggle   .setBounds(sliderLeft2, top + height * 2 + vMargin * 0, width, height);
 
-    velocitySwitchToggle   .setBounds(sliderLeft2, top + height * 3 + groupMargin * 0, width, height);
-    analogFeelSlider       .setBounds(sliderLeft2, top + height * 4 + groupMargin * 0, width, height);
+    analogFeelSlider       .setBounds(sliderLeft2, top + height * 3 + vMargin * 1, width, height);
 
-    bendRangeDownSlider    .setBounds(sliderLeft2, top + height * 6 + groupMargin * 1, width, height);
-    bendRangeUpSlider      .setBounds(sliderLeft2, top + height * 7 + groupMargin * 1, width, height);
+    bendRangeDownSlider    .setBounds(sliderLeft2, top + height * 4 + vMargin * 2, halfWidth, height);
+    bendRangeUpSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 4 + vMargin * 2, halfWidth, height);
 
-    keyAssignComboBox      .setBounds(sliderLeft2, top + height * 9 + groupMargin * 1, width, height);
-    soloLegatoToggle       .setBounds(sliderLeft2, top + height * 10 + groupMargin * 1, width, height);
+    keyAssignComboBox      .setBounds(sliderLeft2, top + height * 5 + vMargin * 3, halfWidth, height);
+    soloLegatoToggle       .setBounds(sliderLeft2 + halfWidth, top + height * 5 + vMargin * 3, halfWidth, height);
 
-    portamentoToggle       .setBounds(sliderLeft2, top + height * 12 + groupMargin * 1, width, height);
-    portamentoModeComboBox .setBounds(sliderLeft2, top + height * 13 + groupMargin * 1, width, height);
-    portamentoTypeComboBox .setBounds(sliderLeft2, top + height * 14 + groupMargin * 1, width, height);
-    portamentoTimeSlider   .setBounds(sliderLeft2, top + height * 15 + groupMargin * 1, width, height);
+    portamentoToggle       .setBounds(sliderLeft2, top + height * 6 + vMargin * 4, width, height);
+    portamentoModeComboBox .setBounds(sliderLeft2, top + height * 7 + vMargin * 4, halfWidth, height);
+    portamentoTypeComboBox .setBounds(sliderLeft2 + halfWidth, top + height * 7 + vMargin * 4, halfWidth, height);
+    portamentoTimeSlider   .setBounds(sliderLeft2, top + height * 8 + vMargin * 4, width, height);
 }
 
 void EditCommonTab::sliderValueChanged (juce::Slider* slider)
@@ -360,14 +358,14 @@ void EditCommonTab::sendSysexPatchCommonChange()
     buf[7] = 0x20;
     buf[8] = 0x00;
 
-    for (int i = 0; i < juce::jmin(12, patchNameEditor.getText().length()); i++)
+    for (int i = 0; i < juce::jmin(MAX_PATCH_NAME_CHARS, patchNameEditor.getText().length()); i++)
     {
         buf[i + 9] = patchNameEditor.getText()[i];
     }
 
-    if (patchNameEditor.getText().length() < 12)
+    if (patchNameEditor.getText().length() < MAX_PATCH_NAME_CHARS)
     {
-        for (int i = patchNameEditor.getText().length(); i < 12; i++)
+        for (int i = patchNameEditor.getText().length(); i < MAX_PATCH_NAME_CHARS; i++)
         {
             buf[i + 9] = 0x20;
         }
@@ -415,14 +413,14 @@ void EditCommonTab::sendSysexPatchCommonChange()
     audioProcessor.mcu->postMidiSC55(buf, 45);
     audioProcessor.mcuLock.exit();
     
-    for (int i = 0; i < juce::jmin(12, patchNameEditor.getText().length()); i++)
+    for (int i = 0; i < juce::jmin(MAX_PATCH_NAME_CHARS, patchNameEditor.getText().length()); i++)
     {
         patch->name[i] = patchNameEditor.getText()[i];
     }
 
-    if (patchNameEditor.getText().length() < 12)
+    if (patchNameEditor.getText().length() < MAX_PATCH_NAME_CHARS)
     {
-        for (int i = patchNameEditor.getText().length(); i < 12; i++)
+        for (int i = patchNameEditor.getText().length(); i < MAX_PATCH_NAME_CHARS; i++)
         {
             patch->name[i] = 0x20;
         }

@@ -76,12 +76,12 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
         "Cutoff",
         "Resonance",
         "Level",
-        "Pitch LFO 1",
-        "Pitch LFO 2",
-        "TVF LFO 1",
-        "TVF LFO 2",
-        "TVA LFO 1",
-        "TVA LFO 2",
+        "LFO 1→Pitch",
+        "LFO 2→Pitch",
+        "LFO 1→TVF",
+        "LFO 2→TVF",
+        "LFO 1→TVA",
+        "LFO 2→TVA",
         "LFO 1 Rate",
         "LFO 2 Rate",
     };
@@ -230,7 +230,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     expSensDSlider.setRange(-63, 63, 1);
     expSensDSlider.addListener(this);
 
-    const std::vector<std::string> lfoWaves{"Triangle", "Sine", "Saw", "Square", "Rand 1", "Rand 2"};
+    const std::vector<std::string> lfoWaves{"Triangle", "Sine", "Sawtooth", "Square", "Random 1", "Random 2"};
 
     const std::vector<std::string> lfoOffsets{"-100", "-50", "0", "+50", "+100"};
 
@@ -241,6 +241,9 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     lfo1FormComboBox.addListener(this);
     lfo1FormComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(lfo1FormComboBox, lfoWaves);
+    addAndMakeVisible(lfo1OffsetLabel);
+    lfo1OffsetLabel.setText("Offset", juce::dontSendNotification);
+    lfo1OffsetLabel.attachToComponent(&lfo1OffsetComboBox, true);
     addAndMakeVisible(lfo1OffsetComboBox);
     lfo1OffsetComboBox.addListener(this);
     lfo1OffsetComboBox.setScrollWheelEnabled(true);
@@ -301,6 +304,9 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     lfo2FormComboBox.addListener(this);
     lfo2FormComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(lfo2FormComboBox, lfoWaves);
+    addAndMakeVisible(lfo2OffsetLabel);
+    lfo2OffsetLabel.setText("Offset", juce::dontSendNotification);
+    lfo2OffsetLabel.attachToComponent(&lfo2OffsetComboBox, true);
     addAndMakeVisible(lfo2OffsetComboBox);
     lfo2OffsetComboBox.addListener(this);
     lfo2OffsetComboBox.setScrollWheelEnabled(true);
@@ -461,7 +467,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     penv2TimeSlider.setRange(0, 127, 1);
     penv2TimeSlider.addListener(this);
     addAndMakeVisible(penv2TimeLabel);
-    penv2TimeLabel.setText("Time | Level 2", juce::dontSendNotification);
+    penv2TimeLabel.setText("2", juce::dontSendNotification);
     penv2TimeLabel.attachToComponent(&penv2TimeSlider, true);
     addAndMakeVisible(penv2LevelSlider);
     penv2LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -473,7 +479,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     penv3TimeSlider.setRange(0, 127, 1);
     penv3TimeSlider.addListener(this);
     addAndMakeVisible(penv3TimeLabel);
-    penv3TimeLabel.setText("Time | Level 3", juce::dontSendNotification);
+    penv3TimeLabel.setText("3", juce::dontSendNotification);
     penv3TimeLabel.attachToComponent(&penv3TimeSlider, true);
     addAndMakeVisible(penv3LevelSlider);
     penv3LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -485,7 +491,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     penv4TimeSlider.setRange(0, 127, 1);
     penv4TimeSlider.addListener(this);
     addAndMakeVisible(penv4TimeLabel);
-    penv4TimeLabel.setText("Time | Level 4", juce::dontSendNotification);
+    penv4TimeLabel.setText("4", juce::dontSendNotification);
     penv4TimeLabel.attachToComponent(&penv4TimeSlider, true);
     addAndMakeVisible(penv4LevelSlider);
     penv4LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -593,7 +599,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     fenv2TimeSlider.setRange(0, 127, 1);
     fenv2TimeSlider.addListener(this);
     addAndMakeVisible(fenv2TimeLabel);
-    fenv2TimeLabel.setText("Time | Level 2", juce::dontSendNotification);
+    fenv2TimeLabel.setText("2", juce::dontSendNotification);
     fenv2TimeLabel.attachToComponent(&fenv2TimeSlider, true);
     addAndMakeVisible(fenv2LevelSlider);
     fenv2LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -605,7 +611,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     fenv3TimeSlider.setRange(0, 127, 1);
     fenv3TimeSlider.addListener(this);
     addAndMakeVisible(fenv3TimeLabel);
-    fenv3TimeLabel.setText("Time | Level 3", juce::dontSendNotification);
+    fenv3TimeLabel.setText("3", juce::dontSendNotification);
     fenv3TimeLabel.attachToComponent(&fenv3TimeSlider, true);
     addAndMakeVisible(fenv3LevelSlider);
     fenv3LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -617,7 +623,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     fenv4TimeSlider.setRange(0, 127, 1);
     fenv4TimeSlider.addListener(this);
     addAndMakeVisible(fenv4TimeLabel);
-    fenv4TimeLabel.setText("Time | Level 4", juce::dontSendNotification);
+    fenv4TimeLabel.setText("4", juce::dontSendNotification);
     fenv4TimeLabel.attachToComponent(&fenv4TimeSlider, true);
     addAndMakeVisible(fenv4LevelSlider);
     fenv4LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -726,7 +732,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     aenv2TimeSlider.setRange(0, 127, 1);
     aenv2TimeSlider.addListener(this);
     addAndMakeVisible(aenv2TimeLabel);
-    aenv2TimeLabel.setText("Time | Level 2", juce::dontSendNotification);
+    aenv2TimeLabel.setText("2", juce::dontSendNotification);
     aenv2TimeLabel.attachToComponent(&aenv2TimeSlider, true);
     addAndMakeVisible(aenv2LevelSlider);
     aenv2LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -738,7 +744,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     aenv3TimeSlider.setRange(0, 127, 1);
     aenv3TimeSlider.addListener(this);
     addAndMakeVisible(aenv3TimeLabel);
-    aenv3TimeLabel.setText("Time | Level 3", juce::dontSendNotification);
+    aenv3TimeLabel.setText("3", juce::dontSendNotification);
     aenv3TimeLabel.attachToComponent(&aenv3TimeSlider, true);
     addAndMakeVisible(aenv3LevelSlider);
     aenv3LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
@@ -750,7 +756,7 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     aenv4TimeSlider.setRange(0, 127, 1);
     aenv4TimeSlider.addListener(this);
     addAndMakeVisible(aenv4TimeLabel);
-    aenv4TimeLabel.setText("Time | Level 4", juce::dontSendNotification);
+    aenv4TimeLabel.setText("4", juce::dontSendNotification);
     aenv4TimeLabel.attachToComponent(&aenv4TimeSlider, true);
 
     addAndMakeVisible(drySlider);
@@ -942,131 +948,132 @@ void EditToneTab::resized()
     const auto halfWidth = width / 2;
     const auto sliderLeft2 = sliderLeft1 + getWidth() / 3 + 10;
     const auto sliderLeft3 = sliderLeft2 + getWidth() / 3 - 10;
-    const auto height = 20;
-    const auto groupMargin = 20;
+    const auto height = 24;
+    const auto vMargin = 24;
 
-    toneSwitchToggle.setBounds(sliderLeft1 - 90, top + height * 0 + groupMargin * 0, width, height);
+    toneSwitchToggle      .setBounds(sliderLeft1 - 90, top + height * 0 + vMargin * 0, width, height);
 
-    waveGroupComboBox.setBounds(sliderLeft1, top + height * 2 + groupMargin * 0, width, height);
-    waveformSlider.setBounds(sliderLeft1, top + height * 3 + groupMargin * 0, width, height);
+    waveGroupComboBox     .setBounds(sliderLeft1, top + height * 1 + vMargin * 1, width, height);
+    waveformSlider        .setBounds(sliderLeft1, top + height * 2 + vMargin * 1, width, height);
 
-    velRangeLowSlider.setBounds(sliderLeft1, top + height * 5 + groupMargin * 0, halfWidth, height);
-    velRangeHighSlider.setBounds(sliderLeft1 + halfWidth, top + height * 5 + groupMargin * 0, halfWidth, height);
+    velRangeLowSlider     .setBounds(sliderLeft1, top + height * 3 + vMargin * 2, halfWidth, height);
+    velRangeHighSlider    .setBounds(sliderLeft1 + halfWidth, top + height * 3 + vMargin * 2, halfWidth, height);
 
-    FXMSwitchToggle.setBounds(sliderLeft1 - 90, top + height * 7 + groupMargin * 0, halfWidth, height);
-    FXMDepthSlider.setBounds(sliderLeft1 + halfWidth, top + height * 7 + groupMargin * 0, halfWidth, height);
+    volumeSwitchToggle    .setBounds(sliderLeft1 - 90, top + height * 4 + vMargin * 3, width * 0.75f, height);
+    holdSwitchToggle      .setBounds(sliderLeft1 + 30, top + height * 4 + vMargin * 3, width * 0.75f, height);
 
-    volumeSwitchToggle.setBounds(sliderLeft1 - 90, top + height * 8 + groupMargin * 1, width, height);
-    holdSwitchToggle.setBounds(sliderLeft1 + 30, top + height * 8 + groupMargin * 1, width, height);
-    modDestAComboBox.setBounds(sliderLeft1 - 50, top + height * 9 + groupMargin * 1, halfWidth + 25, height);
-    modSensASlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 9 + groupMargin * 1, halfWidth + 25, height);
-    modDestBComboBox.setBounds(sliderLeft1 - 50, top + height * 10 + groupMargin * 1, halfWidth + 25, height);
-    modSensBSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 10 + groupMargin * 1, halfWidth + 25, height);
-    modDestCComboBox.setBounds(sliderLeft1 - 50, top + height * 11 + groupMargin * 1, halfWidth + 25, height);
-    modSensCSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 11 + groupMargin * 1, halfWidth + 25, height);
-    modDestDComboBox.setBounds(sliderLeft1 - 50, top + height * 12 + groupMargin * 1, halfWidth + 25, height);
-    modSensDSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 12 + groupMargin * 1, halfWidth + 25, height);
-    aftDestAComboBox.setBounds(sliderLeft1 - 50, top + height * 13 + groupMargin * 1, halfWidth + 25, height);
-    aftSensASlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 13 + groupMargin * 1, halfWidth + 25, height);
-    aftDestBComboBox.setBounds(sliderLeft1 - 50, top + height * 14 + groupMargin * 1, halfWidth + 25, height);
-    aftSensBSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 14 + groupMargin * 1, halfWidth + 25, height);
-    aftDestCComboBox.setBounds(sliderLeft1 - 50, top + height * 15 + groupMargin * 1, halfWidth + 25, height);
-    aftSensCSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 15 + groupMargin * 1, halfWidth + 25, height);
-    aftDestDComboBox.setBounds(sliderLeft1 - 50, top + height * 16 + groupMargin * 1, halfWidth + 25, height);
-    aftSensDSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 16 + groupMargin * 1, halfWidth + 25, height);
-    expDestAComboBox.setBounds(sliderLeft1 - 50, top + height * 17 + groupMargin * 1, halfWidth + 25, height);
-    expSensASlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 17 + groupMargin * 1, halfWidth + 25, height);
-    expDestBComboBox.setBounds(sliderLeft1 - 50, top + height * 18 + groupMargin * 1, halfWidth + 25, height);
-    expSensBSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 18 + groupMargin * 1, halfWidth + 25, height);
-    expDestCComboBox.setBounds(sliderLeft1 - 50, top + height * 19 + groupMargin * 1, halfWidth + 25, height);
-    expSensCSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 19 + groupMargin * 1, halfWidth + 25, height);
-    expDestDComboBox.setBounds(sliderLeft1 - 50, top + height * 20 + groupMargin * 1, halfWidth + 25, height);
-    expSensDSlider.setBounds(sliderLeft1 + halfWidth - 25, top + height * 20 + groupMargin * 1, halfWidth + 25, height);
+    lfo1FormComboBox      .setBounds(sliderLeft1, top + height * 5 + vMargin * 4, width, height);
+    lfo1OffsetComboBox    .setBounds(sliderLeft1, top + height * 6 + vMargin * 4, width, height);
+    lfo1RateSlider        .setBounds(sliderLeft1, top + height * 7 + vMargin * 4, width, height);
+    lfo1DelaySlider       .setBounds(sliderLeft1, top + height * 8 + vMargin * 4, halfWidth, height);
+    lfo1SyncToggle        .setBounds(sliderLeft1 + halfWidth, top + height * 8 + vMargin * 4, halfWidth, height);
+    lfo1FadeTimeSlider    .setBounds(sliderLeft1, top + height * 9 + vMargin * 4, halfWidth, height);
+    lfo1FadeToggle        .setBounds(sliderLeft1 + halfWidth, top + height * 9 + vMargin * 4, halfWidth, height);
+    lfo1PitchDepthSlider  .setBounds(sliderLeft1, top + height * 10 + vMargin * 4, width, height);
+    lfo1TVFDepthSlider    .setBounds(sliderLeft1, top + height * 11 + vMargin * 4, width, height);
+    lfo1TVADepthSlider    .setBounds(sliderLeft1, top + height * 12 + vMargin * 4, width, height);
 
-    lfo1FormComboBox.setBounds(sliderLeft1, top + height * 21 + groupMargin * 2, halfWidth, height);
-    lfo1OffsetComboBox.setBounds(sliderLeft1 + halfWidth, top + height * 21 + groupMargin * 2, halfWidth, height);
-    lfo1RateSlider.setBounds(sliderLeft1, top + height * 22 + groupMargin * 2, width, height);
-    lfo1DelaySlider.setBounds(sliderLeft1, top + height * 23 + groupMargin * 2, halfWidth, height);
-    lfo1SyncToggle.setBounds(sliderLeft1 + halfWidth, top + height * 23 + groupMargin * 2, halfWidth, height);
-    lfo1FadeTimeSlider.setBounds(sliderLeft1, top + height * 24 + groupMargin * 2, halfWidth, height);
-    lfo1FadeToggle.setBounds(sliderLeft1 + halfWidth, top + height * 24 + groupMargin * 2, halfWidth, height);
-    lfo1PitchDepthSlider.setBounds(sliderLeft1, top + height * 25 + groupMargin * 2, width, height);
-    lfo1TVFDepthSlider.setBounds(sliderLeft1, top + height * 26 + groupMargin * 2, width, height);
-    lfo1TVADepthSlider.setBounds(sliderLeft1, top + height * 27 + groupMargin * 2, width, height);
+    lfo2FormComboBox      .setBounds(sliderLeft1, top + height * 13 + vMargin * 5, width, height);
+    lfo2OffsetComboBox    .setBounds(sliderLeft1, top + height * 14 + vMargin * 5, width, height);
+    lfo2RateSlider        .setBounds(sliderLeft1, top + height * 15 + vMargin * 5, width, height);
+    lfo2DelaySlider       .setBounds(sliderLeft1, top + height * 16 + vMargin * 5, halfWidth, height);
+    lfo2SyncToggle        .setBounds(sliderLeft1 + halfWidth, top + height * 16 + vMargin * 5, halfWidth, height);
+    lfo2FadeTimeSlider    .setBounds(sliderLeft1, top + height * 17 + vMargin * 5, halfWidth, height);
+    lfo2FadeToggle        .setBounds(sliderLeft1 + halfWidth, top + height * 17 + vMargin * 5, halfWidth, height);
+    lfo2PitchDepthSlider  .setBounds(sliderLeft1, top + height * 18 + vMargin * 5, width, height);
+    lfo2TVFDepthSlider    .setBounds(sliderLeft1, top + height * 19 + vMargin * 5, width, height);
+    lfo2TVADepthSlider    .setBounds(sliderLeft1, top + height * 20 + vMargin * 5, width, height);
 
-    lfo2FormComboBox.setBounds(sliderLeft1, top + height * 28 + groupMargin * 3, halfWidth, height);
-    lfo2OffsetComboBox.setBounds(sliderLeft1 + halfWidth, top + height * 28 + groupMargin * 3, halfWidth, height);
-    lfo2RateSlider.setBounds(sliderLeft1, top + height * 29 + groupMargin * 3, width, height);
-    lfo2DelaySlider.setBounds(sliderLeft1, top + height * 30 + groupMargin * 3, halfWidth, height);
-    lfo2SyncToggle.setBounds(sliderLeft1 + halfWidth, top + height * 30 + groupMargin * 3, halfWidth, height);
-    lfo2FadeTimeSlider.setBounds(sliderLeft1, top + height * 31 + groupMargin * 3, halfWidth, height);
-    lfo2FadeToggle.setBounds(sliderLeft1 + halfWidth, top + height * 31 + groupMargin * 3, halfWidth, height);
-    lfo2PitchDepthSlider.setBounds(sliderLeft1, top + height * 32 + groupMargin * 3, width, height);
-    lfo2TVFDepthSlider.setBounds(sliderLeft1, top + height * 33 + groupMargin * 3, width, height);
-    lfo2TVADepthSlider.setBounds(sliderLeft1, top + height * 34 + groupMargin * 3, width, height);
+    modDestAComboBox      .setBounds(sliderLeft1 - 50, top + height * 21 + vMargin * 6, halfWidth + 25, height);
+    modSensASlider        .setBounds(sliderLeft1 + halfWidth - 25, top + height * 21 + vMargin * 6, halfWidth + 25, height);
+    modDestBComboBox      .setBounds(sliderLeft1 - 50, top + height * 22 + vMargin * 6, halfWidth + 25, height);
+    modSensBSlider        .setBounds(sliderLeft1 + halfWidth - 25, top + height * 22 + vMargin * 6, halfWidth + 25, height);
+    modDestCComboBox      .setBounds(sliderLeft1 - 50, top + height * 23 + vMargin * 6, halfWidth + 25, height);
+    modSensCSlider        .setBounds(sliderLeft1 + halfWidth - 25, top + height * 23 + vMargin * 6, halfWidth + 25, height);
+    modDestDComboBox      .setBounds(sliderLeft1 - 50, top + height * 24 + vMargin * 6, halfWidth + 25, height);
+    modSensDSlider        .setBounds(sliderLeft1 + halfWidth - 25, top + height * 24 + vMargin * 6, halfWidth + 25, height);
 
-    pitchCoarseSlider.setBounds(sliderLeft2, top + height * 0 + groupMargin * 0, width, height);
-    pitchFineSlider.setBounds(sliderLeft2, top + height * 1 + groupMargin * 0, width, height);
-    pitchRandomComboBox.setBounds(sliderLeft2, top + height * 2 + groupMargin * 0, halfWidth, height);
-    pitchKFComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 2 + groupMargin * 0, halfWidth, height);
-    penvLevSensSlider.setBounds(sliderLeft2, top + height * 3 + groupMargin * 0, width, height);
-    penvTime1SensComboBox.setBounds(sliderLeft2, top + height * 4 + groupMargin * 0, halfWidth, height);
-    penvTime4SensComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 4 + groupMargin * 0, halfWidth, height);
-    penvTimeKFSensComboBox.setBounds(sliderLeft2, top + height * 5 + groupMargin * 0, width, height);
-    penvDepthSlider.setBounds(sliderLeft2, top + height * 6 + groupMargin * 0, width, height);
-    penv1TimeSlider.setBounds(sliderLeft2, top + height * 7 + groupMargin * 0, halfWidth, height);
-    penv1LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 7 + groupMargin * 0, halfWidth, height);
-    penv2TimeSlider.setBounds(sliderLeft2, top + height * 8 + groupMargin * 0, halfWidth, height);
-    penv2LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 8 + groupMargin * 0, halfWidth, height);
-    penv3TimeSlider.setBounds(sliderLeft2, top + height * 9 + groupMargin * 0, halfWidth, height);
-    penv3LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 9 + groupMargin * 0, halfWidth, height);
-    penv4TimeSlider.setBounds(sliderLeft2, top + height * 10 + groupMargin * 0, halfWidth, height);
-    penv4LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 10 + groupMargin * 0, halfWidth, height);
+    aftDestAComboBox      .setBounds(sliderLeft2 - 50, top + height * 21 + vMargin * 6, halfWidth + 25, height);
+    aftSensASlider        .setBounds(sliderLeft2 + halfWidth - 25, top + height * 21 + vMargin * 6, halfWidth + 25, height);
+    aftDestBComboBox      .setBounds(sliderLeft2 - 50, top + height * 22 + vMargin * 6, halfWidth + 25, height);
+    aftSensBSlider        .setBounds(sliderLeft2 + halfWidth - 25, top + height * 22 + vMargin * 6, halfWidth + 25, height);
+    aftDestCComboBox      .setBounds(sliderLeft2 - 50, top + height * 23 + vMargin * 6, halfWidth + 25, height);
+    aftSensCSlider        .setBounds(sliderLeft2 + halfWidth - 25, top + height * 23 + vMargin * 6, halfWidth + 25, height);
+    aftDestDComboBox      .setBounds(sliderLeft2 - 50, top + height * 24 + vMargin * 6, halfWidth + 25, height);
+    aftSensDSlider        .setBounds(sliderLeft2 + halfWidth - 25, top + height * 24 + vMargin * 6, halfWidth + 25, height);
 
-    filterModeComboBox.setBounds(sliderLeft2, top + height * 11 + groupMargin * 1, width, height);
-    filterCutoffSlider.setBounds(sliderLeft2, top + height * 12 + groupMargin * 1, width, height);
-    filterResoSlider.setBounds(sliderLeft2, top + height * 13 + groupMargin * 1, halfWidth, height);
-    filterResoModeComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 13 + groupMargin * 1, halfWidth, height);
-    filterKFComboBox.setBounds(sliderLeft2, top + height * 14 + groupMargin * 1, halfWidth, height);
-    fenvVelCurveComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 14 + groupMargin * 1, halfWidth, height);
-    fenvLevSensSlider.setBounds(sliderLeft2, top + height * 15 + groupMargin * 1, width, height);
-    fenvTime1SensComboBox.setBounds(sliderLeft2, top + height * 16 + groupMargin * 1, halfWidth, height);
-    fenvTime4SensComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 16 + groupMargin * 1, halfWidth, height);
-    fenvTimeKFSensComboBox.setBounds(sliderLeft2, top + height * 17 + groupMargin * 1, width, height);
-    fenvDepthSlider.setBounds(sliderLeft2, top + height * 18 + groupMargin * 1, width, height);
-    fenv1TimeSlider.setBounds(sliderLeft2, top + height * 19 + groupMargin * 1, halfWidth, height);
-    fenv1LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 19 + groupMargin * 1, halfWidth, height);
-    fenv2TimeSlider.setBounds(sliderLeft2, top + height * 20 + groupMargin * 1, halfWidth, height);
-    fenv2LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 20 + groupMargin * 1, halfWidth, height);
-    fenv3TimeSlider.setBounds(sliderLeft2, top + height * 21 + groupMargin * 1, halfWidth, height);
-    fenv3LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 21 + groupMargin * 1, halfWidth, height);
-    fenv4TimeSlider.setBounds(sliderLeft2, top + height * 22 + groupMargin * 1, halfWidth, height);
-    fenv4LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 22 + groupMargin * 1, halfWidth, height);
+    expDestAComboBox      .setBounds(sliderLeft3 - 50, top + height * 21 + vMargin * 6, halfWidth + 25, height);
+    expSensASlider        .setBounds(sliderLeft3 + halfWidth - 25, top + height * 21 + vMargin * 6, halfWidth + 25, height);
+    expDestBComboBox      .setBounds(sliderLeft3 - 50, top + height * 22 + vMargin * 6, halfWidth + 25, height);
+    expSensBSlider        .setBounds(sliderLeft3 + halfWidth - 25, top + height * 22 + vMargin * 6, halfWidth + 25, height);
+    expDestCComboBox      .setBounds(sliderLeft3 - 50, top + height * 23 + vMargin * 6, halfWidth + 25, height);
+    expSensCSlider        .setBounds(sliderLeft3 + halfWidth - 25, top + height * 23 + vMargin * 6, halfWidth + 25, height);
+    expDestDComboBox      .setBounds(sliderLeft3 - 50, top + height * 24 + vMargin * 6, halfWidth + 25, height);
+    expSensDSlider        .setBounds(sliderLeft3 + halfWidth - 25, top + height * 24 + vMargin * 6, halfWidth + 25, height);
 
-    levelSlider.setBounds(sliderLeft2, top + height * 23 + groupMargin * 2, width, height);
-    panSlider.setBounds(sliderLeft2, top + height * 24 + groupMargin * 2, width, height);
-    levelKFComboBox.setBounds(sliderLeft2, top + height * 25 + groupMargin * 2, halfWidth, height);
-    panKFComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 25 + groupMargin * 2, halfWidth, height);
-    toneDelayComboBox.setBounds(sliderLeft2, top + height * 26 + groupMargin * 2, width, height);
-    toneDelayTimeSlider.setBounds(sliderLeft2, top + height * 27 + groupMargin * 2, width, height);
-    aenvVelCurveComboBox.setBounds(sliderLeft2, top + height * 28 + groupMargin * 2, width, height);
-    aenvLevSensSlider.setBounds(sliderLeft2, top + height * 29 + groupMargin * 2, width, height);
-    aenvTime1SensComboBox.setBounds(sliderLeft2, top + height * 30 + groupMargin * 2, halfWidth, height);
-    aenvTime4SensComboBox.setBounds(sliderLeft2 + halfWidth, top + height * 30 + groupMargin * 2, halfWidth, height);
-    aenvTimeKFSensComboBox.setBounds(sliderLeft2, top + height * 31 + groupMargin * 2, width, height);
-    aenv1TimeSlider.setBounds(sliderLeft2, top + height * 32 + groupMargin * 2, halfWidth, height);
-    aenv1LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 32 + groupMargin * 2, halfWidth, height);
-    aenv2TimeSlider.setBounds(sliderLeft2, top + height * 33 + groupMargin * 2, halfWidth, height);
-    aenv2LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 33 + groupMargin * 2, halfWidth, height);
-    aenv3TimeSlider.setBounds(sliderLeft2, top + height * 34 + groupMargin * 2, halfWidth, height);
-    aenv3LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 34 + groupMargin * 2, halfWidth, height);
-    aenv4TimeSlider.setBounds(sliderLeft2, top + height * 35 + groupMargin * 2, halfWidth, height);
+    FXMSwitchToggle       .setBounds(sliderLeft2 - 90, top + height * 0 + vMargin * 0, halfWidth, height);
+    FXMDepthSlider        .setBounds(sliderLeft2 + halfWidth, top + height * 0 + vMargin * 0, halfWidth, height);
+    pitchCoarseSlider     .setBounds(sliderLeft2, top + height * 1 + vMargin * 0, width, height);
+    pitchFineSlider       .setBounds(sliderLeft2, top + height * 2 + vMargin * 0, width, height);
+    pitchRandomComboBox   .setBounds(sliderLeft2, top + height * 3 + vMargin * 0, halfWidth, height);
+    pitchKFComboBox       .setBounds(sliderLeft2 + halfWidth, top + height * 3 + vMargin * 0, halfWidth, height);
+    penvLevSensSlider     .setBounds(sliderLeft2, top + height * 4 + vMargin * 0, width, height);
+    penvTime1SensComboBox .setBounds(sliderLeft2, top + height * 5 + vMargin * 0, halfWidth, height);
+    penvTime4SensComboBox .setBounds(sliderLeft2 + halfWidth, top + height * 5 + vMargin * 0, halfWidth, height);
+    penvTimeKFSensComboBox.setBounds(sliderLeft2, top + height * 6 + vMargin * 0, width, height);
+    penvDepthSlider       .setBounds(sliderLeft2, top + height * 7 + vMargin * 0, width, height);
+    penv1TimeSlider       .setBounds(sliderLeft2, top + height * 8 + vMargin * 0, halfWidth, height);
+    penv1LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 8 + vMargin * 0, halfWidth, height);
+    penv2TimeSlider       .setBounds(sliderLeft2, top + height * 9 + vMargin * 0, halfWidth, height);
+    penv2LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 9 + vMargin * 0, halfWidth, height);
+    penv3TimeSlider       .setBounds(sliderLeft2, top + height * 10 + vMargin * 0, halfWidth, height);
+    penv3LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 10 + vMargin * 0, halfWidth, height);
+    penv4TimeSlider       .setBounds(sliderLeft2, top + height * 11 + vMargin * 0, halfWidth, height);
+    penv4LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 11 + vMargin * 0, halfWidth, height);
 
-    drySlider.setBounds(sliderLeft3, top + height * 1 + groupMargin * 0, width, height);
-    reverbSlider.setBounds(sliderLeft3, top + height * 2 + groupMargin * 0, width, height);
-    chorusSlider.setBounds(sliderLeft3, top + height * 3 + groupMargin * 0, width, height);
-    outputComboBox.setBounds(sliderLeft3, top + height * 4 + groupMargin * 0, width, height);
+    levelSlider           .setBounds(sliderLeft2, top + height * 12 + vMargin * 1, width, height);
+    panSlider             .setBounds(sliderLeft2, top + height * 13 + vMargin * 1, width, height);
+    levelKFComboBox       .setBounds(sliderLeft2, top + height * 14 + vMargin * 1, halfWidth, height);
+    panKFComboBox         .setBounds(sliderLeft2 + halfWidth, top + height * 14 + vMargin * 1, halfWidth, height);
+    toneDelayComboBox     .setBounds(sliderLeft2, top + height * 15 + vMargin * 1, width, height);
+    toneDelayTimeSlider   .setBounds(sliderLeft2, top + height * 16 + vMargin * 1, width, height);
+    aenvVelCurveComboBox  .setBounds(sliderLeft2, top + height * 17 + vMargin * 1, width, height);
+    aenvLevSensSlider     .setBounds(sliderLeft2, top + height * 18 + vMargin * 1, width, height);
+    aenvTime1SensComboBox .setBounds(sliderLeft2, top + height * 19 + vMargin * 1, halfWidth, height);
+    aenvTime4SensComboBox .setBounds(sliderLeft2 + halfWidth, top + height * 19 + vMargin * 1, halfWidth, height);
+    aenvTimeKFSensComboBox.setBounds(sliderLeft2, top + height * 20 + vMargin * 1, width, height);
+    aenv1TimeSlider       .setBounds(sliderLeft2, top + height * 21 + vMargin * 1, halfWidth, height);
+    aenv1LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 21 + vMargin * 1, halfWidth, height);
+    aenv2TimeSlider       .setBounds(sliderLeft2, top + height * 22 + vMargin * 1, halfWidth, height);
+    aenv2LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 22 + vMargin * 1, halfWidth, height);
+    aenv3TimeSlider       .setBounds(sliderLeft2, top + height * 23 + vMargin * 1, halfWidth, height);
+    aenv3LevelSlider      .setBounds(sliderLeft2 + halfWidth, top + height * 23 + vMargin * 1, halfWidth, height);
+    aenv4TimeSlider       .setBounds(sliderLeft2, top + height * 24 + vMargin * 1, halfWidth, height);
 
+    filterModeComboBox    .setBounds(sliderLeft3, top + height * 0 + vMargin * 0, width, height);
+    filterCutoffSlider    .setBounds(sliderLeft3, top + height * 1 + vMargin * 0, width, height);
+    filterResoSlider      .setBounds(sliderLeft3, top + height * 2 + vMargin * 0, halfWidth, height);
+    filterResoModeComboBox.setBounds(sliderLeft3 + halfWidth, top + height * 2 + vMargin * 0, halfWidth, height);
+    filterKFComboBox      .setBounds(sliderLeft3, top + height * 3 + vMargin * 0, halfWidth, height);
+    fenvVelCurveComboBox  .setBounds(sliderLeft3 + halfWidth, top + height * 3 + vMargin * 0, halfWidth, height);
+    fenvLevSensSlider     .setBounds(sliderLeft3, top + height * 4 + vMargin * 0, width, height);
+    fenvTime1SensComboBox .setBounds(sliderLeft3, top + height * 5 + vMargin * 0, halfWidth, height);
+    fenvTime4SensComboBox .setBounds(sliderLeft3 + halfWidth, top + height * 5 + vMargin * 0, halfWidth, height);
+    fenvTimeKFSensComboBox.setBounds(sliderLeft3, top + height * 6 + vMargin * 0, width, height);
+    fenvDepthSlider       .setBounds(sliderLeft3, top + height * 7 + vMargin * 0, width, height);
+    fenv1TimeSlider       .setBounds(sliderLeft3, top + height * 8 + vMargin * 0, halfWidth, height);
+    fenv1LevelSlider      .setBounds(sliderLeft3 + halfWidth, top + height * 8 + vMargin * 0, halfWidth, height);
+    fenv2TimeSlider       .setBounds(sliderLeft3, top + height * 9 + vMargin * 0, halfWidth, height);
+    fenv2LevelSlider      .setBounds(sliderLeft3 + halfWidth, top + height * 9 + vMargin * 0, halfWidth, height);
+    fenv3TimeSlider       .setBounds(sliderLeft3, top + height * 10 + vMargin * 0, halfWidth, height);
+    fenv3LevelSlider      .setBounds(sliderLeft3 + halfWidth, top + height * 10 + vMargin * 0, halfWidth, height);
+    fenv4TimeSlider       .setBounds(sliderLeft3, top + height * 11 + vMargin * 0, halfWidth, height);
+    fenv4LevelSlider      .setBounds(sliderLeft3 + halfWidth, top + height * 11 + vMargin * 0, halfWidth, height);
+
+    drySlider             .setBounds(sliderLeft3, top + height * 12 + vMargin * 1, width, height);
+    reverbSlider          .setBounds(sliderLeft3, top + height * 13 + vMargin * 1, width, height);
+    chorusSlider          .setBounds(sliderLeft3, top + height * 14 + vMargin * 1, width, height);
+    outputComboBox        .setBounds(sliderLeft3, top + height * 15 + vMargin * 1, width, height);
 }
 
 void EditToneTab::sliderValueChanged(juce::Slider* slider)
