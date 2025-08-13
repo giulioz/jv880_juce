@@ -404,10 +404,12 @@ void EditCommonTab::sendSysexPatchCommonChange()
           patch->name[i] = patchNameEditor.getText()[i];
       }
     if (patchNameEditor.getText().length() < 12)
-      for (int i = patchNameEditor.getText().length(); i < 12; i++)
-          {
-              patch->name[i] = 0x20;
-          }
+    {
+        for (int i = patchNameEditor.getText().length(); i < 12; i++)
+        {
+            patch->name[i] = 0x20;
+        }
+    }
     patch->recChorConfig = uint8_t(reverbTypeComboBox.getSelectedItemIndex() + (chorusTypeComboBox.getSelectedItemIndex() << 4) + (velocitySwitchToggle.getToggleState() << 7));
     patch->reverbLevel = uint8_t(reverbLevelSlider.getValue());
     patch->reverbTime = uint8_t(reverbTimeSlider.getValue());
