@@ -10,9 +10,12 @@ struct RomInfo {
   const char *checksum;
   bool needsUnscramble;
   const char *checksumUnscrambled;
+  bool loaded;
 };
 
-constexpr size_t romCount = 26;
+constexpr size_t romCount = 27;
+constexpr size_t romCountRequired = 5;
+constexpr size_t romCountChk = 26;
 extern RomInfo romInfos[romCount];
 
 int getRomIndex(const char *filename);

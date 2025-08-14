@@ -13,37 +13,32 @@
 #include <stdint.h>
 
 #pragma pack(push, 1)
-struct Tone {
-  uint8_t flags;
-  // 0-1: wave group
-  // 7: tone switch
+struct Tone
+{
+  uint8_t flags; // 0-1: wave group | 7: tone on/off
   uint8_t waveNumber;
-  uint8_t fxmConfig; // 7:enable low:depth
+  uint8_t fxmConfig; // 7: enable | 1-6: depth
   uint8_t velocityRangeLow;
   uint8_t velocityRangeUp;
-  uint8_t unk_0x05;
-  uint8_t unk_0x06;
-  uint8_t unk_0x07;
-  uint8_t unk_0x08;
-  uint8_t unk_0x09;
-  uint8_t unk_0x0A;
-  uint8_t unk_0x0B;
-  uint8_t unk_0x0C;
-  uint8_t unk_0x0D;
-  uint8_t unk_0x0E;
-  uint8_t unk_0x0F;
-  uint8_t unk_0x10;
-  uint8_t unk_0x11;
-  uint8_t unk_0x12;
-  uint8_t unk_0x13;
-  uint8_t unk_0x14;
-  uint8_t unk_0x15;
-  uint8_t unk_0x16;
-  uint8_t lfo1Flags;
-  // 0-1-2: waveform
-  // 3-4-5: offset
-  // 6: synchro
-  // 7: fade in/out
+  uint8_t matrixModDestAB;
+  uint8_t matrixModDestCB;
+  uint8_t matrixModSensA;
+  uint8_t matrixModSensB;
+  uint8_t matrixModSensC;
+  uint8_t matrixModSensD;
+  uint8_t matrixAftDestAB;
+  uint8_t matrixAftDestCD;
+  uint8_t matrixAftSensA;
+  uint8_t matrixAftSensB;
+  uint8_t matrixAftSensC;
+  uint8_t matrixAftSensD;
+  uint8_t matrixExpDestAB;
+  uint8_t matrixExpDestCD;
+  uint8_t matrixExpSensA;
+  uint8_t matrixExpSensB;
+  uint8_t matrixExpSensC;
+  uint8_t matrixExpSensD;
+  uint8_t lfo1Flags; // 0-1-2: waveform | 3-4-5: offset | 6: key sync | 7: fade in/out
   uint8_t lfo1Rate;
   uint8_t lfo1Delay;
   uint8_t lfo1Fade;
@@ -59,7 +54,7 @@ struct Tone {
   uint8_t lfo2TvaDepth;
   int8_t pitchCoarse;
   int8_t pitchFine;
-  uint8_t tvaPanningKFRandomPitch; // high:tva panning low:random pitch
+  uint8_t tvaPanningKFRandomPitch; // high: tva panning | low: random pitch
   uint8_t tvpTimeKFKeyfollow;
   uint8_t tvpVelocity;
   uint8_t tvpT1T4Velocity;
@@ -89,9 +84,9 @@ struct Tone {
   uint8_t tvfEnvLevel4;
   uint8_t tvaLevel;
   uint8_t tvaPan;
-  uint8_t unk_0x45;
-  uint8_t tvaTimeKFDelayTimeKeyfollow; // (check again) low:key follow
-  uint8_t tvaDelayModeVeloCurve;       // low:velo curve
+  uint8_t tvaDelayTime;
+  uint8_t tvaTimeKFDelayTimeKeyfollow; // (check again) low: key follow
+  uint8_t tvaDelayModeVeloCurve;       // low: velo curve
   uint8_t tvaVelocity;
   uint8_t tvaT1T4Velocity; // check again
   uint8_t tvaEnvTime1;
@@ -108,13 +103,10 @@ struct Tone {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct Patch {
+struct Patch
+{
   char name[12];
-  uint8_t recChorConfig;
-  // 0-3: rev type
-  // 4-5: chorus type
-  // 6:   ??
-  // 7:   velocity switch
+  uint8_t recChorConfig; // 0-3: rev type | 4-5: chorus type | 6: ? | 7: velocity
   uint8_t reverbLevel;
   uint8_t reverbTime;
   uint8_t reverbFeedback;
@@ -126,16 +118,9 @@ struct Patch {
   uint8_t level;
   uint8_t pan;
   uint8_t bendRange;
-  uint8_t flags;
-  // 0: ??
-  // 1: ??
-  // 2: ??
-  // 3: ??
-  // 4: portamento mode
-  // 5: solo legato
-  // 6: portamento switch
-  // 7: key assign
-  uint8_t portamentoTime; // 7: portamento type
+  uint8_t flags; // 0-3: ? | 4: porta mode | 5: solo legato | 6: porta switch | 7: key assign
+  uint8_t portamentoTime; // 7: porta type
+
   Tone tones[4];
 }; // 362 bytes
 #pragma pack(pop)

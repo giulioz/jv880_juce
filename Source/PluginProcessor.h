@@ -13,7 +13,7 @@
 #include "emulator/mcu.h"
 #include "rom.h"
 
-constexpr int NUM_EXPS = 20;
+constexpr int NUM_EXPS = romCount - 6;
 
 //==============================================================================
 /**

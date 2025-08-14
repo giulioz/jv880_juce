@@ -109,6 +109,8 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
   currentPatchI++;
 
   for (int i = 0; i < NUM_EXPS; i++) {
+    if (romInfos[i + 6].loaded == false)
+        continue;
     patchInfoPerGroup.push_back(std::vector<PatchInfo *>());
 
     expansionsDescr[i] = loadedRoms[i + 6];

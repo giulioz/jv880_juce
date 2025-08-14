@@ -15,7 +15,7 @@
 PatchBrowser::PatchBrowser(Jv880_juceAudioProcessor &p)
     : audioProcessor(p), categoriesListModel(),
       categoriesListBox("Categories", &categoriesListModel) {
-  categoriesListBox.setRowHeight(30);
+  categoriesListBox.setRowHeight(34);
   addAndMakeVisible(categoriesListBox);
 
   for (size_t i = 0; i < columns; i++) {
@@ -25,7 +25,7 @@ PatchBrowser::PatchBrowser(Jv880_juceAudioProcessor &p)
     patchesListBoxes[i] = new juce::ListBox("Patches", patchesListModels[i]);
     patchesListModels[i]->owner = patchesListBoxes[i];
 
-    patchesListBoxes[i]->setRowHeight(15);
+    patchesListBoxes[i]->setRowHeight(17);
     addAndMakeVisible(*patchesListBoxes[i]);
   }
 }

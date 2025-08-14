@@ -12,32 +12,32 @@
 //==============================================================================
 Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
     Jv880_juceAudioProcessor &p)
-    : AudioProcessorEditor(&p), audioProcessor(p), lcd(p),
-      tabs(juce::TabbedButtonBar::TabsAtTop), patchBrowser(p), editTab(p),
-      settingsTab(p) {
+    : AudioProcessorEditor(&p), audioProcessor(p),
+      lcd(p), patchBrowser(p), tabs(juce::TabbedButtonBar::TabsAtTop), editCommonTab(p),
+      editTone1Tab(p, 0), editTone2Tab(p, 1), editTone3Tab(p, 2), editTone4Tab(p, 3),
+      settingsTab(p)
+{
   addAndMakeVisible(lcd);
   addAndMakeVisible(tabs);
-  setSize(820, 1000);
 
-  tabs.addTab(
-      "Browse",
-      getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
-      &patchBrowser, false);
-  tabs.addTab(
-      "Edit",
-      getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
-      &editTab, false);
-  tabs.addTab(
-      "Settings",
-      getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
-      &settingsTab, false);
+  setSize(820, 900);
+
+  const auto bgColor = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
+
+  tabs.addTab("Browse", bgColor, &patchBrowser, false);
+  tabs.addTab("Common", bgColor, &editCommonTab, false);
+  tabs.addTab("Tone 1", bgColor, &editTone1Tab, false);
+  tabs.addTab("Tone 2", bgColor, &editTone2Tab, false);
+  tabs.addTab("Tone 3", bgColor, &editTone3Tab, false);
+  tabs.addTab("Tone 4", bgColor, &editTone4Tab, false);
+  tabs.addTab("Settings", bgColor, &settingsTab, false);
 
   if (!audioProcessor.loaded) {
     juce::AlertWindow::showAsync(
         juce::MessageBoxOptions()
             .withIconType(juce::MessageBoxIconType::WarningIcon)
             .withTitle("Error")
-            .withMessage("Cannot load ROMs. Please copy the rom files to the "
+            .withMessage("Cannot load ROMs. Please copy the ROM files to the "
                          "ROM folder and restart the plugin to continue.")
             .withButton("Open ROMs Folder")
             .withAssociatedComponent(this)
@@ -57,5 +57,5 @@ Jv880_juceAudioProcessorEditor::~Jv880_juceAudioProcessorEditor() {}
 
 void Jv880_juceAudioProcessorEditor::resized() {
   lcd.setBounds(0, 0, 820, 100);
-  tabs.setBounds(0, 100, 820, 900);
+  tabs.setBounds(0, 100, 820, 800);
 }

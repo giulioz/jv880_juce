@@ -12,6 +12,7 @@
 
 #include "../PluginProcessor.h"
 #include <JuceHeader.h>
+#include "../rom.h"
 
 static const char *groupNames[] = {
     "880 Factory",
@@ -35,6 +36,7 @@ static const char *groupNames[] = {
     "Exp 17 Country",
     "Exp 18 Latin",
     "Exp 19 House",
+    "Exp Custom"
 };
 
 const int columns = 6;
@@ -96,7 +98,7 @@ private:
     }
 
     int getNumRows() override {
-      if (!parent->audioProcessor.loaded) {
+      if (!parent->audioProcessor.loaded || !(romInfos[std::max(groupI, 1) + romCountRequired].loaded)) {
         return 0;
       }
 
