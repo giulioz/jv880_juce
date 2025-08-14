@@ -182,6 +182,7 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
 
     // total count
     totalPatchesExp += nPatches;
+    totalPatchesExp += nDrumkits;
   }
 
   loaded = true;
