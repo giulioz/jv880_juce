@@ -40,7 +40,7 @@ static const char *groupNames[] = {
 };
 
 const int columns = 6;
-const int rowPerColumn = 43;
+const int rowPerColumn = 44;
 
 //==============================================================================
 /*
