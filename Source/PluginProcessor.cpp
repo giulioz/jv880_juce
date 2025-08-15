@@ -29,8 +29,9 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
 
   int currentPatchI = 0;
 
-  // Internal User
   patchInfoPerGroup.push_back(std::vector<PatchInfo *>());
+
+  // Internal User
   for (int j = 0; j < 64; j++) {
     patchInfos[currentPatchI].name =
         (const char *)&loadedRoms[getRomIndex("jv880_rom2.bin")]
@@ -109,35 +110,41 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
   currentPatchI++;
 
   for (int i = 0; i < NUM_EXPS; i++) {
+    const int isRD500 = (i == 0);
+
     patchInfoPerGroup.push_back(std::vector<PatchInfo *>());
-      if (romInfos[i + 6].loaded == false)
-          continue;
-      else if (i == 0 && romInfos[5].loaded == false)
-          continue;
+
+    if ((isRD500 && !romInfos[romCountRequired].loaded) || !romInfos[i + romCountRequired + 1].loaded)
+      continue;
 
     expansionsDescr[i] = loadedRoms[i + 6];
 
     // get patches
-    int nPatches = expansionsDescr[i][0x67] | expansionsDescr[i][0x66] << 8;
-    if (i == 0)
-      nPatches = 192; // RD-500
+    int nPatches = isRD500 ? 192 : expansionsDescr[i][0x67] | expansionsDescr[i][0x66] << 8;
+
     for (int j = 0; j < nPatches; j++) {
       size_t patchesOffset =
           expansionsDescr[i][0x8f] | expansionsDescr[i][0x8e] << 8 |
           expansionsDescr[i][0x8d] << 16 | expansionsDescr[i][0x8c] << 24;
-      // RD-500
-      if (i == 0 && j < 64)
-        patchesOffset = 0x0ce0;
-      else if (i == 0 && j < 128)
-        patchesOffset = 0x8370;
-      else if (i == 0)
-        patchesOffset = 0x12b82;
+
+      if (isRD500)
+      {
+        if (j < 64)
+          patchesOffset = 0x0ce0;
+        else if (j < 128)
+          patchesOffset = 0x8370;
+        else
+          patchesOffset = 0x12b82;
+      }
+
       patchInfos[currentPatchI].name =
           (char *)&expansionsDescr[i][patchesOffset + j * 0x16a];
-      if (i == 0)
+
+      if (isRD500)
         patchInfos[currentPatchI].name =
             (char *)&loadedRoms[getRomIndex("rd500_patches.bin")]
                                [patchesOffset + (j % 64) * 0x16a];
+
       patchInfos[currentPatchI].nameLength = 0xc;
       patchInfos[currentPatchI].expansionI = i;
       patchInfos[currentPatchI].patchI = j;
@@ -149,29 +156,35 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
     }
 
     // get drumkits
-    int nDrumkits = expansionsDescr[i][0x69] | expansionsDescr[i][0x68] << 8;
-    if (i == 0)
-      nDrumkits = 3; // RD-500
+    int nDrumkits = isRD500 ? 3 : expansionsDescr[i][0x69] | expansionsDescr[i][0x68] << 8;
+
     for (int j = 0; j < nDrumkits; j++) {
       size_t patchesOffset =
           expansionsDescr[i][0x93] | expansionsDescr[i][0x92] << 8 |
           expansionsDescr[i][0x91] << 16 | expansionsDescr[i][0x90] << 24;
-      // RD-500
-      if (i == 0 && j < 64)
-        patchesOffset = 0x6760;
-      else if (i == 0 && j < 128)
-        patchesOffset = 0xd2a0;
-      else if (i == 0)
-        patchesOffset = 0x18602;
+
+      if (isRD500)
+      {
+        if (j < 64)
+          patchesOffset = 0x6760;
+        else if (j < 128)
+          patchesOffset = 0xd2a0;
+        else
+          patchesOffset = 0x18602;
+      }
+
       char *namePtr = (char *)calloc(32, 1);
       patchInfos[currentPatchI].name = namePtr;
       sprintf(namePtr, "Exp %d Drums %d", i, j);
+
       patchInfos[currentPatchI].ptr =
           (const char *)&expansionsDescr[i][patchesOffset + j * 0xa7c];
-      if (i == 0)
+
+      if (isRD500)
         patchInfos[currentPatchI].ptr =
             (const char *)&loadedRoms[getRomIndex("rd500_patches.bin")]
                                      [patchesOffset];
+
       patchInfos[currentPatchI].nameLength = strlen(namePtr);
       patchInfos[currentPatchI].expansionI = i;
       patchInfos[currentPatchI].patchI = j;

@@ -67,8 +67,15 @@ private:
       g.setColour(rowIsSelected ? juce::Colours::black : juce::Colours::white);
 
       if (rowNumber < NUM_EXPS + 1)
+      {
+        if (rowNumber > 0)
+        {
+          g.setOpacity(romInfos[romCountRequired + rowNumber].loaded ? 1.f : 0.25);
+        }
+
         g.drawFittedText(groupNames[rowNumber], {5, 0, width, height - 2},
                          juce::Justification::left, 1);
+      }
 
       g.setColour(juce::Colours::white.withAlpha(0.4f));
       g.drawRect(0, height - 1, width, 2);
@@ -98,7 +105,10 @@ private:
     }
 
     int getNumRows() override {
-      if (!parent->audioProcessor.loaded || (groupI <= 1 && romInfos[std::max(groupI, 0) + romCountRequired + 5].loaded == false) || (groupI > 0 && romInfos[std::max(groupI, 0) + romCountRequired + 1].loaded == false)) {
+      if (!parent->audioProcessor.loaded ||
+          (groupI > 0 && !romInfos[std::max(groupI, 0) + romCountRequired].loaded) ||
+          (groupI == 1 && !romInfos[std::max(groupI, 0) + romCountRequired - 1].loaded))
+      {
         return 0;
       }
 
