@@ -1098,12 +1098,14 @@ void EditToneTab::comboBoxChanged(juce::ComboBox* button)
 void EditToneTab::sendSysexPatchToneChange1Byte(uint8_t address, uint8_t value)
 {
     uint8_t data[5];
-    data[0] = 0x00; // address MSB
-    data[1] = 0x08; // address
+    data[0] = 0x00;              // address MSB
+    data[1] = 0x08;              // address
     data[2] = 0x28 + toneCount;  // address
-    data[3] = address & 127;  // address LSB
-    data[4] = value;                 // data
+    data[3] = address & 127;     // address LSB
+    data[4] = value;             // data
+
     uint32_t checksum = 0;
+
     for (size_t i = 0; i < 5; i++) {
         checksum += data[i];
         if (checksum >= 128) {
@@ -1117,10 +1119,13 @@ void EditToneTab::sendSysexPatchToneChange1Byte(uint8_t address, uint8_t value)
     buf[2] = 0x10; // unit number
     buf[3] = 0x46;
     buf[4] = 0x12; // command
+
     checksum = 128 - checksum;
+
     for (size_t i = 0; i < 5; i++) {
         buf[i + 5] = data[i];
     }
+
     buf[10] = checksum;
     buf[11] = 0xf7;
 
@@ -1138,7 +1143,9 @@ void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
     data[3] = address & 127;        // address LSB
     data[4] = (value & 0xf0) >> 4;  // data
     data[5] = value & 0x0f;         // data
+
     uint32_t checksum = 0;
+
     for (size_t i = 0; i < 6; i++) {
         checksum += data[i];
         if (checksum >= 128) {
@@ -1152,10 +1159,13 @@ void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
     buf[2] = 0x10; // unit number
     buf[3] = 0x46;
     buf[4] = 0x12; // command
+
     checksum = 128 - checksum;
+
     for (size_t i = 0; i < 6; i++) {
         buf[i + 5] = data[i];
     }
+
     buf[11] = checksum;
     buf[12] = 0xf7;
 

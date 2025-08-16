@@ -14,6 +14,12 @@
       <FILE id="gPg4hs" name="dataStructures.h" compile="0" resource="0"
             file="Source/dataStructures.h"/>
       <GROUP id="{C418E418-6F93-9901-9FC9-85CA2D362048}" name="ui">
+        <GROUP id="{92591F5A-818C-4026-55C3-A90AD50D111D}" name="widgets">
+          <FILE id="ucEKxl" name="Button.h" compile="0" resource="0" file="Source/ui/widgets/Button.h"/>
+          <FILE id="zXQ57H" name="Menu.h" compile="0" resource="0" file="Source/ui/widgets/Menu.h"/>
+          <FILE id="LoE4qt" name="Slider.h" compile="0" resource="0" file="Source/ui/widgets/Slider.h"/>
+          <FILE id="Ie0u9n" name="TextEdit.h" compile="0" resource="0" file="Source/ui/widgets/TextEdit.h"/>
+        </GROUP>
         <FILE id="CEIonD" name="EditCommonTab.cpp" compile="1" resource="0"
               file="Source/ui/EditCommonTab.cpp"/>
         <FILE id="nokpbG" name="EditCommonTab.h" compile="0" resource="0" file="Source/ui/EditCommonTab.h"/>
@@ -147,8 +153,8 @@
     </LINUX_MAKE>
     <VS2022 targetFolder="Builds/VisualStudio2022">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="jv880"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="jv880"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_plugin_client" path="./JUCE/modules"/>

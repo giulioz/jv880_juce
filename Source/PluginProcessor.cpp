@@ -391,9 +391,12 @@ void Jv880_juceAudioProcessor::sendSysexParamChange(uint32_t address,
   data[2] = (address >> 7) & 127;  // address
   data[3] = (address >> 0) & 127;  // address LSB
   data[4] = value;                 // data
+
   uint32_t checksum = 0;
+
   for (size_t i = 0; i < 5; i++) {
     checksum += data[i];
+
     if (checksum >= 128) {
       checksum -= 128;
     }
@@ -405,10 +408,13 @@ void Jv880_juceAudioProcessor::sendSysexParamChange(uint32_t address,
   buf[2] = 0x10; // unit number
   buf[3] = 0x46;
   buf[4] = 0x12; // command
+
   checksum = 128 - checksum;
+
   for (size_t i = 0; i < 5; i++) {
     buf[i + 5] = data[i];
   }
+
   buf[10] = checksum;
   buf[11] = 0xf7;
 
