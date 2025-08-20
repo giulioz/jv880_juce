@@ -3,13 +3,14 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <array>
+#include <string>
 
 struct RomInfo {
   size_t length;
-  const char *filename;
-  const char *checksum;
+  std::string filename;
+  std::string checksum;
   bool needsUnscramble;
-  const char *checksumUnscrambled;
+  std::string checksumUnscrambled;
   bool loaded;
 };
 
@@ -18,7 +19,7 @@ constexpr size_t romCountRequired = 5;
 constexpr size_t romCountChk = 26;
 extern RomInfo romInfos[romCount];
 
-int getRomIndex(const char *filename);
+int getRomIndex(std::string filename);
 bool loadRom(int romI, uint8_t *dst, std::array<uint8_t *, romCount> &cache);
 bool preloadAll(std::array<uint8_t *, romCount> &cache);
 

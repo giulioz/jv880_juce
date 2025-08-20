@@ -20,8 +20,7 @@ SettingsTab::SettingsTab(Jv880_juceAudioProcessor &p) : audioProcessor(p) {
   masterTuneSlider.addListener(this);
   masterTuneSlider.textFromValueFunction = [this](double value) {
     double floatValue = (value - 1) / 126;
-    return juce::String(
-        juce::String(floatValue * (452.6 - 427.4) + 427.4, 0, 2));
+    return juce::String(floatValue * (452.6 - 427.4) + 427.4, 0, false);
   };
   masterTuneSlider.valueFromTextFunction = [this](const juce::String &text) {
     double floatValue = text.getDoubleValue();
@@ -82,4 +81,4 @@ void SettingsTab::buttonClicked(juce::Button *button) {
   }
 }
 
-void SettingsTab::buttonStateChanged(juce::Button *button) {}
+void SettingsTab::buttonStateChanged(juce::Button* /* button */) {}

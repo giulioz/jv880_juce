@@ -42,7 +42,7 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
             .withButton("Open ROMs Folder")
             .withAssociatedComponent(this)
             .withParentComponent(this),
-        [](int param) {
+        [](int /* param */) {
           juce::File romsDir(juce::File::getSpecialLocation(
                                  juce::File::userApplicationDataDirectory)
                                  .getChildFile("JV880"));

@@ -83,7 +83,7 @@ enum {
     ANALOG_LEVEL_BATTERY = 0x2a0,
 };
 
-uint16_t MCU_SC155Sliders(uint32_t index)
+uint16_t MCU_SC155Sliders(uint32_t /* index*/)
 {
     // 0 - 1/9
     // 1 - 2/10
@@ -1236,7 +1236,7 @@ int MCU::startSC55(const uint8_t* s_rom1, const uint8_t* s_rom2, const uint8_t* 
 
 void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFrames, int destSampleRate) {
     double renderBufferFramesFloat = (double)nFrames / destSampleRate * 64000;
-    unsigned int renderBufferFrames = std::ceil(renderBufferFramesFloat);
+    auto renderBufferFrames = (unsigned int)std::ceil(renderBufferFramesFloat);
     double currentError = renderBufferFrames - renderBufferFramesFloat;
 
     int limit = nFrames / 2;
@@ -1267,10 +1267,10 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
             break;
         }
 
-       for (int i = 0; i < midiQueue.size(); i++) {
-           if (!midiQueue[i].processed && midiQueue[i].samplePos <= sample_write_ptr) {
-               postMidiSC55(midiQueue[i].data, midiQueue[i].length);
-               midiQueue[i].processed = true;
+       for (int j = 0; j < midiQueue.size(); j++) {
+           if (!midiQueue[j].processed && midiQueue[j].samplePos <= sample_write_ptr) {
+               postMidiSC55(midiQueue[j].data, midiQueue[j].length);
+               midiQueue[j].processed = true;
            }
        }
 

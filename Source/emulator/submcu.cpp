@@ -352,22 +352,22 @@ uint8_t SubMcu::SM_PopStack(void)
     return SM_Read(sm.s);
 }
 
-void SM_Opcode_NotImplemented(SubMcu* _this, uint8_t opcode)
+void SM_Opcode_NotImplemented(SubMcu* _this, uint8_t /* opcode */)
 {
     _this->SM_ErrorTrap();
 }
 
-void SM_Opcode_SEI(SubMcu* _this, uint8_t opcode) // 78
+void SM_Opcode_SEI(SubMcu* _this, uint8_t /* opcode */) // 78
 {
     _this->SM_SetStatus(1, SM_STATUS_I);
 }
 
-void SM_Opcode_CLD(SubMcu* _this, uint8_t opcode) // d8
+void SM_Opcode_CLD(SubMcu* _this, uint8_t /* opcode */) // d8
 {
     _this->SM_SetStatus(0, SM_STATUS_D);
 }
 
-void SM_Opcode_CLT(SubMcu* _this, uint8_t opcode) // 12
+void SM_Opcode_CLT(SubMcu* _this, uint8_t /* opcode */) // 12
 {
     _this->SM_SetStatus(0, SM_STATUS_T);
 }
@@ -422,12 +422,12 @@ void SM_Opcode_LDY(SubMcu* _this, uint8_t opcode) // a0, a4, ac, b4, bc
     _this->SM_Update_NZ(_this->sm.y);
 }
 
-void SM_Opcode_TXS(SubMcu* _this, uint8_t opcode) // 9a
+void SM_Opcode_TXS(SubMcu* _this, uint8_t /* opcode */) // 9a
 {
     _this->sm.s = _this->sm.x;
 }
 
-void SM_Opcode_TXA(SubMcu* _this, uint8_t opcode) // 8a
+void SM_Opcode_TXA(SubMcu* _this, uint8_t /* opcode */) // 8a
 {
     _this->sm.a = _this->sm.x;
     _this->SM_Update_NZ(_this->sm.a);
@@ -464,13 +464,13 @@ void SM_Opcode_STA(SubMcu* _this, uint8_t opcode) // 85, 95, 8d, 9d, 99, 81, 91
     _this->SM_Write(dest, _this->sm.a);
 }
 
-void SM_Opcode_INX(SubMcu* _this, uint8_t opcode) // e8
+void SM_Opcode_INX(SubMcu* _this, uint8_t /* opcode */) // e8
 {
     _this->sm.x++;
     _this->SM_Update_NZ(_this->sm.x);
 }
 
-void SM_Opcode_INY(SubMcu* _this, uint8_t opcode) // c8
+void SM_Opcode_INY(SubMcu* _this, uint8_t /* opcode */) // c8
 {
     _this->sm.y++;
     _this->SM_Update_NZ(_this->sm.y);
@@ -540,28 +540,28 @@ void SM_Opcode_CPY(SubMcu* _this, uint8_t opcode) // c0, c4, cc
     _this->SM_Update_NZ(diff & 0xff);
 }
 
-void SM_Opcode_BEQ(SubMcu* _this, uint8_t opcode) // f0
+void SM_Opcode_BEQ(SubMcu* _this, uint8_t /* opcode */) // f0
 {
     int8_t diff = _this->SM_ReadAdvance();
     if ((_this->sm.sr & SM_STATUS_Z) != 0)
         _this->sm.pc += diff;
 }
 
-void SM_Opcode_BCC(SubMcu* _this, uint8_t opcode) // 90
+void SM_Opcode_BCC(SubMcu* _this, uint8_t /* opcode */) // 90
 {
     int8_t diff = _this->SM_ReadAdvance();
     if ((_this->sm.sr & SM_STATUS_C) == 0)
         _this->sm.pc += diff;
 }
 
-void SM_Opcode_BCS(SubMcu* _this, uint8_t opcode) // b0
+void SM_Opcode_BCS(SubMcu* _this, uint8_t /* opcode */) // b0
 {
     int8_t diff = _this->SM_ReadAdvance();
     if ((_this->sm.sr & SM_STATUS_C) != 0)
         _this->sm.pc += diff;
 }
 
-void SM_Opcode_LDM(SubMcu* _this, uint8_t opcode) // 3c
+void SM_Opcode_LDM(SubMcu* _this, uint8_t /* opcode */) // 3c
 {
     uint8_t val = _this->SM_ReadAdvance();
     _this->SM_Write(_this->SM_ReadAdvance(), val);
@@ -610,17 +610,17 @@ void SM_Opcode_LDA(SubMcu* _this, uint8_t opcode) // a9, a5, b5, ad, bd, b9, a1,
     }
 }
 
-void SM_Opcode_CLI(SubMcu* _this, uint8_t opcode) // 58
+void SM_Opcode_CLI(SubMcu* _this, uint8_t /* opcode */) // 58
 {
     _this->SM_SetStatus(0, SM_STATUS_I);
 }
 
-void SM_Opcode_STP(SubMcu* _this, uint8_t opcode) // 42
+void SM_Opcode_STP(SubMcu* _this, uint8_t /* opcode */) // 42
 {
     _this->sm.sleep = 1;
 }
 
-void SM_Opcode_PHA(SubMcu* _this, uint8_t opcode) // 48
+void SM_Opcode_PHA(SubMcu* _this, uint8_t /* opcode */) // 48
 {
     _this->SM_PushStack(_this->sm.a);
 }
@@ -658,20 +658,20 @@ void SM_Opcode_SEB_CLB(SubMcu* _this, uint8_t opcode)
     }
 }
 
-void SM_Opcode_RTI(SubMcu* _this, uint8_t opcode) // 40
+void SM_Opcode_RTI(SubMcu* _this, uint8_t /* opcode */) // 40
 {
     _this->sm.sr = _this->SM_PopStack();
     _this->sm.pc = _this->SM_PopStack();
     _this->sm.pc |= _this->SM_PopStack() << 8;
 }
 
-void SM_Opcode_PLA(SubMcu* _this, uint8_t opcode) // 68
+void SM_Opcode_PLA(SubMcu* _this, uint8_t /* opcode */) // 68
 {
     _this->sm.a = _this->SM_PopStack();
     _this->SM_Update_NZ(_this->sm.a);
 }
 
-void SM_Opcode_BRA(SubMcu* _this, uint8_t opcode) // 80
+void SM_Opcode_BRA(SubMcu* _this, uint8_t /* opcode */) // 80
 {
     int8_t disp = _this->SM_ReadAdvance();
     _this->sm.pc += disp;
@@ -733,14 +733,14 @@ void SM_Opcode_CMP(SubMcu* _this, uint8_t opcode) // c9, c5, d5, cd, dd, d9, c1,
     _this->SM_Update_NZ(diff & 0xff);
 }
 
-void SM_Opcode_BNE(SubMcu* _this, uint8_t opcode) // d0
+void SM_Opcode_BNE(SubMcu* _this, uint8_t /* opcode */) // d0
 {
     int8_t diff = _this->SM_ReadAdvance();
     if ((_this->sm.sr & SM_STATUS_Z) == 0)
         _this->sm.pc += diff;
 }
 
-void SM_Opcode_RTS(SubMcu* _this, uint8_t opcode) // 60
+void SM_Opcode_RTS(SubMcu* _this, uint8_t /* opcode */) // 60
 {
     _this->sm.pc = _this->SM_PopStack();
     _this->sm.pc |= _this->SM_PopStack() << 8;
@@ -849,7 +849,7 @@ void SM_Opcode_DEC(SubMcu* _this, uint8_t opcode) // 1a, c6, d6, ce, de
     _this->SM_Update_NZ(val);
 }
 
-void SM_Opcode_TAX(SubMcu* _this, uint8_t opcode) // aa
+void SM_Opcode_TAX(SubMcu* _this, uint8_t /* opcode */) // aa
 {
     _this->sm.x = _this->sm.a;
     _this->SM_Update_NZ(_this->sm.x);
@@ -893,23 +893,23 @@ void SM_Opcode_STY(SubMcu* _this, uint8_t opcode) // 84 8c 94
     _this->SM_Write(dest, _this->sm.y);
 }
 
-void SM_Opcode_SEC(SubMcu* _this, uint8_t opcode) // 38
+void SM_Opcode_SEC(SubMcu* _this, uint8_t /* opcode */) // 38
 {
     _this->SM_SetStatus(1, SM_STATUS_C);
 }
 
-void SM_Opcode_NOP(SubMcu* _this, uint8_t opcode) // EA
+void SM_Opcode_NOP(SubMcu* /* _this */, uint8_t /* opcode */) // EA
 {
 }
 
-void SM_Opcode_BPL(SubMcu* _this, uint8_t opcode) // 10
+void SM_Opcode_BPL(SubMcu* _this, uint8_t /* opcode */) // 10
 {
     int8_t diff = _this->SM_ReadAdvance();
     if ((_this->sm.sr & SM_STATUS_N) == 0)
         _this->sm.pc += diff;
 }
 
-void SM_Opcode_CLC(SubMcu* _this, uint8_t opcode) // 18
+void SM_Opcode_CLC(SubMcu* _this, uint8_t /* opcode */) // 18
 {
     _this->SM_SetStatus(0, SM_STATUS_C);
 }

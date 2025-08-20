@@ -6,6 +6,10 @@
               pluginFormats="buildAU,buildAUv3,buildStandalone,buildVST3" pluginName="VirtualJV"
               pluginDesc="VirtualJV" companyName="Giulio Zausa">
   <MAINGROUP id="U4zWTk" name="virtual_jv">
+    <GROUP id="{BA05F489-649E-6AE4-7F62-10742B1AC120}" name="Assets">
+      <FILE id="DiWlj3" name="VirtualJV Logo.svg" compile="0" resource="1"
+            file="Assets/VirtualJV Logo.svg"/>
+    </GROUP>
     <GROUP id="{A9A4FE8C-A726-5731-A9C6-45A227C17A55}" name="Source">
       <FILE id="V15HPu" name="rom.cpp" compile="1" resource="0" file="Source/rom.cpp"/>
       <FILE id="eHTNCR" name="sha1.cpp" compile="1" resource="0" file="Source/sha1.cpp"/>
@@ -88,7 +92,7 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" bigIcon="DiWlj3" smallIcon="DiWlj3">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="jv880"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="jv880"/>
@@ -109,7 +113,7 @@
         <MODULEPATH id="juce_animation" path="./JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <XCODE_IPHONE targetFolder="Builds/iOS">
+    <XCODE_IPHONE targetFolder="Builds/iOS" bigIcon="DiWlj3" smallIcon="DiWlj3">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="jv880"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="jv880"/>
@@ -130,7 +134,7 @@
         <MODULEPATH id="juce_gui_extra" path="./JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" smallIcon="DiWlj3" bigIcon="DiWlj3">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="jv880"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="jv880"/>
@@ -151,7 +155,7 @@
         <MODULEPATH id="juce_gui_extra" path="./JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <VS2022 targetFolder="Builds/VisualStudio2022">
+    <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="DiWlj3" bigIcon="DiWlj3">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"/>

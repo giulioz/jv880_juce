@@ -101,7 +101,7 @@ struct SubMcu {
     void SM_StartVector(uint32_t vector);
     void SM_HandleInterrupt(void);
     void SM_UpdateTimer(void);
-    void SM_PostUART(uint8_t data);
+    //void SM_PostUART(uint8_t data);
     void SM_UpdateUART(void);
     void SM_Update(uint64_t cycles);
 };

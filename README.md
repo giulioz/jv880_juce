@@ -4,7 +4,7 @@ JV-880 emulator, as VST/AU plugin. Based on [NukeYKT's SC55](https://github.com/
 
 You'll need ROMs to use this software. During the first run you will be able to open the destination ROM folder. Copy your ROMs there, restart the plugin, and wait for a minute for the first load to happen. Have fun!
 
-![Screenshot](./screenshoot.png)
+![GUI Screenshot](./Assets/Readme/gui-browse.png)
 
 ## Plugin downloads
 

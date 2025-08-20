@@ -895,14 +895,14 @@ void Pcm::PCM_Update(uint64_t cycles)
                     int b15 = (pcm.ram2[31][8] & 0x8000) != 0; // 0
                     int b6 = (pcm.ram2[31][7] & 0x40) != 0; // 1
                     int b7 = (pcm.ram2[31][7] & 0x80) != 0; // 1
-                    int old_nibble = (pcm.ram2[31][7] >> 12) & 15; // 1
+                    //int old_nibble = (pcm.ram2[31][7] >> 12) & 15; // 1 // TODO?
 
                     int address = pcm.ram1[31][4]; // 0
                     int address_end = pcm.ram1[31][0]; // 1 or 2
                     int address_loop = pcm.ram1[31][2]; // 2 or 1
 
                     int sub_phase = (pcm.ram2[31][8] & 0x3fff); // 1
-                    int interp_ratio = (sub_phase >> 7) & 127;
+                    //int interp_ratio = (sub_phase >> 7) & 127; // TODO?
                     sub_phase += pcm.ram2[pcm.ram2[31][7] & 31][0]; // 5
                     int sub_phase_of = (sub_phase >> 14) & 7;
                     if (pcm.nfs)

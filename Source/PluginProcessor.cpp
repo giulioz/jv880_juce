@@ -281,12 +281,12 @@ const juce::String Jv880_juceAudioProcessor::getProgramName(int index) {
   return juce::String(strPtr, length);
 }
 
-void Jv880_juceAudioProcessor::changeProgramName(int index,
-                                                 const juce::String &newName) {}
+void Jv880_juceAudioProcessor::changeProgramName(int /* index */,
+                                                 const juce::String& /* newName */) { }
 
 //==============================================================================
-void Jv880_juceAudioProcessor::prepareToPlay(double sampleRate,
-                                             int samplesPerBlock) {
+void Jv880_juceAudioProcessor::prepareToPlay(double /* sampleRate */,
+                                             int /* samplesPerBlock */) {
   // Use this method as the place to do any pre-playback
   // initialisation that you need..
 }
@@ -314,7 +314,7 @@ void Jv880_juceAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
       message.setChannel(10);
     else
       message.setChannel(1);
-    int samplePos = (double)metadata.samplePosition / getSampleRate() * 64000;
+    int samplePos = int(((double)metadata.samplePosition / getSampleRate()) * 64000.0);
     mcu->enqueueMidiSC55(message.getRawData(), message.getRawDataSize(),
                          samplePos);
   }
@@ -334,7 +334,7 @@ void Jv880_juceAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   float *channelDataL = buffer.getWritePointer(0);
   float *channelDataR = buffer.getWritePointer(1);
   mcu->updateSC55WithSampleRate(channelDataL, channelDataR,
-                                buffer.getNumSamples(), getSampleRate());
+                                buffer.getNumSamples(), (int)getSampleRate());
 
   mcuLock.exit();
 }
@@ -360,7 +360,7 @@ void Jv880_juceAudioProcessor::getStateInformation(
 }
 
 void Jv880_juceAudioProcessor::setStateInformation(const void *data,
-                                                   int sizeInBytes) {
+                                                   int /* sizeInBytes */) {
   memcpy(&status, data, sizeof(DataToSave));
 
   mcuLock.enter();

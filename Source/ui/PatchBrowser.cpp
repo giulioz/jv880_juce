@@ -18,7 +18,7 @@ PatchBrowser::PatchBrowser(Jv880_juceAudioProcessor &p)
   categoriesListBox.setRowHeight(34);
   addAndMakeVisible(categoriesListBox);
 
-  for (size_t i = 0; i < columns; i++) {
+  for (int i = 0; i < columns; i++) {
     patchesListModels[i] =
         new PatchesListModel(rowPerColumn * i, rowPerColumn * (i + 1), this,
                              &categoriesListBox, &categoriesListModel);
@@ -31,7 +31,7 @@ PatchBrowser::PatchBrowser(Jv880_juceAudioProcessor &p)
 }
 
 PatchBrowser::~PatchBrowser() {
-  for (size_t i = 0; i < columns; i++) {
+  for (int i = 0; i < columns; i++) {
     delete patchesListModels[i];
     delete patchesListBoxes[i];
   }
@@ -39,7 +39,7 @@ PatchBrowser::~PatchBrowser() {
 
 void PatchBrowser::resized() {
   categoriesListBox.setBounds(0, 0, 180, getHeight());
-  for (size_t i = 0; i < columns; i++) {
+  for (int i = 0; i < columns; i++) {
     patchesListBoxes[i]->setBounds(180 + (getWidth() - 180) / columns * i, 0,
                                    (getWidth() - 180) / columns, getHeight());
   }

@@ -255,52 +255,52 @@ void EditCommonTab::sliderValueChanged(juce::Slider* slider)
     switch (id)
     {
     case ReverbLevel:
-        sendSysexPatchCommonParamChange(0x0e, reverbLevelSlider.getValue());
+        sendSysexPatchCommonParamChange(0x0e, uint8_t(reverbLevelSlider.getValue()));
         patch->reverbLevel = uint8_t(reverbLevelSlider.getValue());
         break;
     case ReverbTime:
-        sendSysexPatchCommonParamChange(0x0f, reverbTimeSlider.getValue());
+        sendSysexPatchCommonParamChange(0x0f, uint8_t(reverbTimeSlider.getValue()));
         patch->reverbTime = uint8_t(reverbTimeSlider.getValue());
         break;
     case DelayFeedback:
-        sendSysexPatchCommonParamChange(0x10, delayFeedbackSlider.getValue());
+        sendSysexPatchCommonParamChange(0x10, uint8_t(delayFeedbackSlider.getValue()));
         patch->reverbFeedback = uint8_t(delayFeedbackSlider.getValue());
         break;
     case ChorusLevel:
-        sendSysexPatchCommonParamChange(0x12, chorusLevelSlider.getValue());
+        sendSysexPatchCommonParamChange(0x12, uint8_t(chorusLevelSlider.getValue()));
         patch->chorusLevel = uint8_t(chorusLevelSlider.getValue()
                                      + (chorusOutputComboBox.getSelectedItemIndex() << 7));
         break;
     case ChorusDepth:
-        sendSysexPatchCommonParamChange(0x13, chorusDepthSlider.getValue());
+        sendSysexPatchCommonParamChange(0x13, uint8_t(chorusDepthSlider.getValue()));
         patch->chorusDepth = uint8_t(chorusDepthSlider.getValue());
         break;
     case ChorusRate:
-        sendSysexPatchCommonParamChange(0x14, chorusRateSlider.getValue());
+        sendSysexPatchCommonParamChange(0x14, uint8_t(chorusRateSlider.getValue()));
         patch->chorusRate = uint8_t(chorusRateSlider.getValue());
         break;
     case ChorusFeedback:
-        sendSysexPatchCommonParamChange(0x15, chorusFeedbackSlider.getValue());
+        sendSysexPatchCommonParamChange(0x15, uint8_t(chorusFeedbackSlider.getValue()));
         patch->chorusFeedback = uint8_t(chorusFeedbackSlider.getValue());
         break;
     case AnalogFeel:
-        sendSysexPatchCommonParamChange(0x17, analogFeelSlider.getValue());
+        sendSysexPatchCommonParamChange(0x17, uint8_t(analogFeelSlider.getValue()));
         patch->analogFeel = uint8_t(analogFeelSlider.getValue());
         break;
     case Level:
-        sendSysexPatchCommonParamChange(0x18, levelSlider.getValue());
+        sendSysexPatchCommonParamChange(0x18, uint8_t(levelSlider.getValue()));
         patch->level = uint8_t(levelSlider.getValue());
         break;
     case Pan:
-        sendSysexPatchCommonParamChange(0x19, panSlider.getValue());
+        sendSysexPatchCommonParamChange(0x19, uint8_t(panSlider.getValue()));
         patch->pan = uint8_t(panSlider.getValue());
         break;
     case BendRangeDown:
-        sendSysexPatchCommonParamChange(0x1a, bendRangeDownSlider.getValue());
+        sendSysexPatchCommonParamChange(0x1a, uint8_t(bendRangeDownSlider.getValue()));
         patch->bendRange = uint8_t(bendRangeDownSlider.getValue() + 64);
         break;
     case BendRangeUp:
-        sendSysexPatchCommonParamChange(0x1b, bendRangeUpSlider.getValue());
+        sendSysexPatchCommonParamChange(0x1b, uint8_t(bendRangeUpSlider.getValue()));
         patch->flags = uint8_t(bendRangeUpSlider.getValue()
                                + (portamentoModeComboBox.getSelectedItemIndex() << 4)
                                + (soloLegatoToggle.getToggleState() << 5)
@@ -308,7 +308,7 @@ void EditCommonTab::sliderValueChanged(juce::Slider* slider)
                                + (keyAssignComboBox.getSelectedItemIndex() << 7));
         break;
     case PortamentoTime:
-        sendSysexPatchCommonParamChange(0x21, portamentoTimeSlider.getValue());
+        sendSysexPatchCommonParamChange(0x21, uint8_t(portamentoTimeSlider.getValue()));
         patch->portamentoTime = uint8_t(portamentoTimeSlider.getValue()
                                         + (portamentoTypeComboBox.getSelectedItemIndex() << 7));
         break;
@@ -331,13 +331,13 @@ void EditCommonTab::buttonClicked(juce::Button* button)
     switch (id)
     {
     case VelocitySwitch:
-        sendSysexPatchCommonParamChange(0x0c, velocitySwitchToggle.getToggleStateValue() == 1);
+        sendSysexPatchCommonParamChange(0x0c, uint8_t(velocitySwitchToggle.getToggleStateValue() == 1));
         patch->recChorConfig = uint8_t(reverbTypeComboBox.getSelectedItemIndex()
                                        + (chorusTypeComboBox.getSelectedItemIndex() << 4)
                                        + (velocitySwitchToggle.getToggleState() << 7));
         break;
     case SoloLegato:
-        sendSysexPatchCommonParamChange(0x1d, soloLegatoToggle.getToggleStateValue() == 1);
+        sendSysexPatchCommonParamChange(0x1d, uint8_t(soloLegatoToggle.getToggleStateValue() == 1));
         patch->flags = uint8_t(bendRangeUpSlider.getValue()
                                + (portamentoModeComboBox.getSelectedItemIndex() << 4)
                                + (soloLegatoToggle.getToggleState() << 5)
@@ -345,7 +345,7 @@ void EditCommonTab::buttonClicked(juce::Button* button)
                                + (keyAssignComboBox.getSelectedItemIndex() << 7));
         break;
     case Portamento:
-        sendSysexPatchCommonParamChange(0x1e, portamentoToggle.getToggleStateValue() == 1);
+        sendSysexPatchCommonParamChange(0x1e, uint8_t(portamentoToggle.getToggleStateValue() == 1));
         patch->flags = uint8_t(bendRangeUpSlider.getValue()
                                + (portamentoModeComboBox.getSelectedItemIndex() << 4)
                                + (soloLegatoToggle.getToggleState() << 5)
@@ -371,24 +371,24 @@ void EditCommonTab::comboBoxChanged(juce::ComboBox* comboBox)
     switch (id)
     {
     case ReverbType:
-        sendSysexPatchCommonParamChange(0x0d, reverbTypeComboBox.getSelectedItemIndex());
+        sendSysexPatchCommonParamChange(0x0d, uint8_t(reverbTypeComboBox.getSelectedItemIndex()));
         patch->recChorConfig = uint8_t(reverbTypeComboBox.getSelectedItemIndex()
                                        + (chorusTypeComboBox.getSelectedItemIndex() << 4)
                                        + (velocitySwitchToggle.getToggleState() << 7));
         break;
     case ChorusType:
-        sendSysexPatchCommonParamChange(0x11, chorusTypeComboBox.getSelectedItemIndex());
+        sendSysexPatchCommonParamChange(0x11, uint8_t(chorusTypeComboBox.getSelectedItemIndex()));
         patch->recChorConfig = uint8_t(reverbTypeComboBox.getSelectedItemIndex()
                                        + (chorusTypeComboBox.getSelectedItemIndex() << 4)
                                        + (velocitySwitchToggle.getToggleState() << 7));
         break;
     case ChorusOutput:
-        sendSysexPatchCommonParamChange(0x16, chorusOutputComboBox.getSelectedItemIndex());
+        sendSysexPatchCommonParamChange(0x16, uint8_t(chorusOutputComboBox.getSelectedItemIndex()));
         patch->chorusLevel = uint8_t(chorusLevelSlider.getValue()
                                      + (chorusOutputComboBox.getSelectedItemIndex() << 7));
         break;
     case KeyAssign:
-        sendSysexPatchCommonParamChange(0x1c, keyAssignComboBox.getSelectedItemIndex());
+        sendSysexPatchCommonParamChange(0x1c, uint8_t(keyAssignComboBox.getSelectedItemIndex()));
         patch->flags = uint8_t(bendRangeUpSlider.getValue()
                                + (portamentoModeComboBox.getSelectedItemIndex() << 4)
                                + (soloLegatoToggle.getToggleState() << 5)
@@ -396,7 +396,7 @@ void EditCommonTab::comboBoxChanged(juce::ComboBox* comboBox)
                                + (keyAssignComboBox.getSelectedItemIndex() << 7));
         break;
     case PortamentoMode:
-        sendSysexPatchCommonParamChange(0x1f, portamentoModeComboBox.getSelectedItemIndex());
+        sendSysexPatchCommonParamChange(0x1f, uint8_t(portamentoModeComboBox.getSelectedItemIndex()));
         patch->flags = uint8_t(bendRangeUpSlider.getValue()
                                + (portamentoModeComboBox.getSelectedItemIndex() << 4)
                                + (soloLegatoToggle.getToggleState() << 5)
@@ -404,7 +404,7 @@ void EditCommonTab::comboBoxChanged(juce::ComboBox* comboBox)
                                + (keyAssignComboBox.getSelectedItemIndex() << 7));
         break;
     case PortamentoType:
-        sendSysexPatchCommonParamChange(0x20, portamentoTypeComboBox.getSelectedItemIndex());
+        sendSysexPatchCommonParamChange(0x20, uint8_t(portamentoTypeComboBox.getSelectedItemIndex()));
         patch->portamentoTime = uint8_t(portamentoTimeSlider.getValue()
                                         + (portamentoTypeComboBox.getSelectedItemIndex() << 7));
         break;
@@ -462,7 +462,7 @@ void EditCommonTab::sendSysexPatchNameChange()
 
     checksum = 128 - checksum;
 
-    buf[22] = checksum;
+    buf[22] = (uint8_t)checksum;
     buf[23] = 0xf7;
 
     audioProcessor.mcuLock.enter();
@@ -497,7 +497,7 @@ void EditCommonTab::sendSysexPatchCommonParamChange(const uint8_t address, const
 
     checksum = 128 - checksum;
 
-    buf[10] = checksum;
+    buf[10] = (uint8_t)checksum;
     buf[11] = 0xf7;
 
     audioProcessor.mcuLock.enter();

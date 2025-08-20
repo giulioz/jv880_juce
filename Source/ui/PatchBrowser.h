@@ -70,7 +70,7 @@ private:
       {
         if (rowNumber > 0)
         {
-          g.setOpacity(romInfos[romCountRequired + rowNumber].loaded ? 1.f : 0.25);
+          g.setOpacity(romInfos[romCountRequired + rowNumber].loaded ? 1.f : 0.25f);
         }
 
         g.drawFittedText(groupNames[rowNumber], {5, 0, width, height - 2},
@@ -82,7 +82,7 @@ private:
       g.drawRect(width - 2, 0, width, height);
     }
 
-    void selectedRowsChanged(int lastRowSelected) override {
+    void selectedRowsChanged(int /* lastRowSelected */) override {
       sendChangeMessage();
     }
   };
@@ -132,9 +132,7 @@ private:
       int length =
           parent->audioProcessor.patchInfoPerGroup[groupI][rowNumber + startI]
               ->nameLength;
-      const char *strPtr = (const char *)parent->audioProcessor
-                               .patchInfoPerGroup[groupI][rowNumber + startI]
-                               ->name;
+      auto strPtr = (const char *)parent->audioProcessor.patchInfoPerGroup[groupI][rowNumber + startI]->name;
       juce::String str = juce::String(strPtr, length);
       g.drawFittedText(str, {5, 0, width, height - 2},
                        juce::Justification::left, 1);
