@@ -1,7 +1,7 @@
 ROOT=$(cd "$(dirname "$0")/.."; pwd)
 
 # Resave jucer files
-"$ROOT/build/bin/JUCE/Projucer.exe" --resave "$ROOT/jv880.jucer"
+"$ROOT/build/bin/JUCE/Projucer.exe" --resave "$ROOT/VirtualJV.jucer"
 
 VS_WHERE="C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
   
