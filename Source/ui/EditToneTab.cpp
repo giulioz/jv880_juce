@@ -835,7 +835,7 @@ void EditToneTab::updateWaveformComboBox(juce::ComboBox &wfMenu)
             wfMenu.getRootMenu()->addColumnBreak();
         }
 
-        wfMenu.addItem(std::format("{:d}: {:s}", i + 1, names[i]), i + 1);
+        wfMenu.addItem(std::string{std::to_string(i + 1) + ": " + names[i]}, i + 1);
     }
 
     if (priorSelection > -1)
