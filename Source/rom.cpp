@@ -99,6 +99,9 @@ bool loadRom(int romI, uint8_t *dst, std::array<uint8_t *, romCount> &cache) {
   }
 
   juce::FileInputStream inputStream(*finalFileToRead);
+  if (inputStream.failedToOpen()) {
+    return false;
+  }
   uint8_t *data = (uint8_t *)malloc(romInfo->length);
   int readt = inputStream.read(data, romInfo->length);
 

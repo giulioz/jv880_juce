@@ -52,9 +52,6 @@ public:
 
   void resized() override;
 
-  juce::ListBox categoriesListBox;
-
-private:
   Jv880_juceAudioProcessor &audioProcessor;
 
   class CategoriesListModel : public juce::ListBoxModel,
@@ -90,6 +87,7 @@ private:
   };
 
   CategoriesListModel categoriesListModel;
+  juce::ListBox categoriesListBox;
 
   class PatchesListModel : public juce::ListBoxModel,
                            public juce::ChangeListener {
