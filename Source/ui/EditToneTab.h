@@ -23,7 +23,7 @@ class EditToneTab : public juce::Component,
                     public juce::ComboBox::Listener
 {
 public:
-    EditToneTab(Jv880_juceAudioProcessor &, uint8_t toneIn);
+    EditToneTab(Jv880_juceAudioProcessor &, Jv880_juceAudioProcessorEditor *, uint8_t toneIn);
     ~EditToneTab() override;
 
     void updateValues();

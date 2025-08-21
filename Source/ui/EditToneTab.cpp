@@ -15,8 +15,9 @@
 #include "../dataStructures.h"
 
 //==============================================================================
-EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p,
-                         uint8_t toneIn) : audioProcessor(p), toneCount(toneIn)
+EditToneTab::EditToneTab
+    ( Jv880_juceAudioProcessor &p, Jv880_juceAudioProcessorEditor *e, uint8_t toneIn) 
+    : audioProcessor(p), editor(e), toneCount(toneIn)
 {
     addAndMakeVisible(waveGroupLabel);
     waveGroupLabel.setText("Wave Group", juce::dontSendNotification);
@@ -821,6 +822,9 @@ void EditToneTab::updateWaveformComboBox(juce::ComboBox &wfMenu)
 
     wfMenu.clear(juce::dontSendNotification);
 
+    if (!editor)
+        return;
+
     const auto romIdx = waveGroupComboBox.getSelectedItemIndex() == 0 ? 2U : editor->getSelectedRomIdx();
     auto names = audioProcessor.readMultisampleNames(romIdx);
 
@@ -831,7 +835,7 @@ void EditToneTab::updateWaveformComboBox(juce::ComboBox &wfMenu)
             wfMenu.getRootMenu()->addColumnBreak();
         }
 
-        wfMenu.addItem(std::format("{:03d}: {:s}", i, names[i]), i + 1);
+        wfMenu.addItem(std::format("{:d}: {:s}", i + 1, names[i]), i + 1);
     }
 
     if (priorSelection > -1)

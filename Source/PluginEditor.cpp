@@ -15,8 +15,8 @@
 Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
     Jv880_juceAudioProcessor &p)
     : AudioProcessorEditor(&p), audioProcessor(p),
-      lcd(p), patchBrowser(p), tabs(juce::TabbedButtonBar::TabsAtTop), editCommonTab(p),
-      editTone1Tab(p, 0U), editTone2Tab(p, 1U), editTone3Tab(p, 2U), editTone4Tab(p, 3U),
+      lcd(p), tabs(juce::TabbedButtonBar::TabsAtTop), patchBrowser(p), editCommonTab(p),
+      editTone1Tab(p, this, 0U), editTone2Tab(p, this, 1U), editTone3Tab(p, this, 2U), editTone4Tab(p, this, 3U),
       settingsTab(p)
 {
   addAndMakeVisible(lcd);
