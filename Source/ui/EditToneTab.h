@@ -13,6 +13,8 @@
 #include "../PluginProcessor.h"
 #include <JuceHeader.h>
 
+class Jv880_juceAudioProcessorEditor;
+
 //==============================================================================
 
 class EditToneTab : public juce::Component,
@@ -37,15 +39,16 @@ public:
     void sendSysexPatchToneChange();
 
 private:
-    void addMenuEntriesFromArray(juce::ComboBox &menu,
-    const std::vector<std::string> &array);
+    void addMenuEntriesFromArray(juce::ComboBox &menu, const std::vector<std::string> &array);
+    void updateWaveformComboBox(juce::ComboBox &wfMenu);
 
     Jv880_juceAudioProcessor &audioProcessor;
+    Jv880_juceAudioProcessorEditor *editor;
     uint8_t toneCount;
 
     juce::ComboBox waveGroupComboBox;
     juce::Label waveGroupLabel;
-    juce::Slider waveformSlider;
+    juce::ComboBox waveformComboBox;
     juce::Label waveformLabel;
     juce::ToggleButton toneSwitchToggle;
     juce::Label toneSwitchLabel;

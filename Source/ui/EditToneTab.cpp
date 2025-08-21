@@ -9,11 +9,14 @@
 */
 
 #include <JuceHeader.h>
+#include <algorithm>
 #include "EditToneTab.h"
+#include "../PluginEditor.h"
 #include "../dataStructures.h"
 
 //==============================================================================
-EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioProcessor(p), toneCount(toneIn)
+EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p,
+                         uint8_t toneIn) : audioProcessor(p), toneCount(toneIn)
 {
     addAndMakeVisible(waveGroupLabel);
     waveGroupLabel.setText("Wave Group", juce::dontSendNotification);
@@ -23,14 +26,17 @@ EditToneTab::EditToneTab(Jv880_juceAudioProcessor& p, uint8_t toneIn) : audioPro
     waveGroupComboBox.addListener(this);
     waveGroupComboBox.addItem("Internal", 1);
     waveGroupComboBox.addItem("Expansion", 2);
+    waveGroupComboBox.setSelectedItemIndex(0);
 
-    addAndMakeVisible(waveformSlider);
-    waveformSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    waveformSlider.setRange(1, 255, 1);
-    waveformSlider.addListener(this);
+    addAndMakeVisible(waveformComboBox);
+    waveformComboBox.setScrollWheelEnabled(true);
+    waveformComboBox.addListener(this);
+
+    //updateWaveformComboBox(waveformComboBox);
+
     addAndMakeVisible(waveformLabel);
     waveformLabel.setText("Waveform", juce::dontSendNotification);
-    waveformLabel.attachToComponent(&waveformSlider, true);
+    waveformLabel.attachToComponent(&waveformComboBox, true);
 
     addAndMakeVisible(toneSwitchToggle);
     toneSwitchToggle.addListener(this);
@@ -809,47 +815,76 @@ void EditToneTab::addMenuEntriesFromArray(juce::ComboBox &m, const std::vector<s
     }
 }
 
+void EditToneTab::updateWaveformComboBox(juce::ComboBox &wfMenu)
+{
+    const int priorSelection = wfMenu.getSelectedItemIndex();
+
+    wfMenu.clear(juce::dontSendNotification);
+
+    const auto romIdx = waveGroupComboBox.getSelectedItemIndex() == 0 ? 2U : editor->getSelectedRomIdx();
+    auto names = audioProcessor.readMultisampleNames(romIdx);
+
+    for (int i = 0; i < names.size(); i++)
+    {
+        if (i % 32 == 0 && i > 0)
+        {
+            wfMenu.getRootMenu()->addColumnBreak();
+        }
+
+        wfMenu.addItem(std::format("{:03d}: {:s}", i, names[i]), i + 1);
+    }
+
+    if (priorSelection > -1)
+    {
+        const int newSelection = std::clamp(priorSelection, 0, wfMenu.getNumItems() - 1);
+
+        wfMenu.setSelectedItemIndex(newSelection);
+    }
+}
+
 void EditToneTab::updateValues()
 {
     Patch* patch = (Patch*)audioProcessor.status.patch;
     Tone tone = patch->tones[toneCount];
-    waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3) + 0, juce::dontSendNotification);
-    waveformSlider.setValue((tone.waveNumber & 0xff) + 1, juce::dontSendNotification);
+    waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3), juce::dontSendNotification);
+    waveformComboBox.setSelectedItemIndex((tone.waveNumber & 0xff) + 1, juce::dontSendNotification);
     toneSwitchToggle.setToggleState(((tone.flags >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     FXMSwitchToggle.setToggleState(((tone.fxmConfig >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     FXMDepthSlider.setValue(((tone.fxmConfig) & 0x0f) + 1, juce::dontSendNotification);
-    velRangeLowSlider.setValue(((tone.velocityRangeLow) & 0x7f) + 0, juce::dontSendNotification);
-    velRangeHighSlider.setValue(((tone.velocityRangeUp) & 0x7f) + 0, juce::dontSendNotification);
+    velRangeLowSlider.setValue(((tone.velocityRangeLow) & 0x7f), juce::dontSendNotification);
+    velRangeHighSlider.setValue(((tone.velocityRangeUp) & 0x7f), juce::dontSendNotification);
+
+    updateWaveformComboBox(waveformComboBox);
 
     volumeSwitchToggle.setToggleState(((tone.tvaDelayModeVeloCurve >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     holdSwitchToggle.setToggleState(((tone.tvaDelayModeVeloCurve >> 6) & 0x01) ? 1 : 0, juce::dontSendNotification);
 
-    modDestAComboBox.setSelectedItemIndex((tone.matrixModDestAB & 0xf) + 0, juce::dontSendNotification);
-    modDestBComboBox.setSelectedItemIndex(((tone.matrixModDestAB & 0xf0) >> 4) + 0, juce::dontSendNotification);
-    modDestCComboBox.setSelectedItemIndex((tone.matrixModDestCB & 0xf) + 0, juce::dontSendNotification);
-    modDestDComboBox.setSelectedItemIndex(((tone.matrixModDestCB & 0xf0) >> 4) + 0, juce::dontSendNotification);
+    modDestAComboBox.setSelectedItemIndex((tone.matrixModDestAB & 0xf), juce::dontSendNotification);
+    modDestBComboBox.setSelectedItemIndex(((tone.matrixModDestAB & 0xf0) >> 4), juce::dontSendNotification);
+    modDestCComboBox.setSelectedItemIndex((tone.matrixModDestCB & 0xf), juce::dontSendNotification);
+    modDestDComboBox.setSelectedItemIndex(((tone.matrixModDestCB & 0xf0) >> 4), juce::dontSendNotification);
     modSensASlider.setValue(int8_t((tone.matrixModSensA)), juce::dontSendNotification);
     modSensBSlider.setValue(int8_t((tone.matrixModSensB)), juce::dontSendNotification);
     modSensCSlider.setValue(int8_t((tone.matrixModSensC)), juce::dontSendNotification);
     modSensDSlider.setValue(int8_t((tone.matrixModSensD)), juce::dontSendNotification);
-    aftDestAComboBox.setSelectedItemIndex((tone.matrixAftDestAB & 0xf) + 0, juce::dontSendNotification);
-    aftDestBComboBox.setSelectedItemIndex(((tone.matrixAftDestAB & 0xf0) >> 4) + 0, juce::dontSendNotification);
-    aftDestCComboBox.setSelectedItemIndex((tone.matrixAftDestCD & 0xf) + 0, juce::dontSendNotification);
-    aftDestDComboBox.setSelectedItemIndex(((tone.matrixAftDestCD & 0xf0) >> 4) + 0, juce::dontSendNotification);
+    aftDestAComboBox.setSelectedItemIndex((tone.matrixAftDestAB & 0xf), juce::dontSendNotification);
+    aftDestBComboBox.setSelectedItemIndex(((tone.matrixAftDestAB & 0xf0) >> 4), juce::dontSendNotification);
+    aftDestCComboBox.setSelectedItemIndex((tone.matrixAftDestCD & 0xf), juce::dontSendNotification);
+    aftDestDComboBox.setSelectedItemIndex(((tone.matrixAftDestCD & 0xf0) >> 4), juce::dontSendNotification);
     aftSensASlider.setValue(int8_t((tone.matrixAftSensA)), juce::dontSendNotification);
     aftSensBSlider.setValue(int8_t((tone.matrixAftSensB)), juce::dontSendNotification);
     aftSensCSlider.setValue(int8_t((tone.matrixAftSensC)), juce::dontSendNotification);
     aftSensDSlider.setValue(int8_t((tone.matrixAftSensD)), juce::dontSendNotification);
-    expDestAComboBox.setSelectedItemIndex((tone.matrixExpDestAB & 0xf) + 0, juce::dontSendNotification);
-    expDestBComboBox.setSelectedItemIndex(((tone.matrixExpDestAB & 0xf0) >> 4) + 0, juce::dontSendNotification);
-    expDestCComboBox.setSelectedItemIndex((tone.matrixExpDestCD & 0xf) + 0, juce::dontSendNotification);
-    expDestDComboBox.setSelectedItemIndex(((tone.matrixExpDestCD & 0xf0) >> 4) + 0, juce::dontSendNotification);
+    expDestAComboBox.setSelectedItemIndex((tone.matrixExpDestAB & 0xf), juce::dontSendNotification);
+    expDestBComboBox.setSelectedItemIndex(((tone.matrixExpDestAB & 0xf0) >> 4), juce::dontSendNotification);
+    expDestCComboBox.setSelectedItemIndex((tone.matrixExpDestCD & 0xf), juce::dontSendNotification);
+    expDestDComboBox.setSelectedItemIndex(((tone.matrixExpDestCD & 0xf0) >> 4), juce::dontSendNotification);
     expSensASlider.setValue(int8_t((tone.matrixExpSensA)), juce::dontSendNotification);
     expSensBSlider.setValue(int8_t((tone.matrixExpSensB)), juce::dontSendNotification);
     expSensCSlider.setValue(int8_t((tone.matrixExpSensC)), juce::dontSendNotification);
     expSensDSlider.setValue(int8_t((tone.matrixExpSensD)), juce::dontSendNotification);
 
-    lfo1FormComboBox.setSelectedItemIndex((tone.lfo1Flags & 0x7) + 0, juce::dontSendNotification);
+    lfo1FormComboBox.setSelectedItemIndex((tone.lfo1Flags & 0x7), juce::dontSendNotification);
     lfo1OffsetComboBox.setSelectedItemIndex((tone.lfo1Flags & 0x38) >> 3, juce::dontSendNotification);
     lfo1SyncToggle.setToggleState(((tone.lfo1Flags & 0x40) >> 6) ? 1 : 0, juce::dontSendNotification);
     lfo1FadeToggle.setToggleState(((tone.lfo1Flags & 0x80) >> 7) ? 1 : 0, juce::dontSendNotification);
@@ -860,7 +895,7 @@ void EditToneTab::updateValues()
     lfo1TVFDepthSlider.setValue(int8_t((tone.lfo1TvfDepth)), juce::dontSendNotification);
     lfo1TVADepthSlider.setValue(int8_t((tone.lfo1TvaDepth)), juce::dontSendNotification);
 
-    lfo2FormComboBox.setSelectedItemIndex((tone.lfo2Flags & 0x7) + 0, juce::dontSendNotification);
+    lfo2FormComboBox.setSelectedItemIndex((tone.lfo2Flags & 0x7), juce::dontSendNotification);
     lfo2OffsetComboBox.setSelectedItemIndex((tone.lfo2Flags & 0x38) >> 3, juce::dontSendNotification);
     lfo2SyncToggle.setToggleState(((tone.lfo2Flags & 0x40) >> 6) ? 1 : 0, juce::dontSendNotification);
     lfo2FadeToggle.setToggleState(((tone.lfo2Flags & 0x80) >> 7) ? 1 : 0, juce::dontSendNotification);
@@ -954,7 +989,7 @@ void EditToneTab::resized()
     toneSwitchToggle      .setBounds(sliderLeft1 - 90, top + height * 0 + vMargin * 0, width, height);
 
     waveGroupComboBox     .setBounds(sliderLeft1, top + height * 1 + vMargin * 1, width, height);
-    waveformSlider        .setBounds(sliderLeft1, top + height * 2 + vMargin * 1, width, height);
+    waveformComboBox      .setBounds(sliderLeft1, top + height * 2 + vMargin * 1, width, height);
 
     velRangeLowSlider     .setBounds(sliderLeft1, top + height * 3 + vMargin * 2, halfWidth, height);
     velRangeHighSlider    .setBounds(sliderLeft1 + halfWidth, top + height * 3 + vMargin * 2, halfWidth, height);
@@ -1090,8 +1125,13 @@ void EditToneTab::buttonStateChanged(juce::Button* /* button */)
 {
 }
 
-void EditToneTab::comboBoxChanged(juce::ComboBox* /* comboBox */)
+void EditToneTab::comboBoxChanged(juce::ComboBox* comboBox)
 {
+    if (comboBox == &waveGroupComboBox)
+    {
+        updateWaveformComboBox(waveformComboBox);
+    }
+
     sendSysexPatchToneChange();
 }
 
@@ -1180,7 +1220,7 @@ void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
 void EditToneTab::sendSysexPatchToneChange()
 {
     sendSysexPatchToneChange1Byte(0x00, uint8_t(waveGroupComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange2Byte(0x01, uint8_t(waveformSlider.getValue() - 1));
+    sendSysexPatchToneChange2Byte(0x01, uint8_t(waveformComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x03, toneSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x04, FXMSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x05, uint8_t(FXMDepthSlider.getValue() - 1));
@@ -1295,7 +1335,7 @@ void EditToneTab::sendSysexPatchToneChange()
     Tone* tone = &patch->tones[toneCount];
 
     tone->flags = uint8_t(waveGroupComboBox.getSelectedItemIndex() + (toneSwitchToggle.getToggleState() << 7));
-    tone->waveNumber = uint8_t(waveformSlider.getValue() - 1);
+    tone->waveNumber = uint8_t(waveformComboBox.getSelectedItemIndex());
     tone->fxmConfig = uint8_t((uint8_t(FXMDepthSlider.getValue() - 1) << 0) + (FXMSwitchToggle.getToggleState() << 7));
     tone->velocityRangeLow = uint8_t(velRangeLowSlider.getValue());
     tone->velocityRangeUp = uint8_t(velRangeHighSlider.getValue());
