@@ -12,7 +12,7 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-SettingsTab::SettingsTab(Jv880_juceAudioProcessor &p) : audioProcessor(p) {
+SettingsTab::SettingsTab(VirtualJVProcessor &p) : processor(p) {
   addAndMakeVisible(masterTuneSlider);
 
   masterTuneSlider.setRange(1, 127);
@@ -42,11 +42,11 @@ SettingsTab::SettingsTab(Jv880_juceAudioProcessor &p) : audioProcessor(p) {
 SettingsTab::~SettingsTab() {}
 
 void SettingsTab::updateValues() {
-  masterTuneSlider.setValue(((int8_t *)audioProcessor.mcu->nvram)[0x00] + 64,
+  masterTuneSlider.setValue(((int8_t *)processor.mcu->nvram)[0x00] + 64,
                             juce::dontSendNotification);
-  reverbToggle.setToggleState(((audioProcessor.mcu->nvram[0x02] >> 0) & 1) == 1,
+  reverbToggle.setToggleState(((processor.mcu->nvram[0x02] >> 0) & 1) == 1,
                               juce::dontSendNotification);
-  chorusToggle.setToggleState(((audioProcessor.mcu->nvram[0x02] >> 1) & 1) == 1,
+  chorusToggle.setToggleState(((processor.mcu->nvram[0x02] >> 1) & 1) == 1,
                               juce::dontSendNotification);
 }
 
@@ -62,7 +62,7 @@ void SettingsTab::sliderValueChanged(juce::Slider *slider) {
   {
     uint32_t address = 0x01;
     uint8_t value = (uint8_t)masterTuneSlider.getValue();
-    audioProcessor.sendSysexParamChange(address, value);
+    processor.sendSysexParamChange(address, value);
   }
 }
 
@@ -71,12 +71,12 @@ void SettingsTab::buttonClicked(juce::Button *button) {
   {
     uint32_t address = 0x04;
     uint8_t value = reverbToggle.getToggleState() ? 1U : 0U;
-    audioProcessor.sendSysexParamChange(address, value);
+    processor.sendSysexParamChange(address, value);
   }
   else if (button == &chorusToggle)
   {
     uint32_t address = 0x05;
     uint8_t value = chorusToggle.getToggleState() ? 1U : 0U;
-    audioProcessor.sendSysexParamChange(address, value);
+    processor.sendSysexParamChange(address, value);
   }
 }

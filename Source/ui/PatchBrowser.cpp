@@ -12,8 +12,8 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-PatchBrowser::PatchBrowser(Jv880_juceAudioProcessor &p)
-    : audioProcessor(p), categoriesListModel(),
+PatchBrowser::PatchBrowser(VirtualJVProcessor &p)
+    : processor(p), categoriesListModel(),
       categoriesListBox("Categories", &categoriesListModel) {
   categoriesListBox.setRowHeight(34);
   addAndMakeVisible(categoriesListBox);

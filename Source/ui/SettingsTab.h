@@ -19,7 +19,7 @@
 class SettingsTab  : public juce::Component, public juce::Slider::Listener, public juce::Button::Listener
 {
 public:
-    SettingsTab(Jv880_juceAudioProcessor&);
+    SettingsTab(VirtualJVProcessor&);
     ~SettingsTab() override;
 
     void updateValues();
@@ -29,7 +29,7 @@ public:
     void buttonStateChanged(juce::Button*) override {}
 
 private:
-    Jv880_juceAudioProcessor& audioProcessor;
+    VirtualJVProcessor& processor;
 
     juce::Slider masterTuneSlider;
     juce::Label masterTuneLabel;

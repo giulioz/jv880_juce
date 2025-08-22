@@ -1,26 +1,26 @@
 /*
   ==============================================================================
 
-    JV880LCD.cpp
+    LCDisplay.cpp
     Created: 18 Aug 2024 12:13:42am
     Author:  Giulio Zausa
 
   ==============================================================================
 */
 
-#include "JV880LCD.h"
+#include "LCDisplay.h"
 #include <JuceHeader.h>
 
 //==============================================================================
-JV880LCD::JV880LCD(Jv880_juceAudioProcessor &p)
-    : redrawTimer(this), audioProcessor(p) {
+LCDisplay::LCDisplay(VirtualJVProcessor &p)
+    : redrawTimer(this), processor(p) {
   redrawTimer.startTimerHz(60 / 3);
 }
 
-JV880LCD::~JV880LCD() {}
+LCDisplay::~LCDisplay() {}
 
-void JV880LCD::paint(juce::Graphics &g) {
-  uint8_t *bitmapResult = (uint8_t *)audioProcessor.mcu->lcd.LCD_Update();
+void LCDisplay::paint(juce::Graphics &g) {
+  uint8_t *bitmapResult = (uint8_t *)processor.mcu->lcd.LCD_Update();
   if (!bitmapResult)
     return;
 
@@ -34,7 +34,7 @@ void JV880LCD::paint(juce::Graphics &g) {
   g.drawImageAt(image, 0, 0);
 }
 
-void JV880LCD::resized() {
+void LCDisplay::resized() {
   // This method is where you should set the bounds of any child
   // components that your component contains..
 }

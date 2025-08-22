@@ -20,6 +20,8 @@
       <GROUP id="{C418E418-6F93-9901-9FC9-85CA2D362048}" name="ui">
         <GROUP id="{92591F5A-818C-4026-55C3-A90AD50D111D}" name="widgets">
           <FILE id="ucEKxl" name="Button.h" compile="0" resource="0" file="Source/ui/widgets/Button.h"/>
+          <FILE id="jWuD1t" name="LCDisplay.cpp" compile="1" resource="0" file="Source/ui/widgets/LCDisplay.cpp"/>
+          <FILE id="rT02ip" name="LCDisplay.h" compile="0" resource="0" file="Source/ui/widgets/LCDisplay.h"/>
           <FILE id="zXQ57H" name="Menu.h" compile="0" resource="0" file="Source/ui/widgets/Menu.h"/>
           <FILE id="LoE4qt" name="Slider.h" compile="0" resource="0" file="Source/ui/widgets/Slider.h"/>
           <FILE id="Ie0u9n" name="TextEdit.h" compile="0" resource="0" file="Source/ui/widgets/TextEdit.h"/>
@@ -29,8 +31,6 @@
         <FILE id="nokpbG" name="EditCommonTab.h" compile="0" resource="0" file="Source/ui/EditCommonTab.h"/>
         <FILE id="CNC19E" name="EditToneTab.cpp" compile="1" resource="0" file="Source/ui/EditToneTab.cpp"/>
         <FILE id="Ue4xl7" name="EditToneTab.h" compile="0" resource="0" file="Source/ui/EditToneTab.h"/>
-        <FILE id="xZezD6" name="JV880LCD.cpp" compile="1" resource="0" file="Source/ui/JV880LCD.cpp"/>
-        <FILE id="VvaWWL" name="JV880LCD.h" compile="0" resource="0" file="Source/ui/JV880LCD.h"/>
         <FILE id="Ii334A" name="PatchBrowser.cpp" compile="1" resource="0"
               file="Source/ui/PatchBrowser.cpp"/>
         <FILE id="m3M1A9" name="PatchBrowser.h" compile="0" resource="0" file="Source/ui/PatchBrowser.h"/>

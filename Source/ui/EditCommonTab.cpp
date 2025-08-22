@@ -12,7 +12,7 @@
 #include "EditCommonTab.h"
 
 //==============================================================================
-EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
+EditCommonTab::EditCommonTab(VirtualJVProcessor& p) : processor (p)
 {
     addAndMakeVisible(patchNameEditor);
     patchNameEditor.addListener(this);
@@ -64,25 +64,25 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     chorusTypeComboBox.addItem("Type 1", 1);
     chorusTypeComboBox.addItem("Type 2", 2);
     chorusTypeComboBox.addItem("Type 3", 3);
-    
+
     addAndMakeVisible(chorusLevelSlider);
     chorusLevelSlider.addListener(this);
 
     addAndMakeVisible(chorusLevelLabel);
     chorusLevelLabel.attachToComponent(&chorusLevelSlider, true);
-    
+
     addAndMakeVisible(chorusDepthSlider);
     chorusDepthSlider.addListener(this);
 
     addAndMakeVisible(chorusDepthLabel);
     chorusDepthLabel.attachToComponent(&chorusDepthSlider, true);
-    
+
     addAndMakeVisible(chorusRateSlider);
     chorusRateSlider.addListener(this);
 
     addAndMakeVisible(chorusRateLabel);
     chorusRateLabel.attachToComponent(&chorusRateSlider, true);
-    
+
     addAndMakeVisible(chorusFeedbackSlider);
     chorusFeedbackSlider.addListener(this);
 
@@ -96,31 +96,31 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     chorusOutputComboBox.addListener(this);
     chorusOutputComboBox.addItem("Mix", 1);
     chorusOutputComboBox.addItem("Reverb", 2);
-    
+
     addAndMakeVisible(analogFeelSlider);
     analogFeelSlider.addListener(this);
 
     addAndMakeVisible(analogFeelLabel);
     analogFeelLabel.attachToComponent(&analogFeelSlider, true);
-    
+
     addAndMakeVisible(levelSlider);
     levelSlider.addListener(this);
 
     addAndMakeVisible(levelLabel);
     levelLabel.attachToComponent(&levelSlider, true);
-    
+
     addAndMakeVisible(panSlider);
     panSlider.addListener(this);
 
     addAndMakeVisible(panLabel);
     panLabel.attachToComponent(&panSlider, true);
-    
+
     addAndMakeVisible(bendRangeDownSlider);
     bendRangeDownSlider.addListener(this);
 
     addAndMakeVisible(bendRangeLabel);
     bendRangeLabel.attachToComponent(&bendRangeDownSlider, true);
-    
+
     addAndMakeVisible(bendRangeUpSlider);
     bendRangeUpSlider.addListener(this);
 
@@ -153,7 +153,7 @@ EditCommonTab::EditCommonTab(Jv880_juceAudioProcessor& p) : audioProcessor (p)
     portamentoTypeComboBox.addListener(this);
     portamentoTypeComboBox.addItem("Time", 1);
     portamentoTypeComboBox.addItem("Rate", 2);
-    
+
     addAndMakeVisible(portamentoTimeSlider);
     portamentoTimeSlider.addListener(this);
 
@@ -167,7 +167,7 @@ EditCommonTab::~EditCommonTab()
 
 void EditCommonTab::updateValues()
 {
-    Patch* patch = (Patch*) audioProcessor.status.patch;
+    Patch* patch = (Patch*) processor.status.patch;
 
     patchNameEditor         .setText(juce::String(patch->name, 0xc), juce::dontSendNotification);
     velocitySwitchToggle    .setToggleState((patch->recChorConfig & 0x80) != 0, juce::dontSendNotification);
@@ -211,14 +211,14 @@ void EditCommonTab::resized()
     reverbLevelSlider      .setBounds(sliderLeft1, top + height * 2 + vMargin * 1, width, height);
     reverbTimeSlider       .setBounds(sliderLeft1, top + height * 3 + vMargin * 1, width, height);
     delayFeedbackSlider    .setBounds(sliderLeft1, top + height * 4 + vMargin * 1, width, height);
-    
+
     chorusTypeComboBox     .setBounds(sliderLeft1, top + height * 5 + vMargin * 2, width, height);
     chorusLevelSlider      .setBounds(sliderLeft1, top + height * 6 + vMargin * 2, width, height);
     chorusDepthSlider      .setBounds(sliderLeft1, top + height * 7 + vMargin * 2, width, height);
     chorusRateSlider       .setBounds(sliderLeft1, top + height * 8 + vMargin * 2, width, height);
     chorusFeedbackSlider   .setBounds(sliderLeft1, top + height * 9 + vMargin * 2, width, height);
     chorusOutputComboBox   .setBounds(sliderLeft1, top + height * 10 + vMargin * 2, width, height);
-    
+
     levelSlider            .setBounds(sliderLeft2, top + height * 0 + vMargin * 0, width, height);
     panSlider              .setBounds(sliderLeft2, top + height * 1 + vMargin * 0, width, height);
 
@@ -245,7 +245,7 @@ void EditCommonTab::sliderValueChanged(juce::Slider* slider)
         id = i->getID();
     }
 
-    Patch* patch = (Patch*)audioProcessor.status.patch;
+    Patch* patch = (Patch*)processor.status.patch;
 
     switch (id)
     {
@@ -321,7 +321,7 @@ void EditCommonTab::buttonClicked(juce::Button* button)
         id = i->getID();
     }
 
-    Patch* patch = (Patch*)audioProcessor.status.patch;
+    Patch* patch = (Patch*)processor.status.patch;
 
     switch (id)
     {
@@ -361,8 +361,8 @@ void EditCommonTab::comboBoxChanged(juce::ComboBox* comboBox)
         id = i->getID();
     }
 
-    Patch* patch = (Patch*) audioProcessor.status.patch;
-    
+    Patch* patch = (Patch*) processor.status.patch;
+
     switch (id)
     {
     case ReverbType:
@@ -416,7 +416,7 @@ void EditCommonTab::textEditorTextChanged (juce::TextEditor& textEditor)
 
 void EditCommonTab::sendSysexPatchNameChange()
 {
-    auto patch = (Patch*) audioProcessor.status.patch;
+    auto patch = (Patch*) processor.status.patch;
 
     uint8_t buf[24];
 
@@ -460,9 +460,9 @@ void EditCommonTab::sendSysexPatchNameChange()
     buf[22] = (uint8_t)checksum;
     buf[23] = 0xf7;
 
-    audioProcessor.mcuLock.enter();
-    audioProcessor.mcu->postMidiSC55(buf, 24);
-    audioProcessor.mcuLock.exit();
+    processor.mcuLock.enter();
+    processor.mcu->postMidiSC55(buf, 24);
+    processor.mcuLock.exit();
 }
 
 void EditCommonTab::sendSysexPatchCommonParamChange(const uint8_t address, const uint8_t value)
@@ -495,7 +495,7 @@ void EditCommonTab::sendSysexPatchCommonParamChange(const uint8_t address, const
     buf[10] = (uint8_t)checksum;
     buf[11] = 0xf7;
 
-    audioProcessor.mcuLock.enter();
-    audioProcessor.mcu->postMidiSC55(buf, 12);
-    audioProcessor.mcuLock.exit();
+    processor.mcuLock.enter();
+    processor.mcu->postMidiSC55(buf, 12);
+    processor.mcuLock.exit();
 }

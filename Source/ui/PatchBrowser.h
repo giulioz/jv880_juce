@@ -47,12 +47,12 @@ const int rowPerColumn = 44;
  */
 class PatchBrowser : public juce::Component {
 public:
-  PatchBrowser(Jv880_juceAudioProcessor &);
+  PatchBrowser(VirtualJVProcessor &);
   ~PatchBrowser() override;
 
   void resized() override;
 
-  Jv880_juceAudioProcessor &audioProcessor;
+  VirtualJVProcessor &processor;
 
   class CategoriesListModel : public juce::ListBoxModel,
                               public juce::ChangeBroadcaster {
@@ -105,7 +105,7 @@ public:
     }
 
     int getNumRows() override {
-      if (!parent->audioProcessor.loaded ||
+      if (!parent->processor.loaded ||
           (groupI > 0 && !romInfos[std::max(groupI, 0) + romCountRequired].loaded) ||
           (groupI == 1 && !romInfos[std::max(groupI, 0) + romCountRequired - 1].loaded))
       {
@@ -114,7 +114,7 @@ public:
 
       return std::min(
           endI - startI,
-          (int)parent->audioProcessor.patchInfoPerGroup[groupI].size() -
+          (int)parent->processor.patchInfoPerGroup[groupI].size() -
               startI);
     }
 
@@ -125,14 +125,14 @@ public:
 
       g.setColour(rowIsSelected ? juce::Colours::black : juce::Colours::white);
 
-      if (!parent->audioProcessor.loaded) {
+      if (!parent->processor.loaded) {
         return;
       }
 
       int length =
-          parent->audioProcessor.patchInfoPerGroup[groupI][rowNumber + startI]
+          parent->processor.patchInfoPerGroup[groupI][rowNumber + startI]
               ->nameLength;
-      auto strPtr = (const char *)parent->audioProcessor.patchInfoPerGroup[groupI][rowNumber + startI]->name;
+      auto strPtr = (const char *)parent->processor.patchInfoPerGroup[groupI][rowNumber + startI]->name;
       juce::String str = juce::String(strPtr, length);
       g.drawFittedText(str, {5, 0, width, height - 2},
                        juce::Justification::left, 1);
@@ -151,7 +151,7 @@ public:
     }
 
     void selectedRowsChanged(int lastRowSelected) override {
-      if (!parent->audioProcessor.loaded) {
+      if (!parent->processor.loaded) {
         return;
       }
 
@@ -162,9 +162,9 @@ public:
 
       int selected = owner->getSelectedRow() + startI;
       if (selected >= 0 &&
-          selected < parent->audioProcessor.patchInfoPerGroup[groupI].size())
-        parent->audioProcessor.setCurrentProgram(
-            parent->audioProcessor.patchInfoPerGroup[groupI][selected]
+          selected < parent->processor.patchInfoPerGroup[groupI].size())
+        parent->processor.setCurrentProgram(
+            parent->processor.patchInfoPerGroup[groupI][selected]
                 ->iInList);
     }
 

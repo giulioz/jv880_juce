@@ -13,7 +13,7 @@
 #include "../PluginProcessor.h"
 #include <JuceHeader.h>
 
-class Jv880_juceAudioProcessorEditor;
+class VirtualJVEditor;
 
 //==============================================================================
 
@@ -23,7 +23,7 @@ class EditToneTab : public juce::Component,
                     public juce::ComboBox::Listener
 {
 public:
-    EditToneTab(Jv880_juceAudioProcessor &, Jv880_juceAudioProcessorEditor *, uint8_t);
+    EditToneTab(VirtualJVProcessor &, VirtualJVEditor *, uint8_t);
     ~EditToneTab() override;
 
     void resized() override;
@@ -42,8 +42,8 @@ private:
     void addMenuEntriesFromArray(juce::ComboBox &menu, const std::vector<std::string> &array);
     void updateWaveformComboBox(juce::ComboBox &wfMenu);
 
-    Jv880_juceAudioProcessor &audioProcessor;
-    Jv880_juceAudioProcessorEditor *editor;
+    VirtualJVProcessor &processor;
+    VirtualJVEditor *editor;
     uint8_t toneCount;
 
     juce::ComboBox waveGroupComboBox;

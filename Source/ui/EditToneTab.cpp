@@ -16,8 +16,8 @@
 
 //==============================================================================
 EditToneTab::EditToneTab
-    ( Jv880_juceAudioProcessor &p, Jv880_juceAudioProcessorEditor *e, uint8_t toneIn) 
-    : audioProcessor(p), editor(e), toneCount(toneIn)
+    ( VirtualJVProcessor &p, VirtualJVEditor *e, uint8_t toneIn)
+    : processor(p), editor(e), toneCount(toneIn)
 {
     addAndMakeVisible(waveGroupLabel);
     waveGroupLabel.setText("Wave Group", juce::dontSendNotification);
@@ -826,7 +826,7 @@ void EditToneTab::updateWaveformComboBox(juce::ComboBox &wfMenu)
         return;
 
     const auto romIdx = waveGroupComboBox.getSelectedItemIndex() == 0 ? 2U : editor->getSelectedRomIdx();
-    auto names = audioProcessor.readMultisampleNames(romIdx);
+    auto names = processor.readMultisampleNames(romIdx);
 
     for (int i = 0; i < names.size(); i++)
     {
@@ -848,7 +848,7 @@ void EditToneTab::updateWaveformComboBox(juce::ComboBox &wfMenu)
 
 void EditToneTab::updateValues()
 {
-    Patch* patch = (Patch*)audioProcessor.status.patch;
+    Patch* patch = (Patch*)processor.status.patch;
     Tone tone = patch->tones[toneCount];
     waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3), juce::dontSendNotification);
     waveformComboBox.setSelectedItemIndex((tone.waveNumber & 0xff), juce::dontSendNotification);
@@ -1165,9 +1165,9 @@ void EditToneTab::sendSysexPatchToneChange1Byte(uint8_t address, uint8_t value)
     buf[10] = (uint8_t)checksum;
     buf[11] = 0xf7;
 
-    audioProcessor.mcuLock.enter();
-    audioProcessor.mcu->postMidiSC55(buf, 12);
-    audioProcessor.mcuLock.exit();
+    processor.mcuLock.enter();
+    processor.mcu->postMidiSC55(buf, 12);
+    processor.mcuLock.exit();
 }
 
 void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
@@ -1206,9 +1206,9 @@ void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
     buf[11] = (uint8_t)checksum;
     buf[12] = 0xf7;
 
-    audioProcessor.mcuLock.enter();
-    audioProcessor.mcu->postMidiSC55(buf, 13);
-    audioProcessor.mcuLock.exit();
+    processor.mcuLock.enter();
+    processor.mcu->postMidiSC55(buf, 13);
+    processor.mcuLock.exit();
 }
 
 
@@ -1326,7 +1326,7 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x72, uint8_t(chorusSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x73, uint8_t(outputComboBox.getSelectedItemIndex()));
 
-    Patch* patch = (Patch*)audioProcessor.status.patch;
+    Patch* patch = (Patch*)processor.status.patch;
     Tone* tone = &patch->tones[toneCount];
 
     tone->flags = uint8_t(waveGroupComboBox.getSelectedItemIndex() + (toneSwitchToggle.getToggleState() << 7));

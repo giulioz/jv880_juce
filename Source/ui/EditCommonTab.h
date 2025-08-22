@@ -29,7 +29,7 @@ class EditCommonTab : public juce::Component,
                       public juce::TextEditor::Listener
 {
 public:
-  EditCommonTab(Jv880_juceAudioProcessor &);
+  EditCommonTab(VirtualJVProcessor &);
   ~EditCommonTab() override;
 
 
@@ -66,7 +66,7 @@ private:
       AnalogFeel          = 130U,
       Level               = 131U,
       Pan                 = 132U,
-      
+
       BendRangeDown       = 140U,
       BendRangeUp         = 141U,
       KeyAssign           = 142U,
@@ -76,7 +76,7 @@ private:
       PortamentoType      = 146U,
       PortamentoTime      = 147U,
   };
-  Jv880_juceAudioProcessor &audioProcessor;
+  VirtualJVProcessor &processor;
 
   juce::Label patchNameLabel{ "", "Patch Name" };
   TextEdit patchNameEditor{ PatchName };

@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
+VirtualJVProcessor::VirtualJVProcessor()
     : AudioProcessor(
           BusesProperties()
               .withInput("Input", juce::AudioChannelSet::stereo(), true)
@@ -203,7 +203,7 @@ Jv880_juceAudioProcessor::Jv880_juceAudioProcessor()
   loaded = true;
 }
 
-Jv880_juceAudioProcessor::~Jv880_juceAudioProcessor() {
+VirtualJVProcessor::~VirtualJVProcessor() {
   mcuLock.enter();
   memset(mcu, 0, sizeof(MCU));
   delete mcu;
@@ -211,19 +211,19 @@ Jv880_juceAudioProcessor::~Jv880_juceAudioProcessor() {
 }
 
 //==============================================================================
-const juce::String Jv880_juceAudioProcessor::getName() const {
+const juce::String VirtualJVProcessor::getName() const {
   return JucePlugin_Name;
 }
 
-bool Jv880_juceAudioProcessor::acceptsMidi() const { return true; }
+bool VirtualJVProcessor::acceptsMidi() const { return true; }
 
-bool Jv880_juceAudioProcessor::producesMidi() const { return false; }
+bool VirtualJVProcessor::producesMidi() const { return false; }
 
-bool Jv880_juceAudioProcessor::isMidiEffect() const { return false; }
+bool VirtualJVProcessor::isMidiEffect() const { return false; }
 
-double Jv880_juceAudioProcessor::getTailLengthSeconds() const { return 0.0; }
+double VirtualJVProcessor::getTailLengthSeconds() const { return 0.0; }
 
-int Jv880_juceAudioProcessor::getNumPrograms() {
+int VirtualJVProcessor::getNumPrograms() {
   return 65                // internal
          + 65              // bank A
          + 65              // bank B
@@ -231,11 +231,11 @@ int Jv880_juceAudioProcessor::getNumPrograms() {
       ;
 }
 
-int Jv880_juceAudioProcessor::getCurrentProgram() {
+int VirtualJVProcessor::getCurrentProgram() {
   return 0; // TODO
 }
 
-void Jv880_juceAudioProcessor::setCurrentProgram(int index) {
+void VirtualJVProcessor::setCurrentProgram(int index) {
   if (index < 0 || index >= getNumPrograms())
     return;
 
@@ -277,32 +277,32 @@ void Jv880_juceAudioProcessor::setCurrentProgram(int index) {
 
   if (auto editor = getActiveEditor())
   {
-      dynamic_cast<Jv880_juceAudioProcessorEditor*>(editor)->updateEditTabs();
+      dynamic_cast<VirtualJVEditor*>(editor)->updateEditTabs();
   }
 }
 
-const juce::String Jv880_juceAudioProcessor::getProgramName(int index) {
+const juce::String VirtualJVProcessor::getProgramName(int index) {
   int length = patchInfos[index].nameLength;
   const char *strPtr = (const char *)patchInfos[index].name;
   return juce::String(strPtr, length);
 }
 
-void Jv880_juceAudioProcessor::changeProgramName(int /* index */,
+void VirtualJVProcessor::changeProgramName(int /* index */,
                                                  const juce::String& /* newName */) { }
 
 //==============================================================================
-void Jv880_juceAudioProcessor::prepareToPlay(double /* sampleRate */,
+void VirtualJVProcessor::prepareToPlay(double /* sampleRate */,
                                              int /* samplesPerBlock */) {
   // Use this method as the place to do any pre-playback
   // initialisation that you need..
 }
 
-void Jv880_juceAudioProcessor::releaseResources() {
+void VirtualJVProcessor::releaseResources() {
   // When playback stops, you can use this as an opportunity to free up any
   // spare memory, etc.
 }
 
-bool Jv880_juceAudioProcessor::isBusesLayoutSupported(
+bool VirtualJVProcessor::isBusesLayoutSupported(
     const BusesLayout &layouts) const {
   if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
     return false;
@@ -310,7 +310,7 @@ bool Jv880_juceAudioProcessor::isBusesLayoutSupported(
   return true;
 }
 
-void Jv880_juceAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
+void VirtualJVProcessor::processBlock(juce::AudioBuffer<float> &buffer,
                                             juce::MidiBuffer &midiMessages) {
   mcuLock.enter();
 
@@ -346,14 +346,14 @@ void Jv880_juceAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
 }
 
 //==============================================================================
-bool Jv880_juceAudioProcessor::hasEditor() const { return true; }
+bool VirtualJVProcessor::hasEditor() const { return true; }
 
-juce::AudioProcessorEditor *Jv880_juceAudioProcessor::createEditor() {
-  return new Jv880_juceAudioProcessorEditor(*this);
+juce::AudioProcessorEditor *VirtualJVProcessor::createEditor() {
+  return new VirtualJVEditor(*this);
 }
 
 //==============================================================================
-void Jv880_juceAudioProcessor::getStateInformation(
+void VirtualJVProcessor::getStateInformation(
     juce::MemoryBlock &destData) {
   mcuLock.enter();
   status.masterTune = mcu->nvram[0x00];
@@ -365,7 +365,7 @@ void Jv880_juceAudioProcessor::getStateInformation(
   destData.replaceAll(&status, sizeof(DataToSave));
 }
 
-void Jv880_juceAudioProcessor::setStateInformation(const void *data,
+void VirtualJVProcessor::setStateInformation(const void *data,
                                                    int /* sizeInBytes */) {
   memcpy(&status, data, sizeof(DataToSave));
 
@@ -390,11 +390,11 @@ void Jv880_juceAudioProcessor::setStateInformation(const void *data,
 
   if (auto editor = getActiveEditor())
   {
-      dynamic_cast<Jv880_juceAudioProcessorEditor*>(editor)->updateEditTabs();
+      dynamic_cast<VirtualJVEditor*>(editor)->updateEditTabs();
   }
 }
 
-void Jv880_juceAudioProcessor::sendSysexParamChange(uint32_t address,
+void VirtualJVProcessor::sendSysexParamChange(uint32_t address,
                                                     uint8_t value) {
   uint8_t data[5];
   data[0] = (address >> 21) & 127; // address MSB
@@ -437,7 +437,7 @@ void Jv880_juceAudioProcessor::sendSysexParamChange(uint32_t address,
 #define BITSWAP16(x) (((x & 0xFF00) >> 8) | ((x & 0x00FF) << 8))
 #define BITSWAP32(x) (((x & 0xFF000000) >> 24) | ((x & 0x00FF0000) >> 8) | ((x & 0x0000FF00) << 8) | ((x & 0x000000FF) << 24))
 
-std::vector<std::string> Jv880_juceAudioProcessor::readMultisampleNames(uint8_t romIdx)
+std::vector<std::string> VirtualJVProcessor::readMultisampleNames(uint8_t romIdx)
 {
     std::vector<std::string> names;
 
@@ -458,7 +458,7 @@ std::vector<std::string> Jv880_juceAudioProcessor::readMultisampleNames(uint8_t 
     msCount = BITSWAP16(msCount);
     msTableAddr = BITSWAP32(msTableAddr);
 
-    // JV-880 factory multisamples start from a different place in ROM
+    // 880's factory multisamples start from a different place in ROM
     if (romIdx == 2)
     {
         msCount = 129;
@@ -487,5 +487,5 @@ std::vector<std::string> Jv880_juceAudioProcessor::readMultisampleNames(uint8_t 
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter() {
-  return new Jv880_juceAudioProcessor();
+  return new VirtualJVProcessor();
 }

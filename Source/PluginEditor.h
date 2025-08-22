@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "ui/JV880LCD.h"
+#include "ui/widgets/LCDisplay.h"
 #include "ui/PatchBrowser.h"
 #include "ui/EditCommonTab.h"
 #include "ui/EditToneTab.h"
@@ -19,11 +19,11 @@
 //==============================================================================
 /**
 */
-class Jv880_juceAudioProcessorEditor  : public juce::AudioProcessorEditor
+class VirtualJVEditor  : public juce::AudioProcessorEditor
 {
 public:
-    Jv880_juceAudioProcessorEditor (Jv880_juceAudioProcessor&);
-    ~Jv880_juceAudioProcessorEditor() override;
+    VirtualJVEditor (VirtualJVProcessor&);
+    ~VirtualJVEditor() override;
 
     //==============================================================================
     void resized() override;
@@ -32,9 +32,9 @@ public:
     void updateEditTabs();
 
 private:
-    Jv880_juceAudioProcessor& audioProcessor;
+    VirtualJVProcessor& processor;
 
-    JV880LCD lcd;
+    LCDisplay lcd;
     juce::TabbedComponent tabs;
     PatchBrowser patchBrowser;
     EditCommonTab editCommonTab;
@@ -44,5 +44,5 @@ private:
     EditToneTab editTone4Tab;
     SettingsTab settingsTab;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Jv880_juceAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VirtualJVEditor)
 };

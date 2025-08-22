@@ -12,9 +12,9 @@
 #include <algorithm>
 
 //==============================================================================
-Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
-    Jv880_juceAudioProcessor &p)
-    : AudioProcessorEditor(&p), audioProcessor(p),
+VirtualJVEditor::VirtualJVEditor(
+    VirtualJVProcessor &p)
+    : AudioProcessorEditor(&p), processor(p),
       lcd(p), tabs(juce::TabbedButtonBar::TabsAtTop), patchBrowser(p), editCommonTab(p),
       editTone1Tab(p, this, 0U), editTone2Tab(p, this, 1U), editTone3Tab(p, this, 2U), editTone4Tab(p, this, 3U),
       settingsTab(p)
@@ -34,7 +34,7 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
   tabs.addTab("Tone 4", bgColor, &editTone4Tab, false);
   tabs.addTab("Settings", bgColor, &settingsTab, false);
 
-  if (!audioProcessor.loaded) {
+  if (!processor.loaded) {
     juce::AlertWindow::showAsync(
         juce::MessageBoxOptions()
             .withIconType(juce::MessageBoxIconType::WarningIcon)
@@ -59,9 +59,9 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
   }
 }
 
-Jv880_juceAudioProcessorEditor::~Jv880_juceAudioProcessorEditor() {}
+VirtualJVEditor::~VirtualJVEditor() {}
 
-void Jv880_juceAudioProcessorEditor::updateEditTabs()
+void VirtualJVEditor::updateEditTabs()
 {
     editCommonTab.updateValues();
     editTone1Tab.updateValues();
@@ -71,21 +71,21 @@ void Jv880_juceAudioProcessorEditor::updateEditTabs()
     settingsTab.updateValues();
 }
 
-uint8_t Jv880_juceAudioProcessorEditor::getSelectedRomIdx()
+uint8_t VirtualJVEditor::getSelectedRomIdx()
 {
     auto idx = patchBrowser.categoriesListBox.getSelectedRow();
 
     if (idx <= 0)
     {
-        return 2; // internal JV-880 ROM 2, contains multisample info table
+        return 2; // internal ROM 2 of the 880, contains multisample info table
     }
     else
     {
-        return std::min(romCountRequired + idx, romCount - 1); // RD-500 expansion ROM and other SR-JV ROMs henceforth
+        return std::min(romCountRequired + idx, romCount - 1); // RD expansion ROM and other SR-JV ROMs henceforth
     }
 }
 
-void Jv880_juceAudioProcessorEditor::resized() {
+void VirtualJVEditor::resized() {
   lcd.setBounds(0, 0, 820, 100);
   tabs.setBounds(0, 100, 820, 800);
 }

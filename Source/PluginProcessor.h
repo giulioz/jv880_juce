@@ -19,14 +19,14 @@ constexpr int NUM_EXPS = romCount - 6;
 /**
 */
 
-class Jv880_juceAudioProcessorEditor;
+class VirtualJVEditor;
 
-class Jv880_juceAudioProcessor  : public juce::AudioProcessor
+class VirtualJVProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    Jv880_juceAudioProcessor();
-    ~Jv880_juceAudioProcessor() override;
+    VirtualJVProcessor();
+    ~VirtualJVProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -102,5 +102,5 @@ public:
 
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Jv880_juceAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VirtualJVProcessor)
 };

@@ -1,6 +1,6 @@
 # VirtualJV
 
-JV-880 emulator, as VST/AU plugin. Based on [NukeYKT's SC55](https://github.com/nukeykt/Nuked-SC55).
+Emulator of a famous 1U rack unit rompler made by Roland in 1992, as a VST3 and AU plugin. Based on [NukeYKT's SC55](https://github.com/nukeykt/Nuked-SC55).
 
 You'll need ROMs to use this software. During the first run you will be able to open the destination ROM folder. Copy your ROMs there, restart the plugin, and wait for a minute for the first load to happen. Have fun!
 
