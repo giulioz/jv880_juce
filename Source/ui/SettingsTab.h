@@ -22,11 +22,11 @@ public:
     SettingsTab(Jv880_juceAudioProcessor&);
     ~SettingsTab() override;
 
-    void visibilityChanged() override;
+    void updateValues();
     void resized() override;
     void sliderValueChanged (juce::Slider*) override;
     void buttonClicked (juce::Button*) override;
-    void buttonStateChanged (juce::Button*) override;
+    void buttonStateChanged(juce::Button*) override {}
 
 private:
     Jv880_juceAudioProcessor& audioProcessor;

@@ -194,11 +194,6 @@ void EditCommonTab::updateValues()
     portamentoTimeSlider    .setValue(patch->portamentoTime & 0x7f, juce::dontSendNotification);
 }
 
-void EditCommonTab::visibilityChanged()
-{
-    updateValues();
-}
-
 void EditCommonTab::resized()
 {
     const auto top = 30;

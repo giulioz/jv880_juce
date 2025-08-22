@@ -18,6 +18,9 @@ constexpr int NUM_EXPS = romCount - 6;
 //==============================================================================
 /**
 */
+
+class Jv880_juceAudioProcessorEditor;
+
 class Jv880_juceAudioProcessor  : public juce::AudioProcessor
 {
 public:

@@ -974,11 +974,6 @@ void EditToneTab::updateValues()
 
 }
 
-void EditToneTab::visibilityChanged()
-{
-    updateValues();
-}
-
 void EditToneTab::resized()
 {
     const auto top = 10;
@@ -1123,10 +1118,6 @@ void EditToneTab::sliderValueChanged(juce::Slider* /* slider */)
 void EditToneTab::buttonClicked(juce::Button* /* button */)
 {
     sendSysexPatchToneChange();
-}
-
-void EditToneTab::buttonStateChanged(juce::Button* /* button */)
-{
 }
 
 void EditToneTab::comboBoxChanged(juce::ComboBox* comboBox)

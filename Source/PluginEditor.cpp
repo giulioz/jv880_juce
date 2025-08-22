@@ -53,9 +53,23 @@ Jv880_juceAudioProcessorEditor::Jv880_juceAudioProcessorEditor(
           }
         });
   }
+  else
+  {
+      updateEditTabs();
+  }
 }
 
 Jv880_juceAudioProcessorEditor::~Jv880_juceAudioProcessorEditor() {}
+
+void Jv880_juceAudioProcessorEditor::updateEditTabs()
+{
+    editCommonTab.updateValues();
+    editTone1Tab.updateValues();
+    editTone2Tab.updateValues();
+    editTone3Tab.updateValues();
+    editTone4Tab.updateValues();
+    settingsTab.updateValues();
+}
 
 uint8_t Jv880_juceAudioProcessorEditor::getSelectedRomIdx()
 {

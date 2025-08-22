@@ -41,7 +41,7 @@ SettingsTab::SettingsTab(Jv880_juceAudioProcessor &p) : audioProcessor(p) {
 
 SettingsTab::~SettingsTab() {}
 
-void SettingsTab::visibilityChanged() {
+void SettingsTab::updateValues() {
   masterTuneSlider.setValue(((int8_t *)audioProcessor.mcu->nvram)[0x00] + 64,
                             juce::dontSendNotification);
   reverbToggle.setToggleState(((audioProcessor.mcu->nvram[0x02] >> 0) & 1) == 1,
@@ -80,5 +80,3 @@ void SettingsTab::buttonClicked(juce::Button *button) {
     audioProcessor.sendSysexParamChange(address, value);
   }
 }
-
-void SettingsTab::buttonStateChanged(juce::Button* /* button */) {}

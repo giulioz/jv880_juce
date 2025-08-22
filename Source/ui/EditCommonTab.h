@@ -32,15 +32,15 @@ public:
   EditCommonTab(Jv880_juceAudioProcessor &);
   ~EditCommonTab() override;
 
-  void updateValues();
 
-  void visibilityChanged() override;
   void resized() override;
   void sliderValueChanged(juce::Slider*) override;
   void buttonClicked(juce::Button *) override;
-  void buttonStateChanged(juce::Button*) override {};
+  void buttonStateChanged(juce::Button*) override {}
   void comboBoxChanged(juce::ComboBox *) override;
   void textEditorTextChanged(juce::TextEditor &) override;
+
+  void updateValues();
 
   void sendSysexPatchNameChange();
   void sendSysexPatchCommonParamChange(const uint8_t address, const uint8_t value);

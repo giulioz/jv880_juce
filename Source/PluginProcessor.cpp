@@ -245,6 +245,7 @@ void Jv880_juceAudioProcessor::setCurrentProgram(int index) {
   mcuLock.enter();
 
   int expansionI = patchInfos[index].expansionI;
+
   if (expansionI != 0xff && status.currentExpansion != expansionI) {
     status.currentExpansion = expansionI;
     memcpy(mcu->pcm.waverom_exp, expansionsDescr[expansionI], 0x800000);
@@ -273,6 +274,11 @@ void Jv880_juceAudioProcessor::setCurrentProgram(int index) {
   }
 
   mcuLock.exit();
+
+  if (auto editor = getActiveEditor())
+  {
+      dynamic_cast<Jv880_juceAudioProcessorEditor*>(editor)->updateEditTabs();
+  }
 }
 
 const juce::String Jv880_juceAudioProcessor::getProgramName(int index) {
@@ -381,6 +387,11 @@ void Jv880_juceAudioProcessor::setStateInformation(const void *data,
   memcpy(&mcu->nvram[0x0d70], status.patch, 0x16a);
   mcu->SC55_Reset();
   mcuLock.exit();
+
+  if (auto editor = getActiveEditor())
+  {
+      dynamic_cast<Jv880_juceAudioProcessorEditor*>(editor)->updateEditTabs();
+  }
 }
 
 void Jv880_juceAudioProcessor::sendSysexParamChange(uint32_t address,

@@ -29,6 +29,7 @@ public:
     void resized() override;
 
     uint8_t getSelectedRomIdx();
+    void updateEditTabs();
 
 private:
     Jv880_juceAudioProcessor& audioProcessor;
