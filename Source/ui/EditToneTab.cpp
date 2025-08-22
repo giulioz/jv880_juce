@@ -851,7 +851,7 @@ void EditToneTab::updateValues()
     Patch* patch = (Patch*)audioProcessor.status.patch;
     Tone tone = patch->tones[toneCount];
     waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3), juce::dontSendNotification);
-    waveformComboBox.setSelectedItemIndex((tone.waveNumber & 0xff) + 1, juce::dontSendNotification);
+    waveformComboBox.setSelectedItemIndex((tone.waveNumber & 0xff), juce::dontSendNotification);
     toneSwitchToggle.setToggleState(((tone.flags >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     FXMSwitchToggle.setToggleState(((tone.fxmConfig >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     FXMDepthSlider.setValue(((tone.fxmConfig) & 0x0f) + 1, juce::dontSendNotification);
