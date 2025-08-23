@@ -1296,13 +1296,13 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x52, uint8_t(fenvTimeKFSensComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x53, uint8_t(fenvDepthSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x54, uint8_t(fenv1TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x55, uint8_t(fenv1LevelSlider.getValue() + 64));
+    sendSysexPatchToneChange1Byte(0x55, uint8_t(fenv1LevelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x56, uint8_t(fenv2TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x57, uint8_t(fenv2LevelSlider.getValue() + 64));
+    sendSysexPatchToneChange1Byte(0x57, uint8_t(fenv2LevelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x58, uint8_t(fenv3TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x59, uint8_t(fenv3LevelSlider.getValue() + 64));
+    sendSysexPatchToneChange1Byte(0x59, uint8_t(fenv3LevelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x5a, uint8_t(fenv4TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x5b, uint8_t(fenv4LevelSlider.getValue() + 64));
+    sendSysexPatchToneChange1Byte(0x5b, uint8_t(fenv4LevelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x5c, uint8_t(levelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x5d, uint8_t(levelKFComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange2Byte(0x5e, uint8_t(panSlider.getValue() + 64));
