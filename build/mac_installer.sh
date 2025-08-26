@@ -2,11 +2,11 @@
 
 # Define the prep function
 prep() {
-    echo "Preparing $1 ..."
+    echo "Preparing $1..."
     sudo xattr -cr "$1"
     sudo xattr -r -d com.apple.quarantine "$1"
     sudo codesign --force --sign - "$1"
-    echo "$1 has been signed and prepared."
+    echo "$1 has been signed and prepared!"
 }
 
 # Variables
@@ -45,7 +45,7 @@ for i in "${!FILES[@]}"; do
     curl -L -o "$TMP_DIR/$ZIP_FILE" "$REPO_URL/$ZIP_FILE"
 
     if [ $? -ne 0 ]; then
-        echo "Error downloading $ZIP_FILE"
+        echo "Error downloading $ZIP_FILE!"
         continue
     fi
 
@@ -57,5 +57,5 @@ for i in "${!FILES[@]}"; do
     prep "$DEST/$EXTRACTED_FILE"
 done
 
-echo "Installation complete."
+echo "Installation complete!"
 
