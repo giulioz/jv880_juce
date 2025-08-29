@@ -31,6 +31,36 @@ VirtualJVProcessor::VirtualJVProcessor()
 
   patchInfoPerGroup.push_back(std::vector<PatchInfo *>());
 
+  // Internal A
+  for (int j = 0; j < 64; j++) {
+      patchInfos[currentPatchI].name =
+          (const char*)&loadedRoms[getRomIndex("jv880_rom2.bin")]
+          [0x010ce0 + j * 0x16a];
+      patchInfos[currentPatchI].nameLength = 0xc;
+      patchInfos[currentPatchI].expansionI = 0xff;
+      patchInfos[currentPatchI].patchI = j;
+      patchInfos[currentPatchI].present = true;
+      patchInfos[currentPatchI].drums = false;
+      patchInfos[currentPatchI].iInList = currentPatchI;
+      patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
+      currentPatchI++;
+  }
+
+  // Internal B
+  for (int j = 0; j < 64; j++) {
+      patchInfos[currentPatchI].name =
+          (const char*)&loadedRoms[getRomIndex("jv880_rom2.bin")]
+          [0x018ce0 + j * 0x16a];
+      patchInfos[currentPatchI].nameLength = 0xc;
+      patchInfos[currentPatchI].expansionI = 0xff;
+      patchInfos[currentPatchI].patchI = j;
+      patchInfos[currentPatchI].present = true;
+      patchInfos[currentPatchI].drums = false;
+      patchInfos[currentPatchI].iInList = currentPatchI;
+      patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
+      currentPatchI++;
+  }
+
   // Internal User
   for (int j = 0; j < 64; j++) {
     patchInfos[currentPatchI].name =
@@ -45,33 +75,8 @@ VirtualJVProcessor::VirtualJVProcessor()
     patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
     currentPatchI++;
   }
-  patchInfos[currentPatchI].name = "Drums Internal User";
-  patchInfos[currentPatchI].ptr =
-      (char *)&loadedRoms[getRomIndex("jv880_rom2.bin")][0x00e760];
-  patchInfos[currentPatchI].nameLength = 21;
-  patchInfos[currentPatchI].expansionI = 0xff;
-  patchInfos[currentPatchI].patchI = 0;
-  patchInfos[currentPatchI].present = true;
-  patchInfos[currentPatchI].drums = true;
-  patchInfos[currentPatchI].iInList = currentPatchI;
-  patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
-  currentPatchI++;
 
-  // Internal A
-  for (int j = 0; j < 64; j++) {
-    patchInfos[currentPatchI].name =
-        (const char *)&loadedRoms[getRomIndex("jv880_rom2.bin")]
-                                 [0x010ce0 + j * 0x16a];
-    patchInfos[currentPatchI].nameLength = 0xc;
-    patchInfos[currentPatchI].expansionI = 0xff;
-    patchInfos[currentPatchI].patchI = j;
-    patchInfos[currentPatchI].present = true;
-    patchInfos[currentPatchI].drums = false;
-    patchInfos[currentPatchI].iInList = currentPatchI;
-    patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
-    currentPatchI++;
-  }
-  patchInfos[currentPatchI].name = "Drums Internal A";
+  patchInfos[currentPatchI].name = "Rhythm Set Int A";
   patchInfos[currentPatchI].ptr =
       (char *)&loadedRoms[getRomIndex("jv880_rom2.bin")][0x016760];
   patchInfos[currentPatchI].nameLength = 21;
@@ -83,23 +88,21 @@ VirtualJVProcessor::VirtualJVProcessor()
   patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
   currentPatchI++;
 
-  // Internal B
-  for (int j = 0; j < 64; j++) {
-    patchInfos[currentPatchI].name =
-        (const char *)&loadedRoms[getRomIndex("jv880_rom2.bin")]
-                                 [0x018ce0 + j * 0x16a];
-    patchInfos[currentPatchI].nameLength = 0xc;
-    patchInfos[currentPatchI].expansionI = 0xff;
-    patchInfos[currentPatchI].patchI = j;
-    patchInfos[currentPatchI].present = true;
-    patchInfos[currentPatchI].drums = false;
-    patchInfos[currentPatchI].iInList = currentPatchI;
-    patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
-    currentPatchI++;
-  }
-  patchInfos[currentPatchI].name = "Drums Internal B";
+  patchInfos[currentPatchI].name = "Rhythm Set Int B";
   patchInfos[currentPatchI].ptr =
       (char *)&loadedRoms[getRomIndex("jv880_rom2.bin")][0x01e760];
+  patchInfos[currentPatchI].nameLength = 21;
+  patchInfos[currentPatchI].expansionI = 0xff;
+  patchInfos[currentPatchI].patchI = 0;
+  patchInfos[currentPatchI].present = true;
+  patchInfos[currentPatchI].drums = true;
+  patchInfos[currentPatchI].iInList = currentPatchI;
+  patchInfoPerGroup[0].push_back(&patchInfos[currentPatchI]);
+  currentPatchI++;
+
+  patchInfos[currentPatchI].name = "Rhythm Set User";
+  patchInfos[currentPatchI].ptr =
+      (char*)&loadedRoms[getRomIndex("jv880_rom2.bin")][0x00e760];
   patchInfos[currentPatchI].nameLength = 21;
   patchInfos[currentPatchI].expansionI = 0xff;
   patchInfos[currentPatchI].patchI = 0;
@@ -175,7 +178,7 @@ VirtualJVProcessor::VirtualJVProcessor()
 
       char *namePtr = (char *)calloc(32, 1);
       patchInfos[currentPatchI].name = namePtr;
-      sprintf(namePtr, "Exp %d Drums %d", i, j);
+      sprintf(namePtr, "Rhythm Set %d", j + 1);
 
       patchInfos[currentPatchI].ptr =
           (const char *)&expansionsDescr[i][patchesOffset + j * 0xa7c];
@@ -277,7 +280,10 @@ void VirtualJVProcessor::setCurrentProgram(int index) {
 
   if (auto editor = getActiveEditor())
   {
-      dynamic_cast<VirtualJVEditor*>(editor)->updateEditTabs();
+      auto e = dynamic_cast<VirtualJVEditor*>(editor);
+
+      e->showToneOrRhythmEditTabs(status.isDrums);
+      e->updateEditTabs();
   }
 }
 
@@ -390,7 +396,10 @@ void VirtualJVProcessor::setStateInformation(const void *data,
 
   if (auto editor = getActiveEditor())
   {
-      dynamic_cast<VirtualJVEditor*>(editor)->updateEditTabs();
+      auto e = dynamic_cast<VirtualJVEditor*>(editor);
+
+      e->showToneOrRhythmEditTabs(status.isDrums);
+      e->updateEditTabs();
   }
 }
 

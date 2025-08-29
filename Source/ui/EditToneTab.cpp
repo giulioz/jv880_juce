@@ -10,7 +10,9 @@
 
 #include <JuceHeader.h>
 #include <algorithm>
+
 #include "EditToneTab.h"
+
 #include "../PluginEditor.h"
 #include "../dataStructures.h"
 

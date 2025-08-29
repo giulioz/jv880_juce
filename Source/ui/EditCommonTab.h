@@ -41,6 +41,7 @@ public:
   void textEditorTextChanged(juce::TextEditor &) override;
 
   void updateValues();
+  void rhythmSetMode(const bool isRhythm);
 
   void sendSysexPatchNameChange();
   void sendSysexPatchCommonParamChange(const uint8_t address, const uint8_t value);

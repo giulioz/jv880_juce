@@ -9,7 +9,9 @@
 #pragma once
 
 #include <JuceHeader.h>
+
 #include "PluginProcessor.h"
+
 #include "ui/widgets/LCDisplay.h"
 #include "ui/PatchBrowser.h"
 #include "ui/EditCommonTab.h"
@@ -31,6 +33,7 @@ public:
 
     uint8_t getSelectedRomIdx();
     void updateEditTabs();
+    void showToneOrRhythmEditTabs(const bool isRhythm);
 
 private:
     VirtualJVProcessor& processor;

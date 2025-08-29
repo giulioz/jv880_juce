@@ -24,17 +24,6 @@ VirtualJVEditor::VirtualJVEditor(
 
   setSize(820, 900);
 
-  const auto bgColor = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
-
-  tabs.addTab("Browse", bgColor, &patchBrowser, false);
-  tabs.addTab("Common", bgColor, &editCommonTab, false);
-  tabs.addTab("Tone 1", bgColor, &editTone1Tab, false);
-  tabs.addTab("Tone 2", bgColor, &editTone2Tab, false);
-  tabs.addTab("Tone 3", bgColor, &editTone3Tab, false);
-  tabs.addTab("Tone 4", bgColor, &editTone4Tab, false);
-  tabs.addTab("Rhythm", bgColor, &editRhythmTab, false);
-  tabs.addTab("Settings", bgColor, &settingsTab, false);
-
   if (!processor.loaded) {
     juce::AlertWindow::showAsync(
         juce::MessageBoxOptions()
@@ -57,6 +46,7 @@ VirtualJVEditor::VirtualJVEditor(
   else
   {
       updateEditTabs();
+      showToneOrRhythmEditTabs(processor.status.isDrums);
   }
 }
 
@@ -71,6 +61,41 @@ void VirtualJVEditor::updateEditTabs()
     editTone4Tab.updateValues();
     editRhythmTab.updateValues();
     settingsTab.updateValues();
+}
+
+void VirtualJVEditor::showToneOrRhythmEditTabs(const bool isRhythm)
+{
+    const auto bgColor = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
+    const auto selTab = tabs.getCurrentTabIndex();
+
+    tabs.clearTabs();
+
+    if (isRhythm)
+    {
+        tabs.addTab("Browse", bgColor, &patchBrowser, false);
+        tabs.addTab("Settings", bgColor, &settingsTab, false);
+        tabs.addTab("Common", bgColor, &editCommonTab, false);
+        tabs.addTab("Rhythm Set", bgColor, &editRhythmTab, false);
+    }
+    else
+    {
+        tabs.addTab("Browse", bgColor, &patchBrowser, false);
+        tabs.addTab("Settings", bgColor, &settingsTab, false);
+        tabs.addTab("Common", bgColor, &editCommonTab, false);
+        tabs.addTab("Tone 1", bgColor, &editTone1Tab, false);
+        tabs.addTab("Tone 2", bgColor, &editTone2Tab, false);
+        tabs.addTab("Tone 3", bgColor, &editTone3Tab, false);
+        tabs.addTab("Tone 4", bgColor, &editTone4Tab, false);
+    }
+
+    // I don't know if the selected tab index resets after calling clearTabs(),
+    // so just making sure that we stay where we were before the tab clearout
+    if (selTab >= 3 && selTab <= 6)
+    {
+        tabs.setCurrentTabIndex(3);
+    }
+
+    editCommonTab.rhythmSetMode(isRhythm);
 }
 
 uint8_t VirtualJVEditor::getSelectedRomIdx()

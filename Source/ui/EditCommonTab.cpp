@@ -194,6 +194,22 @@ void EditCommonTab::updateValues()
     portamentoTimeSlider    .setValue(patch->portamentoTime & 0x7f, juce::dontSendNotification);
 }
 
+void EditCommonTab::rhythmSetMode(const bool isRhythm)
+{
+    velocitySwitchToggle  .setVisible(!isRhythm);
+    levelSlider           .setVisible(!isRhythm);
+    panSlider             .setVisible(!isRhythm);
+    analogFeelSlider      .setVisible(!isRhythm);
+    bendRangeDownSlider   .setVisible(!isRhythm);
+    bendRangeUpSlider     .setVisible(!isRhythm);
+    keyAssignComboBox     .setVisible(!isRhythm);
+    soloLegatoToggle      .setVisible(!isRhythm);
+    portamentoToggle      .setVisible(!isRhythm);
+    portamentoModeComboBox.setVisible(!isRhythm);
+    portamentoTypeComboBox.setVisible(!isRhythm);
+    portamentoTimeSlider  .setVisible(!isRhythm);
+}
+
 void EditCommonTab::resized()
 {
     const auto top = 30;

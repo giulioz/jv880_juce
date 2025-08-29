@@ -10,8 +10,9 @@
 
 #pragma once
 
-#include "../PluginProcessor.h"
 #include <JuceHeader.h>
+
+#include "../PluginProcessor.h"
 
 class VirtualJVEditor;
 
