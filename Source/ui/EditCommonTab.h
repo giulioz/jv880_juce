@@ -77,6 +77,7 @@ private:
       PortamentoType      = 146U,
       PortamentoTime      = 147U,
   };
+
   VirtualJVProcessor &processor;
 
   juce::Label patchNameLabel{ "", "Patch Name" };

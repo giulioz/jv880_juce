@@ -21,7 +21,7 @@ struct Tone
   uint8_t velocityRangeLow;
   uint8_t velocityRangeUp;
   uint8_t matrixModDestAB;
-  uint8_t matrixModDestCB;
+  uint8_t matrixModDestCD;
   uint8_t matrixModSensA;
   uint8_t matrixModSensB;
   uint8_t matrixModSensC;
@@ -54,8 +54,8 @@ struct Tone
   uint8_t lfo2TvaDepth;
   int8_t pitchCoarse;
   int8_t pitchFine;
-  uint8_t tvaPanningKFRandomPitch; // high: tva panning | low: random pitch
-  uint8_t tvpTimeKFKeyfollow;
+  uint8_t tvaPanKFpitchRandom; // high: tva panning | low: random pitch
+  uint8_t tvpKFtvaTimeKF;
   uint8_t tvpVelocity;
   uint8_t tvpT1T4Velocity;
   uint8_t tvpEnvDepth;

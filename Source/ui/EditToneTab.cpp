@@ -21,62 +21,47 @@ EditToneTab::EditToneTab
     ( VirtualJVProcessor &p, VirtualJVEditor *e, uint8_t toneIn)
     : processor(p), editor(e), toneCount(toneIn)
 {
-    addAndMakeVisible(waveGroupLabel);
-    waveGroupLabel.setText("Wave Group", juce::dontSendNotification);
-    waveGroupLabel.attachToComponent(&waveGroupComboBox, true);
     addAndMakeVisible(waveGroupComboBox);
-    waveGroupComboBox.setScrollWheelEnabled(true);
     waveGroupComboBox.addListener(this);
     waveGroupComboBox.addItem("Internal", 1);
     waveGroupComboBox.addItem("Expansion", 2);
     waveGroupComboBox.setSelectedItemIndex(0);
 
+    addAndMakeVisible(waveGroupLabel);
+    waveGroupLabel.attachToComponent(&waveGroupComboBox, true);
+
     addAndMakeVisible(waveformComboBox);
-    waveformComboBox.setScrollWheelEnabled(true);
     waveformComboBox.addListener(this);
 
-    //updateWaveformComboBox(waveformComboBox);
-
     addAndMakeVisible(waveformLabel);
-    waveformLabel.setText("Waveform", juce::dontSendNotification);
     waveformLabel.attachToComponent(&waveformComboBox, true);
 
     addAndMakeVisible(toneSwitchToggle);
     toneSwitchToggle.addListener(this);
-    toneSwitchToggle.setButtonText("Enable");
 
     addAndMakeVisible(FXMSwitchToggle);
     FXMSwitchToggle.addListener(this);
-    FXMSwitchToggle.setButtonText("FXM");
 
     addAndMakeVisible(FXMDepthSlider);
-    FXMDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    FXMDepthSlider.setRange(1, 16, 1);
     FXMDepthSlider.addListener(this);
+
     addAndMakeVisible(FXMDepthLabel);
-    FXMDepthLabel.setText("Depth", juce::dontSendNotification);
     FXMDepthLabel.attachToComponent(&FXMDepthSlider, true);
 
     addAndMakeVisible(velRangeLowSlider);
-    velRangeLowSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    velRangeLowSlider.setRange(0, 127, 1);
     velRangeLowSlider.addListener(this);
+
     addAndMakeVisible(velRangeLabel);
-    velRangeLabel.setText("Velocity Range", juce::dontSendNotification);
     velRangeLabel.attachToComponent(&velRangeLowSlider, true);
 
     addAndMakeVisible(velRangeHighSlider);
-    velRangeHighSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    velRangeHighSlider.setRange(0, 127, 1);
     velRangeHighSlider.addListener(this);
 
     addAndMakeVisible(volumeSwitchToggle);
     volumeSwitchToggle.addListener(this);
-    volumeSwitchToggle.setButtonText("CC7 Volume");
 
     addAndMakeVisible(holdSwitchToggle);
     holdSwitchToggle.addListener(this);
-    holdSwitchToggle.setButtonText("Sustain Pedal");
 
     const std::vector<std::string> modSources
     {
@@ -96,147 +81,123 @@ EditToneTab::EditToneTab
     };
 
     addAndMakeVisible(modDestALabel);
-    modDestALabel.setText("MW 1", juce::dontSendNotification);
     modDestALabel.attachToComponent(&modDestAComboBox, true);
+
     addAndMakeVisible(modDestAComboBox);
     modDestAComboBox.addListener(this);
-    modDestAComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(modDestAComboBox, modSources);
+
     addAndMakeVisible(modSensASlider);
-    modSensASlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    modSensASlider.setRange(-63, 63, 1);
     modSensASlider.addListener(this);
 
     addAndMakeVisible(modDestBLabel);
-    modDestBLabel.setText("2", juce::dontSendNotification);
     modDestBLabel.attachToComponent(&modDestBComboBox, true);
+
     addAndMakeVisible(modDestBComboBox);
     modDestBComboBox.addListener(this);
-    modDestBComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(modDestBComboBox, modSources);
+
     addAndMakeVisible(modSensBSlider);
-    modSensBSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    modSensBSlider.setRange(-63, 63, 1);
     modSensBSlider.addListener(this);
 
     addAndMakeVisible(modDestCLabel);
-    modDestCLabel.setText("3", juce::dontSendNotification);
     modDestCLabel.attachToComponent(&modDestCComboBox, true);
+
     addAndMakeVisible(modDestCComboBox);
     modDestCComboBox.addListener(this);
-    modDestCComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(modDestCComboBox, modSources);
+
     addAndMakeVisible(modSensCSlider);
-    modSensCSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    modSensCSlider.setRange(-63, 63, 1);
     modSensCSlider.addListener(this);
 
     addAndMakeVisible(modDestDLabel);
-    modDestDLabel.setText("4", juce::dontSendNotification);
     modDestDLabel.attachToComponent(&modDestDComboBox, true);
+
     addAndMakeVisible(modDestDComboBox);
     modDestDComboBox.addListener(this);
-    modDestDComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(modDestDComboBox, modSources);
+
     addAndMakeVisible(modSensDSlider);
-    modSensDSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    modSensDSlider.setRange(-63, 63, 1);
     modSensDSlider.addListener(this);
 
     addAndMakeVisible(aftDestALabel);
-    aftDestALabel.setText("AT 1", juce::dontSendNotification);
     aftDestALabel.attachToComponent(&aftDestAComboBox, true);
+
     addAndMakeVisible(aftDestAComboBox);
     aftDestAComboBox.addListener(this);;
-    aftDestAComboBox.setScrollWheelEnabled(true);;
     addMenuEntriesFromArray(aftDestAComboBox, modSources);
+
     addAndMakeVisible(aftSensASlider);
-    aftSensASlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aftSensASlider.setRange(-63, 63, 1);
     aftSensASlider.addListener(this);
 
     addAndMakeVisible(aftDestBLabel);
-    aftDestBLabel.setText("2", juce::dontSendNotification);
     aftDestBLabel.attachToComponent(&aftDestBComboBox, true);
+
     addAndMakeVisible(aftDestBComboBox);
     aftDestBComboBox.addListener(this);
-    aftDestBComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aftDestBComboBox, modSources);
+
     addAndMakeVisible(aftSensBSlider);
-    aftSensBSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aftSensBSlider.setRange(-63, 63, 1);
     aftSensBSlider.addListener(this);
 
     addAndMakeVisible(aftDestCLabel);
-    aftDestCLabel.setText("3", juce::dontSendNotification);
     aftDestCLabel.attachToComponent(&aftDestCComboBox, true);
+
     addAndMakeVisible(aftDestCComboBox);
     aftDestCComboBox.addListener(this);
-    aftDestCComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aftDestCComboBox, modSources);
+
     addAndMakeVisible(aftSensCSlider);
-    aftSensCSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aftSensCSlider.setRange(-63, 63, 1);
     aftSensCSlider.addListener(this);
 
     addAndMakeVisible(aftDestDLabel);
-    aftDestDLabel.setText("4", juce::dontSendNotification);
     aftDestDLabel.attachToComponent(&aftDestDComboBox, true);
+
     addAndMakeVisible(aftDestDComboBox);
     aftDestDComboBox.addListener(this);
-    aftDestDComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aftDestDComboBox, modSources);
+
     addAndMakeVisible(aftSensDSlider);
-    aftSensDSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aftSensDSlider.setRange(-63, 63, 1);
     aftSensDSlider.addListener(this);
 
     addAndMakeVisible(expDestALabel);
-    expDestALabel.setText("EXP 1", juce::dontSendNotification);
     expDestALabel.attachToComponent(&expDestAComboBox, true);
+
     addAndMakeVisible(expDestAComboBox);
     expDestAComboBox.addListener(this);
-    expDestAComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(expDestAComboBox, modSources);
+
     addAndMakeVisible(expSensASlider);
-    expSensASlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    expSensASlider.setRange(-63, 63, 1);
     expSensASlider.addListener(this);
 
     addAndMakeVisible(expDestBLabel);
-    expDestBLabel.setText("2", juce::dontSendNotification);
     expDestBLabel.attachToComponent(&expDestBComboBox, true);
+
     addAndMakeVisible(expDestBComboBox);
     expDestBComboBox.addListener(this);
-    expDestBComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(expDestBComboBox, modSources);
+
     addAndMakeVisible(expSensBSlider);
-    expSensBSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    expSensBSlider.setRange(-63, 63, 1);
     expSensBSlider.addListener(this);
 
     addAndMakeVisible(expDestCLabel);
-    expDestCLabel.setText("3", juce::dontSendNotification);
     expDestCLabel.attachToComponent(&expDestCComboBox, true);
+
     addAndMakeVisible(expDestCComboBox);
     expDestCComboBox.addListener(this);
-    expDestCComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(expDestCComboBox, modSources);
+
     addAndMakeVisible(expSensCSlider);
-    expSensCSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    expSensCSlider.setRange(-63, 63, 1);
     expSensCSlider.addListener(this);
 
     addAndMakeVisible(expDestDLabel);
-    expDestDLabel.setText("4", juce::dontSendNotification);
     expDestDLabel.attachToComponent(&expDestDComboBox, true);
+
     addAndMakeVisible(expDestDComboBox);
     expDestDComboBox.addListener(this);
-    expDestDComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(expDestDComboBox, modSources);
+
     addAndMakeVisible(expSensDSlider);
-    expSensDSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    expSensDSlider.setRange(-63, 63, 1);
     expSensDSlider.addListener(this);
 
     const std::vector<std::string> lfoWaves{"Triangle", "Sine", "Sawtooth", "Square", "Random 1", "Random 2"};
@@ -244,145 +205,127 @@ EditToneTab::EditToneTab
     const std::vector<std::string> lfoOffsets{"-100", "-50", "0", "+50", "+100"};
 
     addAndMakeVisible(lfo1FormLabel);
-    lfo1FormLabel.setText("LFO 1", juce::dontSendNotification);
     lfo1FormLabel.attachToComponent(&lfo1FormComboBox, true);
+
     addAndMakeVisible(lfo1FormComboBox);
     lfo1FormComboBox.addListener(this);
-    lfo1FormComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(lfo1FormComboBox, lfoWaves);
+
     addAndMakeVisible(lfo1OffsetLabel);
-    lfo1OffsetLabel.setText("Offset", juce::dontSendNotification);
     lfo1OffsetLabel.attachToComponent(&lfo1OffsetComboBox, true);
+
     addAndMakeVisible(lfo1OffsetComboBox);
     lfo1OffsetComboBox.addListener(this);
-    lfo1OffsetComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(lfo1OffsetComboBox, lfoOffsets);
+
     addAndMakeVisible(lfo1SyncToggle);
     lfo1SyncToggle.addListener(this);
-    lfo1SyncToggle.setButtonText("Key Sync");
+
     addAndMakeVisible(lfo1RateSlider);
-    lfo1RateSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo1RateSlider.setRange(0, 127, 1);
     lfo1RateSlider.addListener(this);
+
     addAndMakeVisible(lfo1RateLabel);
-    lfo1RateLabel.setText("Rate", juce::dontSendNotification);
     lfo1RateLabel.attachToComponent(&lfo1RateSlider, true);
+
     addAndMakeVisible(lfo1DelaySlider);
-    lfo1DelaySlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo1DelaySlider.setRange(0, 128, 1);
     lfo1DelaySlider.addListener(this);
+
     addAndMakeVisible(lfo1DelayLabel);
-    lfo1DelayLabel.setText("Delay", juce::dontSendNotification);
     lfo1DelayLabel.attachToComponent(&lfo1DelaySlider, true);
+
     addAndMakeVisible(lfo1FadeToggle);
     lfo1FadeToggle.addListener(this);
-    lfo1FadeToggle.setButtonText("Fade Out");
+
     addAndMakeVisible(lfo1FadeTimeSlider);
-    lfo1FadeTimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo1FadeTimeSlider.setRange(0, 127, 1);
     lfo1FadeTimeSlider.addListener(this);
+
     addAndMakeVisible(lfo1FadeTimeLabel);
-    lfo1FadeTimeLabel.setText("Fade Time", juce::dontSendNotification);
     lfo1FadeTimeLabel.attachToComponent(&lfo1FadeTimeSlider, true);
+
     addAndMakeVisible(lfo1PitchDepthSlider);
-    lfo1PitchDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo1PitchDepthSlider.setRange(-60, 60, 1);
     lfo1PitchDepthSlider.addListener(this);
+
     addAndMakeVisible(lfo1PitchDepthLabel);
-    lfo1PitchDepthLabel.setText("Pitch", juce::dontSendNotification);
     lfo1PitchDepthLabel.attachToComponent(&lfo1PitchDepthSlider, true);
+
     addAndMakeVisible(lfo1TVFDepthSlider);
-    lfo1TVFDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo1TVFDepthSlider.setRange(-63, 63, 1);
     lfo1TVFDepthSlider.addListener(this);
+
     addAndMakeVisible(lfo1TVFDepthLabel);
-    lfo1TVFDepthLabel.setText("TVF", juce::dontSendNotification);
     lfo1TVFDepthLabel.attachToComponent(&lfo1TVFDepthSlider, true);
+
     addAndMakeVisible(lfo1TVADepthSlider);
-    lfo1TVADepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo1TVADepthSlider.setRange(-63, 63, 1);
     lfo1TVADepthSlider.addListener(this);
+
     addAndMakeVisible(lfo1TVADepthLabel);
-    lfo1TVADepthLabel.setText("TVA", juce::dontSendNotification);
     lfo1TVADepthLabel.attachToComponent(&lfo1TVADepthSlider, true);
 
     addAndMakeVisible(lfo2FormLabel);
-    lfo2FormLabel.setText("LFO 2", juce::dontSendNotification);
     lfo2FormLabel.attachToComponent(&lfo2FormComboBox, true);
+
     addAndMakeVisible(lfo2FormComboBox);
     lfo2FormComboBox.addListener(this);
-    lfo2FormComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(lfo2FormComboBox, lfoWaves);
+
     addAndMakeVisible(lfo2OffsetLabel);
-    lfo2OffsetLabel.setText("Offset", juce::dontSendNotification);
     lfo2OffsetLabel.attachToComponent(&lfo2OffsetComboBox, true);
+
     addAndMakeVisible(lfo2OffsetComboBox);
     lfo2OffsetComboBox.addListener(this);
-    lfo2OffsetComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(lfo2OffsetComboBox, lfoOffsets);
+
     addAndMakeVisible(lfo2SyncToggle);
     lfo2SyncToggle.addListener(this);
-    lfo2SyncToggle.setButtonText("Key Sync");
+
     addAndMakeVisible(lfo2RateSlider);
-    lfo2RateSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo2RateSlider.setRange(0, 127, 1);
     lfo2RateSlider.addListener(this);
+
     addAndMakeVisible(lfo2RateLabel);
-    lfo2RateLabel.setText("Rate", juce::dontSendNotification);
     lfo2RateLabel.attachToComponent(&lfo2RateSlider, true);
+
     addAndMakeVisible(lfo2DelaySlider);
-    lfo2DelaySlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo2DelaySlider.setRange(0, 128, 1);
     lfo2DelaySlider.addListener(this);
+
     addAndMakeVisible(lfo2DelayLabel);
-    lfo2DelayLabel.setText("Delay", juce::dontSendNotification);
     lfo2DelayLabel.attachToComponent(&lfo2DelaySlider, true);
+
     addAndMakeVisible(lfo2FadeToggle);
     lfo2FadeToggle.addListener(this);
-    lfo2FadeToggle.setButtonText("Fade Out");
+
     addAndMakeVisible(lfo2FadeTimeSlider);
-    lfo2FadeTimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo2FadeTimeSlider.setRange(0, 127, 1);
     lfo2FadeTimeSlider.addListener(this);
+
     addAndMakeVisible(lfo2FadeTimeLabel);
-    lfo2FadeTimeLabel.setText("Fade Time", juce::dontSendNotification);
     lfo2FadeTimeLabel.attachToComponent(&lfo2FadeTimeSlider, true);
+
     addAndMakeVisible(lfo2PitchDepthSlider);
-    lfo2PitchDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo2PitchDepthSlider.setRange(-60, 60, 1);
     lfo2PitchDepthSlider.addListener(this);
+
     addAndMakeVisible(lfo2PitchDepthLabel);
-    lfo2PitchDepthLabel.setText("Pitch", juce::dontSendNotification);
     lfo2PitchDepthLabel.attachToComponent(&lfo2PitchDepthSlider, true);
+
     addAndMakeVisible(lfo2TVFDepthSlider);
-    lfo2TVFDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo2TVFDepthSlider.setRange(-63, 63, 1);
     lfo2TVFDepthSlider.addListener(this);
+
     addAndMakeVisible(lfo2TVFDepthLabel);
-    lfo2TVFDepthLabel.setText("TVF", juce::dontSendNotification);
     lfo2TVFDepthLabel.attachToComponent(&lfo2TVFDepthSlider, true);
+
     addAndMakeVisible(lfo2TVADepthSlider);
-    lfo2TVADepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    lfo2TVADepthSlider.setRange(-63, 63, 1);
     lfo2TVADepthSlider.addListener(this);
+
     addAndMakeVisible(lfo2TVADepthLabel);
-    lfo2TVADepthLabel.setText("TVA", juce::dontSendNotification);
     lfo2TVADepthLabel.attachToComponent(&lfo2TVADepthSlider, true);
 
     addAndMakeVisible(pitchCoarseSlider);
-    pitchCoarseSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    pitchCoarseSlider.setRange(-48, 48, 1);
     pitchCoarseSlider.addListener(this);
+
     addAndMakeVisible(pitchCoarseLabel);
-    pitchCoarseLabel.setText("Coarse", juce::dontSendNotification);
     pitchCoarseLabel.attachToComponent(&pitchCoarseSlider, true);
 
     addAndMakeVisible(pitchFineSlider);
-    pitchFineSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    pitchFineSlider.setRange(-50, 50, 1);
     pitchFineSlider.addListener(this);
+
     addAndMakeVisible(pitchFineLabel);
-    pitchFineLabel.setText("Fine", juce::dontSendNotification);
     pitchFineLabel.attachToComponent(&pitchFineSlider, true);
 
     const std::vector<std::string> pitchRandoms
@@ -411,396 +354,313 @@ EditToneTab::EditToneTab
 
     addAndMakeVisible(pitchRandomComboBox);
     pitchRandomComboBox.addListener(this);
-    pitchRandomComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(pitchRandomComboBox, pitchRandoms);
+
     addAndMakeVisible(pitchRandomLabel);
-    pitchRandomLabel.setText("Random | KF", juce::dontSendNotification);
     pitchRandomLabel.attachToComponent(&pitchRandomComboBox, true);
 
     addAndMakeVisible(pitchKFComboBox);
     pitchKFComboBox.addListener(this);
-    pitchKFComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(pitchKFComboBox, keyFollows);
 
     addAndMakeVisible(penvLevSensSlider);
-    penvLevSensSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penvLevSensSlider.setRange(-12, 12, 1);
     penvLevSensSlider.addListener(this);
+
     addAndMakeVisible(penvLevSensLabel);
-    penvLevSensLabel.setText("Pitch Sens", juce::dontSendNotification);
     penvLevSensLabel.attachToComponent(&penvLevSensSlider, true);
 
     addAndMakeVisible(penvTime1SensComboBox);
     penvTime1SensComboBox.addListener(this);
-    penvTime1SensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(penvTime1SensComboBox, np100);
+
     addAndMakeVisible(penvTime1SensLabel);
-    penvTime1SensLabel.setText("Time Sens", juce::dontSendNotification);
     penvTime1SensLabel.attachToComponent(&penvTime1SensComboBox, true);
 
     addAndMakeVisible(penvTime4SensComboBox);
     penvTime4SensComboBox.addListener(this);
-    penvTime4SensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(penvTime4SensComboBox, np100);
 
     addAndMakeVisible(penvTimeKFSensComboBox);
     penvTimeKFSensComboBox.addListener(this);
-    penvTimeKFSensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(penvTimeKFSensComboBox, np100);
+
     addAndMakeVisible(penvTimeKFSensLabel);
-    penvTimeKFSensLabel.setText("Time KF", juce::dontSendNotification);
     penvTimeKFSensLabel.attachToComponent(&penvTimeKFSensComboBox, true);
 
     addAndMakeVisible(penvDepthSlider);
-    penvDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penvDepthSlider.setRange(-12, 12, 1);
     penvDepthSlider.addListener(this);
+
     addAndMakeVisible(penvDepthLabel);
-    penvDepthLabel.setText("Pitch Depth", juce::dontSendNotification);
     penvDepthLabel.attachToComponent(&penvDepthSlider, true);
 
     addAndMakeVisible(penv1TimeSlider);
-    penv1TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv1TimeSlider.setRange(0, 127, 1);
     penv1TimeSlider.addListener(this);
+
     addAndMakeVisible(penv1TimeLabel);
-    penv1TimeLabel.setText("Time | Level 1", juce::dontSendNotification);
     penv1TimeLabel.attachToComponent(&penv1TimeSlider, true);
+
     addAndMakeVisible(penv1LevelSlider);
-    penv1LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv1LevelSlider.setRange(-63, 63, 1);
     penv1LevelSlider.addListener(this);
 
     addAndMakeVisible(penv2TimeSlider);
-    penv2TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv2TimeSlider.setRange(0, 127, 1);
     penv2TimeSlider.addListener(this);
+
     addAndMakeVisible(penv2TimeLabel);
-    penv2TimeLabel.setText("2", juce::dontSendNotification);
     penv2TimeLabel.attachToComponent(&penv2TimeSlider, true);
+
     addAndMakeVisible(penv2LevelSlider);
-    penv2LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv2LevelSlider.setRange(-63, 63, 1);
     penv2LevelSlider.addListener(this);
 
     addAndMakeVisible(penv3TimeSlider);
-    penv3TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv3TimeSlider.setRange(0, 127, 1);
     penv3TimeSlider.addListener(this);
+
     addAndMakeVisible(penv3TimeLabel);
-    penv3TimeLabel.setText("3", juce::dontSendNotification);
     penv3TimeLabel.attachToComponent(&penv3TimeSlider, true);
+
     addAndMakeVisible(penv3LevelSlider);
-    penv3LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv3LevelSlider.setRange(-63, 63, 1);
     penv3LevelSlider.addListener(this);
 
     addAndMakeVisible(penv4TimeSlider);
-    penv4TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv4TimeSlider.setRange(0, 127, 1);
     penv4TimeSlider.addListener(this);
+
     addAndMakeVisible(penv4TimeLabel);
-    penv4TimeLabel.setText("4", juce::dontSendNotification);
     penv4TimeLabel.attachToComponent(&penv4TimeSlider, true);
+
     addAndMakeVisible(penv4LevelSlider);
-    penv4LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    penv4LevelSlider.setRange(-63, 63, 1);
     penv4LevelSlider.addListener(this);
 
     addAndMakeVisible(filterModeComboBox);
     filterModeComboBox.addListener(this);
-    filterModeComboBox.setScrollWheelEnabled(true);
     filterModeComboBox.addItem("Off", 1);
     filterModeComboBox.addItem("Lowpass", 2);
     filterModeComboBox.addItem("Highpass", 3);
+
     addAndMakeVisible(filterModeLabel);
-    filterModeLabel.setText("Filter Mode", juce::dontSendNotification);
     filterModeLabel.attachToComponent(&filterModeComboBox, true);
 
     addAndMakeVisible(filterCutoffSlider);
-    filterCutoffSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    filterCutoffSlider.setRange(0, 127, 1);
     filterCutoffSlider.addListener(this);
+
     addAndMakeVisible(filterCutoffLabel);
-    filterCutoffLabel.setText("Cutoff", juce::dontSendNotification);
     filterCutoffLabel.attachToComponent(&filterCutoffSlider, true);
 
     addAndMakeVisible(filterResoSlider);
-    filterResoSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    filterResoSlider.setRange(0, 127, 1);
     filterResoSlider.addListener(this);
+
     addAndMakeVisible(filterResoLabel);
-    filterResoLabel.setText("Reso | Mode", juce::dontSendNotification);
     filterResoLabel.attachToComponent(&filterResoSlider, true);
 
     addAndMakeVisible(filterResoModeComboBox);
     filterResoModeComboBox.addListener(this);
-    filterResoModeComboBox.setScrollWheelEnabled(true);
     filterResoModeComboBox.addItem("Soft", 1);
     filterResoModeComboBox.addItem("Hard", 2);
 
     addAndMakeVisible(filterKFComboBox);
     filterKFComboBox.addListener(this);
-    filterKFComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(filterKFComboBox, keyFollows);
+
     addAndMakeVisible(filterKFLabel);
-    filterKFLabel.setText("KF | Vel Curve", juce::dontSendNotification);
     filterKFLabel.attachToComponent(&filterKFComboBox, true);
 
     std::vector<std::string> velCurves{ "1", "2", "3", "4", "5", "6", "7" };
 
     addAndMakeVisible(fenvVelCurveComboBox);
     fenvVelCurveComboBox.addListener(this);
-    fenvVelCurveComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(fenvVelCurveComboBox, velCurves);
 
     addAndMakeVisible(fenvLevSensSlider);
-    fenvLevSensSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenvLevSensSlider.setRange(-63, 63, 1);
     fenvLevSensSlider.addListener(this);
+
     addAndMakeVisible(fenvLevSensLabel);
-    fenvLevSensLabel.setText("TVF Sens", juce::dontSendNotification);
     fenvLevSensLabel.attachToComponent(&fenvLevSensSlider, true);
 
     addAndMakeVisible(fenvTime1SensComboBox);
     fenvTime1SensComboBox.addListener(this);
-    fenvTime1SensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(fenvTime1SensComboBox, np100);
+
     addAndMakeVisible(fenvTime1SensLabel);
-    fenvTime1SensLabel.setText("Time Sens", juce::dontSendNotification);
     fenvTime1SensLabel.attachToComponent(&fenvTime1SensComboBox, true);
 
     addAndMakeVisible(fenvTime4SensComboBox);
     fenvTime4SensComboBox.addListener(this);
-    fenvTime4SensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(fenvTime4SensComboBox, np100);
 
     addAndMakeVisible(fenvTimeKFSensComboBox);
     fenvTimeKFSensComboBox.addListener(this);
-    fenvTimeKFSensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(fenvTimeKFSensComboBox, np100);
+
     addAndMakeVisible(fenvTimeKFSensLabel);
-    fenvTimeKFSensLabel.setText("Time KF", juce::dontSendNotification);
     fenvTimeKFSensLabel.attachToComponent(&fenvTimeKFSensComboBox, true);
 
     addAndMakeVisible(fenvDepthSlider);
-    fenvDepthSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenvDepthSlider.setRange(-63, 63, 1);
     fenvDepthSlider.addListener(this);
+
     addAndMakeVisible(fenvDepthLabel);
-    fenvDepthLabel.setText("TVF Depth", juce::dontSendNotification);
     fenvDepthLabel.attachToComponent(&fenvDepthSlider, true);
 
     addAndMakeVisible(fenv1TimeSlider);
-    fenv1TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv1TimeSlider.setRange(0, 127, 1);
     fenv1TimeSlider.addListener(this);
+
     addAndMakeVisible(fenv1TimeLabel);
-    fenv1TimeLabel.setText("Time | Level 1", juce::dontSendNotification);
     fenv1TimeLabel.attachToComponent(&fenv1TimeSlider, true);
+
     addAndMakeVisible(fenv1LevelSlider);
-    fenv1LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv1LevelSlider.setRange(0, 127, 1);
     fenv1LevelSlider.addListener(this);
 
     addAndMakeVisible(fenv2TimeSlider);
-    fenv2TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv2TimeSlider.setRange(0, 127, 1);
     fenv2TimeSlider.addListener(this);
+
     addAndMakeVisible(fenv2TimeLabel);
-    fenv2TimeLabel.setText("2", juce::dontSendNotification);
     fenv2TimeLabel.attachToComponent(&fenv2TimeSlider, true);
+
     addAndMakeVisible(fenv2LevelSlider);
-    fenv2LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv2LevelSlider.setRange(0, 127, 1);
     fenv2LevelSlider.addListener(this);
 
     addAndMakeVisible(fenv3TimeSlider);
-    fenv3TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv3TimeSlider.setRange(0, 127, 1);
     fenv3TimeSlider.addListener(this);
+
     addAndMakeVisible(fenv3TimeLabel);
-    fenv3TimeLabel.setText("3", juce::dontSendNotification);
     fenv3TimeLabel.attachToComponent(&fenv3TimeSlider, true);
+
     addAndMakeVisible(fenv3LevelSlider);
-    fenv3LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv3LevelSlider.setRange(0, 127, 1);
     fenv3LevelSlider.addListener(this);
 
     addAndMakeVisible(fenv4TimeSlider);
-    fenv4TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv4TimeSlider.setRange(0, 127, 1);
     fenv4TimeSlider.addListener(this);
+
     addAndMakeVisible(fenv4TimeLabel);
-    fenv4TimeLabel.setText("4", juce::dontSendNotification);
     fenv4TimeLabel.attachToComponent(&fenv4TimeSlider, true);
+
     addAndMakeVisible(fenv4LevelSlider);
-    fenv4LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    fenv4LevelSlider.setRange(0, 127, 1);
     fenv4LevelSlider.addListener(this);
 
     addAndMakeVisible(levelSlider);
-    levelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    levelSlider.setRange(0, 127, 1);
     levelSlider.addListener(this);
+
     addAndMakeVisible(levelLabel);
-    levelLabel.setText("Level", juce::dontSendNotification);
     levelLabel.attachToComponent(&levelSlider, true);
 
     addAndMakeVisible(levelKFComboBox);
     levelKFComboBox.addListener(this);
-    levelKFComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(levelKFComboBox, np100);
+
     addAndMakeVisible(levelKFLabel);
-    levelKFLabel.setText("Level/Pan KF", juce::dontSendNotification);
     levelKFLabel.attachToComponent(&levelKFComboBox, true);
 
     addAndMakeVisible(panSlider);
-    panSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    panSlider.setRange(-64, 64, 1);
     panSlider.addListener(this);
+
     addAndMakeVisible(panLabel);
-    panLabel.setText("Pan", juce::dontSendNotification);
     panLabel.attachToComponent(&panSlider, true);
 
     addAndMakeVisible(panKFComboBox);
     panKFComboBox.addListener(this);
-    panKFComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(panKFComboBox, np100);
 
     addAndMakeVisible(toneDelayComboBox);
     toneDelayComboBox.addListener(this);
-    toneDelayComboBox.setScrollWheelEnabled(true);
     toneDelayComboBox.addItem("Normal", 1);
     toneDelayComboBox.addItem("Hold", 2);
     toneDelayComboBox.addItem("Playmate", 3);
+
     addAndMakeVisible(toneDelayLabel);
-    toneDelayLabel.setText("Delay Mode", juce::dontSendNotification);
     toneDelayLabel.attachToComponent(&toneDelayComboBox, true);
 
     addAndMakeVisible(toneDelayTimeSlider);
-    toneDelayTimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    toneDelayTimeSlider.setRange(-64, 64, 1);
     toneDelayTimeSlider.addListener(this);
+
     addAndMakeVisible(toneDelayTimeLabel);
-    toneDelayTimeLabel.setText("Delay Time", juce::dontSendNotification);
     toneDelayTimeLabel.attachToComponent(&toneDelayTimeSlider, true);
 
     addAndMakeVisible(aenvVelCurveComboBox);
     aenvVelCurveComboBox.addListener(this);
-    aenvVelCurveComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aenvVelCurveComboBox, velCurves);
 
     addAndMakeVisible(aenvVelCurveLabel);
-    aenvVelCurveLabel.setText("Vel Curve", juce::dontSendNotification);
     aenvVelCurveLabel.attachToComponent(&aenvVelCurveComboBox, true);
 
     addAndMakeVisible(aenvLevSensSlider);
-    aenvLevSensSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenvLevSensSlider.setRange(-63, 63, 1);
     aenvLevSensSlider.addListener(this);
+
     addAndMakeVisible(aenvLevSensLabel);
-    aenvLevSensLabel.setText("TVF Sens", juce::dontSendNotification);
     aenvLevSensLabel.attachToComponent(&aenvLevSensSlider, true);
 
     addAndMakeVisible(aenvTime1SensComboBox);
     aenvTime1SensComboBox.addListener(this);
-    aenvTime1SensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aenvTime1SensComboBox, np100);
+
     addAndMakeVisible(aenvTime1SensLabel);
-    aenvTime1SensLabel.setText("Time Sens", juce::dontSendNotification);
     aenvTime1SensLabel.attachToComponent(&aenvTime1SensComboBox, true);
 
     addAndMakeVisible(aenvTime4SensComboBox);
     aenvTime4SensComboBox.addListener(this);
-    aenvTime4SensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aenvTime4SensComboBox, np100);
 
     addAndMakeVisible(aenvTimeKFSensComboBox);
     aenvTimeKFSensComboBox.addListener(this);
-    aenvTimeKFSensComboBox.setScrollWheelEnabled(true);
     addMenuEntriesFromArray(aenvTimeKFSensComboBox, np100);
+
     addAndMakeVisible(aenvTimeKFSensLabel);
-    aenvTimeKFSensLabel.setText("Time KF", juce::dontSendNotification);
     aenvTimeKFSensLabel.attachToComponent(&aenvTimeKFSensComboBox, true);
 
     addAndMakeVisible(aenv1TimeSlider);
-    aenv1TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv1TimeSlider.setRange(0, 127, 1);
     aenv1TimeSlider.addListener(this);
+
     addAndMakeVisible(aenv1TimeLabel);
-    aenv1TimeLabel.setText("Time | Level 1", juce::dontSendNotification);
     aenv1TimeLabel.attachToComponent(&aenv1TimeSlider, true);
+
     addAndMakeVisible(aenv1LevelSlider);
-    aenv1LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv1LevelSlider.setRange(0, 127, 1);
     aenv1LevelSlider.addListener(this);
 
     addAndMakeVisible(aenv2TimeSlider);
-    aenv2TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv2TimeSlider.setRange(0, 127, 1);
     aenv2TimeSlider.addListener(this);
+
     addAndMakeVisible(aenv2TimeLabel);
-    aenv2TimeLabel.setText("2", juce::dontSendNotification);
     aenv2TimeLabel.attachToComponent(&aenv2TimeSlider, true);
+
     addAndMakeVisible(aenv2LevelSlider);
-    aenv2LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv2LevelSlider.setRange(0, 127, 1);
     aenv2LevelSlider.addListener(this);
 
     addAndMakeVisible(aenv3TimeSlider);
-    aenv3TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv3TimeSlider.setRange(0, 127, 1);
     aenv3TimeSlider.addListener(this);
+
     addAndMakeVisible(aenv3TimeLabel);
-    aenv3TimeLabel.setText("3", juce::dontSendNotification);
     aenv3TimeLabel.attachToComponent(&aenv3TimeSlider, true);
+
     addAndMakeVisible(aenv3LevelSlider);
-    aenv3LevelSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv3LevelSlider.setRange(0, 127, 1);
     aenv3LevelSlider.addListener(this);
 
     addAndMakeVisible(aenv4TimeSlider);
-    aenv4TimeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    aenv4TimeSlider.setRange(0, 127, 1);
     aenv4TimeSlider.addListener(this);
+
     addAndMakeVisible(aenv4TimeLabel);
-    aenv4TimeLabel.setText("4", juce::dontSendNotification);
     aenv4TimeLabel.attachToComponent(&aenv4TimeSlider, true);
 
     addAndMakeVisible(drySlider);
-    drySlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    drySlider.setRange(0, 127, 1);
     drySlider.addListener(this);
+
     addAndMakeVisible(dryLabel);
-    dryLabel.setText("Dry Send", juce::dontSendNotification);
     dryLabel.attachToComponent(&drySlider, true);
 
     addAndMakeVisible(reverbSlider);
-    reverbSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    reverbSlider.setRange(0, 127, 1);
     reverbSlider.addListener(this);
+
     addAndMakeVisible(reverbLabel);
-    reverbLabel.setText("Reverb", juce::dontSendNotification);
     reverbLabel.attachToComponent(&reverbSlider, true);
 
     addAndMakeVisible(chorusSlider);
-    chorusSlider.setSliderStyle(juce::Slider::SliderStyle::LinearBar);
-    chorusSlider.setRange(0, 127, 1);
     chorusSlider.addListener(this);
+
     addAndMakeVisible(chorusLabel);
-    chorusLabel.setText("Chorus", juce::dontSendNotification);
     chorusLabel.attachToComponent(&chorusSlider, true);
 
     addAndMakeVisible(outputComboBox);
     outputComboBox.addListener(this);
-    outputComboBox.setScrollWheelEnabled(true);
     outputComboBox.addItem("Main", 1);
     outputComboBox.addItem("Sub", 2);
-    addAndMakeVisible(outputLabel);
-    outputLabel.setText("Output", juce::dontSendNotification);
-    outputLabel.attachToComponent(&outputComboBox, true);
 
+    addAndMakeVisible(outputLabel);
+    outputLabel.attachToComponent(&outputComboBox, true);
 }
 
 EditToneTab::~EditToneTab()
@@ -867,8 +727,8 @@ void EditToneTab::updateValues()
 
     modDestAComboBox.setSelectedItemIndex((tone.matrixModDestAB & 0xf), juce::dontSendNotification);
     modDestBComboBox.setSelectedItemIndex(((tone.matrixModDestAB & 0xf0) >> 4), juce::dontSendNotification);
-    modDestCComboBox.setSelectedItemIndex((tone.matrixModDestCB & 0xf), juce::dontSendNotification);
-    modDestDComboBox.setSelectedItemIndex(((tone.matrixModDestCB & 0xf0) >> 4), juce::dontSendNotification);
+    modDestCComboBox.setSelectedItemIndex((tone.matrixModDestCD & 0xf), juce::dontSendNotification);
+    modDestDComboBox.setSelectedItemIndex(((tone.matrixModDestCD & 0xf0) >> 4), juce::dontSendNotification);
     modSensASlider.setValue(int8_t((tone.matrixModSensA)), juce::dontSendNotification);
     modSensBSlider.setValue(int8_t((tone.matrixModSensB)), juce::dontSendNotification);
     modSensCSlider.setValue(int8_t((tone.matrixModSensC)), juce::dontSendNotification);
@@ -914,12 +774,12 @@ void EditToneTab::updateValues()
 
     pitchCoarseSlider.setValue(int8_t((tone.pitchCoarse)), juce::dontSendNotification);
     pitchFineSlider.setValue(int8_t((tone.pitchFine)), juce::dontSendNotification);
-    pitchRandomComboBox.setSelectedItemIndex((tone.tvaPanningKFRandomPitch & 0xf), juce::dontSendNotification);
-    pitchKFComboBox.setSelectedItemIndex((tone.tvpTimeKFKeyfollow & 0xf), juce::dontSendNotification);
+    pitchRandomComboBox.setSelectedItemIndex((tone.tvaPanKFpitchRandom & 0xf), juce::dontSendNotification);
+    pitchKFComboBox.setSelectedItemIndex((tone.tvpKFtvaTimeKF & 0xf), juce::dontSendNotification);
     penvLevSensSlider.setValue(int8_t((tone.tvpVelocity)), juce::dontSendNotification);
     penvTime1SensComboBox.setSelectedItemIndex((tone.tvpT1T4Velocity & 0xf), juce::dontSendNotification);
     penvTime4SensComboBox.setSelectedItemIndex((tone.tvpT1T4Velocity & 0xf0) >> 4, juce::dontSendNotification);
-    penvTimeKFSensComboBox.setSelectedItemIndex((tone.tvpTimeKFKeyfollow & 0xf0) >> 4, juce::dontSendNotification);
+    penvTimeKFSensComboBox.setSelectedItemIndex((tone.tvpKFtvaTimeKF & 0xf0) >> 4, juce::dontSendNotification);
     penvDepthSlider.setValue(int8_t((tone.tvpEnvDepth)), juce::dontSendNotification);
     penv1TimeSlider.setValue(int8_t((tone.tvpEnvTime1)), juce::dontSendNotification);
     penv1LevelSlider.setValue(int8_t((tone.tvpEnvLevel1)), juce::dontSendNotification);
@@ -953,7 +813,7 @@ void EditToneTab::updateValues()
     levelSlider.setValue(int8_t((tone.tvaLevel)), juce::dontSendNotification);
     levelKFComboBox.setSelectedItemIndex((tone.tvaTimeKFDelayTimeKeyfollow & 0xf), juce::dontSendNotification);
     panSlider.setValue(int8_t(tone.tvaPan - 64), juce::dontSendNotification);
-    panKFComboBox.setSelectedItemIndex((tone.tvaPanningKFRandomPitch & 0xf0) >> 4, juce::dontSendNotification);
+    panKFComboBox.setSelectedItemIndex((tone.tvaPanKFpitchRandom & 0xf0) >> 4, juce::dontSendNotification);
     toneDelayComboBox.setSelectedItemIndex((tone.tvaDelayModeVeloCurve & 0x18) >> 3, juce::dontSendNotification);
     toneDelayTimeSlider.setValue(int8_t((tone.tvaDelayTime)), juce::dontSendNotification);
 
@@ -982,8 +842,8 @@ void EditToneTab::resized()
     const auto sliderLeft1 = 100;
     const auto width = getWidth() / 3 - sliderLeft1 - 10;
     const auto halfWidth = width / 2;
-    const auto sliderLeft2 = sliderLeft1 + getWidth() / 3 + 10;
-    const auto sliderLeft3 = sliderLeft2 + getWidth() / 3 - 10;
+    const auto sliderLeft2 = sliderLeft1 + getWidth() / 3 + 2;
+    const auto sliderLeft3 = sliderLeft2 + getWidth() / 3;
     const auto height = 24;
     const auto vMargin = 24;
 
@@ -1112,24 +972,499 @@ void EditToneTab::resized()
     outputComboBox        .setBounds(sliderLeft3, top + height * 15 + vMargin * 1, width, height);
 }
 
-void EditToneTab::sliderValueChanged(juce::Slider* /* slider */)
+void EditToneTab::sliderValueChanged(juce::Slider* slider)
 {
-    sendSysexPatchToneChange();
+    uint32_t id = 0xFFFFFFF;
+
+    if (auto i = dynamic_cast<Slider*>(slider))
+    {
+        id = i->getID();
+    }
+
+    Patch* patch = (Patch*)processor.status.patch;
+    Tone* tone = &patch->tones[toneCount];
+
+    switch (id)
+    {
+    case FXMDepth:
+        sendSysexPatchToneChange1Byte(0x05, uint8_t(FXMDepthSlider.getValue() - 1));
+        tone->fxmConfig = uint8_t((uint8_t(FXMDepthSlider.getValue() - 1) << 0) + (FXMSwitchToggle.getToggleState() << 7));
+        break;
+    case VelRangeLow:
+        sendSysexPatchToneChange1Byte(0x06, uint8_t(velRangeLowSlider.getValue()));
+        tone->velocityRangeLow = uint8_t(velRangeLowSlider.getValue());
+        break;
+    case VelRangeHigh:
+        sendSysexPatchToneChange1Byte(0x07, uint8_t(velRangeHighSlider.getValue()));
+        tone->velocityRangeUp = uint8_t(velRangeHighSlider.getValue());
+        break;
+    case MW1Depth:
+        sendSysexPatchToneChange1Byte(0x0b, uint8_t(modSensASlider.getValue() + 64));
+        tone->matrixModSensA = uint8_t(modSensASlider.getValue());
+        break;
+    case MW2Depth:
+        sendSysexPatchToneChange1Byte(0x0d, uint8_t(modSensBSlider.getValue() + 64));
+        tone->matrixModSensB = uint8_t(modSensBSlider.getValue());
+        break;
+    case MW3Depth:
+        sendSysexPatchToneChange1Byte(0x0f, uint8_t(modSensCSlider.getValue() + 64));
+        tone->matrixModSensC = uint8_t(modSensCSlider.getValue());
+        break;
+    case MW4Depth:
+        sendSysexPatchToneChange1Byte(0x11, uint8_t(modSensDSlider.getValue() + 64));
+        tone->matrixModSensD = uint8_t(modSensDSlider.getValue());
+        break;
+    case AT1Depth:
+        sendSysexPatchToneChange1Byte(0x13, uint8_t(aftSensASlider.getValue() + 64));
+        tone->matrixAftSensA = uint8_t(aftSensASlider.getValue());
+        break;
+    case AT2Depth:
+        sendSysexPatchToneChange1Byte(0x15, uint8_t(aftSensBSlider.getValue() + 64));
+        tone->matrixAftSensB = uint8_t(aftSensBSlider.getValue());
+        break;
+    case AT3Depth:
+        sendSysexPatchToneChange1Byte(0x17, uint8_t(aftSensCSlider.getValue() + 64));
+        tone->matrixAftSensC = uint8_t(aftSensCSlider.getValue());
+        break;
+    case AT4Depth:
+        sendSysexPatchToneChange1Byte(0x19, uint8_t(aftSensDSlider.getValue() + 64));
+        tone->matrixAftSensD = uint8_t(aftSensDSlider.getValue());
+        break;
+    case EXP1Depth:
+        sendSysexPatchToneChange1Byte(0x1b, uint8_t(expSensASlider.getValue() + 64));
+        tone->matrixExpSensA = uint8_t(expSensASlider.getValue());
+        break;
+    case EXP2Depth:
+        sendSysexPatchToneChange1Byte(0x1d, uint8_t(expSensBSlider.getValue() + 64));
+        tone->matrixExpSensB = uint8_t(expSensBSlider.getValue());
+        break;
+    case EXP3Depth:
+        sendSysexPatchToneChange1Byte(0x1f, uint8_t(expSensCSlider.getValue() + 64));
+        tone->matrixExpSensC = uint8_t(expSensCSlider.getValue());
+        break;
+    case EXP4Depth:
+        sendSysexPatchToneChange1Byte(0x21, uint8_t(expSensDSlider.getValue() + 64));
+        tone->matrixExpSensD = uint8_t(expSensDSlider.getValue());
+        break;
+    case LFO1Rate:
+        sendSysexPatchToneChange1Byte(0x25, uint8_t(lfo1RateSlider.getValue()));
+        tone->lfo1Rate = uint8_t(lfo1RateSlider.getValue());
+        break;
+    case LFO1Delay:
+        sendSysexPatchToneChange2Byte(0x26, uint8_t(lfo1DelaySlider.getValue()));
+        tone->lfo1Delay = uint8_t(lfo1DelaySlider.getValue());
+        break;
+    case LFO1FadeTime:
+        sendSysexPatchToneChange1Byte(0x29, uint8_t(lfo1FadeTimeSlider.getValue()));
+        tone->lfo1Fade = uint8_t(lfo1FadeTimeSlider.getValue());
+        break;
+    case LFO1ToPitch:
+        sendSysexPatchToneChange1Byte(0x2a, uint8_t(lfo1PitchDepthSlider.getValue() + 64));
+        tone->lfo1PitchDepth = uint8_t(lfo1PitchDepthSlider.getValue());
+        break;
+    case LFO1ToFilter:
+        sendSysexPatchToneChange1Byte(0x2b, uint8_t(lfo1TVFDepthSlider.getValue() + 64));
+        tone->lfo1TvfDepth = uint8_t(lfo1TVFDepthSlider.getValue());
+        break;
+    case LFO1ToAmp:
+        sendSysexPatchToneChange1Byte(0x2c, uint8_t(lfo1TVADepthSlider.getValue() + 64));
+        tone->lfo1TvaDepth = uint8_t(lfo1TVADepthSlider.getValue());
+        break;
+    case LFO2Rate:
+        sendSysexPatchToneChange1Byte(0x30, uint8_t(lfo2RateSlider.getValue()));
+        tone->lfo2Rate = uint8_t(lfo2RateSlider.getValue());
+        break;
+    case LFO2Delay:
+        sendSysexPatchToneChange2Byte(0x31, uint8_t(lfo2DelaySlider.getValue()));
+        tone->lfo2Delay = uint8_t(lfo2DelaySlider.getValue());
+        break;
+    case LFO2FadeTime:
+        sendSysexPatchToneChange1Byte(0x34, uint8_t(lfo2FadeTimeSlider.getValue()));
+        tone->lfo2Fade = uint8_t(lfo2FadeTimeSlider.getValue());
+        break;
+    case LFO2ToPitch:
+        sendSysexPatchToneChange1Byte(0x35, uint8_t(lfo2PitchDepthSlider.getValue() + 64));
+        tone->lfo2PitchDepth = uint8_t(lfo2PitchDepthSlider.getValue());
+        break;
+    case LFO2ToFilter:
+        sendSysexPatchToneChange1Byte(0x36, uint8_t(lfo2TVFDepthSlider.getValue() + 64));
+        tone->lfo2TvfDepth = uint8_t(lfo2TVFDepthSlider.getValue());
+        break;
+    case LFO2ToAmp:
+        sendSysexPatchToneChange1Byte(0x37, uint8_t(lfo2TVADepthSlider.getValue() + 64));
+        tone->lfo2TvaDepth = uint8_t(lfo2TVADepthSlider.getValue());
+        break;
+    case PitchCoarse:
+        sendSysexPatchToneChange1Byte(0x38, uint8_t(pitchCoarseSlider.getValue() + 64));
+        tone->pitchCoarse = uint8_t(pitchCoarseSlider.getValue());
+        break;
+    case PitchFine:
+        sendSysexPatchToneChange1Byte(0x39, uint8_t(pitchFineSlider.getValue() + 64));
+        tone->pitchFine = uint8_t(pitchFineSlider.getValue());
+        break;
+    case PitchEnvLevelSense:
+        sendSysexPatchToneChange1Byte(0x3c, uint8_t(penvLevSensSlider.getValue() + 64));
+        tone->tvpVelocity = uint8_t(penvLevSensSlider.getValue());
+        break;
+    case PitchEnvDepth:
+        sendSysexPatchToneChange1Byte(0x40, uint8_t(penvDepthSlider.getValue() + 64));
+        tone->tvpEnvDepth = uint8_t(penvDepthSlider.getValue());
+        break;
+    case PitchEnvTime1:
+        sendSysexPatchToneChange1Byte(0x41, uint8_t(penv1TimeSlider.getValue()));
+        tone->tvpEnvTime1 = uint8_t(penv1TimeSlider.getValue());
+        break;
+    case PitchEnvLevel1:
+        sendSysexPatchToneChange1Byte(0x42, uint8_t(penv1LevelSlider.getValue() + 64));
+        tone->tvpEnvLevel1 = uint8_t(penv1LevelSlider.getValue());
+        break;
+    case PitchEnvTime2:
+        sendSysexPatchToneChange1Byte(0x43, uint8_t(penv2TimeSlider.getValue()));
+        tone->tvpEnvTime2 = uint8_t(penv2TimeSlider.getValue());
+        break;
+    case PitchEnvLevel2:
+        sendSysexPatchToneChange1Byte(0x44, uint8_t(penv2LevelSlider.getValue() + 64));
+        tone->tvpEnvLevel2 = uint8_t(penv2LevelSlider.getValue());
+        break;
+    case PitchEnvTime3:
+        sendSysexPatchToneChange1Byte(0x45, uint8_t(penv3TimeSlider.getValue()));
+        tone->tvpEnvTime3 = uint8_t(penv3TimeSlider.getValue());
+        break;
+    case PitchEnvLevel3:
+        sendSysexPatchToneChange1Byte(0x46, uint8_t(penv3LevelSlider.getValue() + 64));
+        tone->tvpEnvLevel3 = uint8_t(penv3LevelSlider.getValue());
+        break;
+    case PitchEnvTime4:
+        sendSysexPatchToneChange1Byte(0x47, uint8_t(penv4TimeSlider.getValue()));
+        tone->tvpEnvTime4 = uint8_t(penv4TimeSlider.getValue());
+        break;
+    case PitchEnvLevel4:
+        sendSysexPatchToneChange1Byte(0x48, uint8_t(penv4LevelSlider.getValue() + 64));
+        tone->tvpEnvLevel4 = uint8_t(penv4LevelSlider.getValue());
+        break;
+    case FilterCutoff:
+        sendSysexPatchToneChange1Byte(0x4a, uint8_t(filterCutoffSlider.getValue()));
+        tone->tvfCutoff = uint8_t(filterCutoffSlider.getValue());
+        break;
+    case FilterReso:
+        sendSysexPatchToneChange1Byte(0x4b, uint8_t(filterResoSlider.getValue()));
+        tone->tvfResonance = uint8_t(filterResoSlider.getValue() + (filterResoModeComboBox.getSelectedItemIndex() << 7));
+        break;
+    case FilterEnvLevelSense:
+        sendSysexPatchToneChange1Byte(0x4f, uint8_t(fenvLevSensSlider.getValue() + 64));
+        tone->tvfVelocity = uint8_t(fenvLevSensSlider.getValue());
+        break;
+    case FilterEnvDepth:
+        sendSysexPatchToneChange1Byte(0x53, uint8_t(fenvDepthSlider.getValue() + 64));
+        tone->tvfEnvDepth = uint8_t(fenvDepthSlider.getValue());
+        break;
+    case FilterEnvTime1:
+        sendSysexPatchToneChange1Byte(0x54, uint8_t(fenv1TimeSlider.getValue()));
+        tone->tvfEnvTime1 = uint8_t(fenv1TimeSlider.getValue());
+        break;
+    case FilterEnvLevel1:
+        sendSysexPatchToneChange1Byte(0x55, uint8_t(fenv1LevelSlider.getValue()));
+        tone->tvfEnvLevel1 = uint8_t(fenv1LevelSlider.getValue());
+        break;
+    case FilterEnvTime2:
+        sendSysexPatchToneChange1Byte(0x56, uint8_t(fenv2TimeSlider.getValue()));
+        tone->tvfEnvTime2 = uint8_t(fenv2TimeSlider.getValue());
+        break;
+    case FilterEnvLevel2:
+        sendSysexPatchToneChange1Byte(0x57, uint8_t(fenv2LevelSlider.getValue()));
+        tone->tvfEnvLevel2 = uint8_t(fenv2LevelSlider.getValue());
+        break;
+    case FilterEnvTime3:
+        sendSysexPatchToneChange1Byte(0x58, uint8_t(fenv3TimeSlider.getValue()));
+        tone->tvfEnvTime3 = uint8_t(fenv3TimeSlider.getValue());
+        break;
+    case FilterEnvLevel3:
+        sendSysexPatchToneChange1Byte(0x59, uint8_t(fenv3LevelSlider.getValue()));
+        tone->tvfEnvLevel3 = uint8_t(fenv3LevelSlider.getValue());
+        break;
+    case FilterEnvTime4:
+        sendSysexPatchToneChange1Byte(0x5a, uint8_t(fenv4TimeSlider.getValue()));
+        tone->tvfEnvTime4 = uint8_t(fenv4TimeSlider.getValue());
+        break;
+    case FilterEnvLevel4:
+        sendSysexPatchToneChange1Byte(0x5b, uint8_t(fenv4LevelSlider.getValue()));
+        tone->tvfEnvLevel4 = uint8_t(fenv4LevelSlider.getValue());
+        break;
+    case Level:
+        sendSysexPatchToneChange1Byte(0x5c, uint8_t(levelSlider.getValue()));
+        tone->tvaLevel = uint8_t(levelSlider.getValue());
+        break;
+    case Pan:
+        sendSysexPatchToneChange2Byte(0x5e, uint8_t(panSlider.getValue() + 64));
+        tone->tvaPan = uint8_t(panSlider.getValue() + 64);
+        break;
+    case DelayTime:
+        sendSysexPatchToneChange2Byte(0x62, uint8_t(toneDelayTimeSlider.getValue()));
+        tone->tvaDelayTime = uint8_t(toneDelayTimeSlider.getValue());
+        break;
+    case AmpEnvLevelSense:
+        sendSysexPatchToneChange1Byte(0x65, uint8_t(aenvLevSensSlider.getValue() + 64));
+        tone->tvaVelocity = uint8_t(aenvLevSensSlider.getValue());
+        break;
+    case AmpEnvTime1:
+        sendSysexPatchToneChange1Byte(0x69, uint8_t(aenv1TimeSlider.getValue()));
+        tone->tvaEnvTime1 = uint8_t(aenv1TimeSlider.getValue());
+        break;
+    case AmpEnvLevel1:
+        sendSysexPatchToneChange1Byte(0x6a, uint8_t(aenv1LevelSlider.getValue()));
+        tone->tvaEnvLevel1 = uint8_t(aenv1LevelSlider.getValue());
+        break;
+    case AmpEnvTime2:
+        sendSysexPatchToneChange1Byte(0x6b, uint8_t(aenv2TimeSlider.getValue()));
+        tone->tvaEnvTime2 = uint8_t(aenv2TimeSlider.getValue());
+        break;
+    case AmpEnvLevel2:
+        sendSysexPatchToneChange1Byte(0x6c, uint8_t(aenv2LevelSlider.getValue()));
+        tone->tvaEnvLevel2 = uint8_t(aenv2LevelSlider.getValue());
+        break;
+    case AmpEnvTime3:
+        sendSysexPatchToneChange1Byte(0x6d, uint8_t(aenv3TimeSlider.getValue()));
+        tone->tvaEnvTime3 = uint8_t(aenv3TimeSlider.getValue());
+        break;
+    case AmpEnvLevel3:
+        sendSysexPatchToneChange1Byte(0x6e, uint8_t(aenv3LevelSlider.getValue()));
+        tone->tvaEnvLevel3 = uint8_t(aenv3LevelSlider.getValue());
+        break;
+    case AmpEnvTime4:
+        sendSysexPatchToneChange1Byte(0x6f, uint8_t(aenv4TimeSlider.getValue()));
+        tone->tvaEnvTime4 = uint8_t(aenv4TimeSlider.getValue());
+        break;
+    case DrySend:
+        sendSysexPatchToneChange1Byte(0x70, uint8_t(drySlider.getValue()));
+        tone->drySend = uint8_t(drySlider.getValue());
+        break;
+    case ReverbSend:
+        sendSysexPatchToneChange1Byte(0x71, uint8_t(reverbSlider.getValue()));
+        tone->reverbSend = uint8_t(reverbSlider.getValue());
+        break;
+    case ChorusSend:
+        sendSysexPatchToneChange1Byte(0x72, uint8_t(chorusSlider.getValue()));
+        tone->chorusSend = uint8_t(chorusSlider.getValue());
+        break;
+    }
 }
 
-void EditToneTab::buttonClicked(juce::Button* /* button */)
+void EditToneTab::buttonClicked(juce::Button* button)
 {
-    sendSysexPatchToneChange();
+    uint32_t id = 0xFFFFFFF;
+
+    if (auto i = dynamic_cast<Button*>(button))
+    {
+        id = i->getID();
+    }
+
+    Patch* patch = (Patch*)processor.status.patch;
+    Tone* tone = &patch->tones[toneCount];
+
+    switch (id)
+    {
+    case ToneSwitch:
+        sendSysexPatchToneChange1Byte(0x03, toneSwitchToggle.getToggleStateValue() == 1);
+        tone->flags = uint8_t(waveGroupComboBox.getSelectedItemIndex() + (toneSwitchToggle.getToggleState() << 7));
+        break;
+    case FXMSwitch:
+        sendSysexPatchToneChange1Byte(0x04, FXMSwitchToggle.getToggleStateValue() == 1);
+        tone->fxmConfig = uint8_t((uint8_t(FXMDepthSlider.getValue() - 1) << 0) + (FXMSwitchToggle.getToggleState() << 7));
+        break;
+    case CC7Receive:
+        sendSysexPatchToneChange1Byte(0x08, volumeSwitchToggle.getToggleStateValue() == 1);
+        tone->tvaDelayModeVeloCurve = uint8_t(aenvVelCurveComboBox.getSelectedItemIndex() + (toneDelayComboBox.getSelectedItemIndex() << 3) + (holdSwitchToggle.getToggleState() << 6) + (volumeSwitchToggle.getToggleState() << 7));
+        break;
+    case SustainPedalReceive:
+        sendSysexPatchToneChange1Byte(0x09, holdSwitchToggle.getToggleStateValue() == 1);
+        tone->tvaDelayModeVeloCurve = uint8_t(aenvVelCurveComboBox.getSelectedItemIndex() + (toneDelayComboBox.getSelectedItemIndex() << 3) + (holdSwitchToggle.getToggleState() << 6) + (volumeSwitchToggle.getToggleState() << 7));
+        break;
+    case LFO1KeySync:
+        sendSysexPatchToneChange1Byte(0x24, lfo1SyncToggle.getToggleStateValue() == 1);
+        tone->lfo1Flags = uint8_t(lfo1FormComboBox.getSelectedItemIndex() + (lfo1OffsetComboBox.getSelectedItemIndex() << 3) + (lfo1SyncToggle.getToggleState() << 6) + (lfo1FadeToggle.getToggleState() << 7));
+        break;
+    case LFO1FadeOut:
+        sendSysexPatchToneChange1Byte(0x28, lfo1FadeToggle.getToggleStateValue() == 1);
+        tone->lfo1Flags = uint8_t(lfo1FormComboBox.getSelectedItemIndex() + (lfo1OffsetComboBox.getSelectedItemIndex() << 3) + (lfo1SyncToggle.getToggleState() << 6) + (lfo1FadeToggle.getToggleState() << 7));
+        break;
+    case LFO2KeySync:
+        sendSysexPatchToneChange1Byte(0x2f, lfo2SyncToggle.getToggleStateValue() == 1);
+        tone->lfo2Flags = uint8_t(lfo2FormComboBox.getSelectedItemIndex() + (lfo2OffsetComboBox.getSelectedItemIndex() << 3) + (lfo2SyncToggle.getToggleState() << 6) + (lfo2FadeToggle.getToggleState() << 7));
+        break;
+    case LFO2FadeOut:
+        sendSysexPatchToneChange1Byte(0x33, lfo2FadeToggle.getToggleStateValue() == 1);
+        tone->lfo2Flags = uint8_t(lfo2FormComboBox.getSelectedItemIndex() + (lfo2OffsetComboBox.getSelectedItemIndex() << 3) + (lfo2SyncToggle.getToggleState() << 6) + (lfo2FadeToggle.getToggleState() << 7));
+        break;
+    }
 }
 
 void EditToneTab::comboBoxChanged(juce::ComboBox* comboBox)
 {
-    if (comboBox == &waveGroupComboBox)
+    uint32_t id = 0xFFFFFFF;
+
+    if (auto i = dynamic_cast<Menu*>(comboBox))
     {
-        updateWaveformComboBox(waveformComboBox);
+        id = i->getID();
     }
 
-    sendSysexPatchToneChange();
+    Patch* patch = (Patch*)processor.status.patch;
+    Tone* tone = &patch->tones[toneCount];
+
+    switch (id)
+    {
+    case WaveGroup:
+        sendSysexPatchToneChange1Byte(0x00, uint8_t(waveGroupComboBox.getSelectedItemIndex()));
+        updateWaveformComboBox(waveformComboBox);
+        tone->flags = uint8_t(waveGroupComboBox.getSelectedItemIndex() + (toneSwitchToggle.getToggleState() << 7));
+        break;
+    case Waveform:
+        sendSysexPatchToneChange2Byte(0x01, uint8_t(waveformComboBox.getSelectedItemIndex()));
+        tone->waveNumber = uint8_t(waveformComboBox.getSelectedItemIndex());
+        break;
+    case MW1Target:
+        sendSysexPatchToneChange1Byte(0x0a, uint8_t(modDestAComboBox.getSelectedItemIndex()));
+        tone->matrixModDestAB = uint8_t(modDestAComboBox.getSelectedItemIndex() + (modDestBComboBox.getSelectedItemIndex() << 4));
+        break;
+    case MW2Target:
+        sendSysexPatchToneChange1Byte(0x0c, uint8_t(modDestBComboBox.getSelectedItemIndex()));
+        tone->matrixModDestAB = uint8_t(modDestAComboBox.getSelectedItemIndex() + (modDestBComboBox.getSelectedItemIndex() << 4));
+        break;
+    case MW3Target:
+        sendSysexPatchToneChange1Byte(0x0e, uint8_t(modDestCComboBox.getSelectedItemIndex()));
+        tone->matrixModDestCD = uint8_t(modDestCComboBox.getSelectedItemIndex() + (modDestDComboBox.getSelectedItemIndex() << 4));
+        break;
+    case MW4Target:
+        sendSysexPatchToneChange1Byte(0x10, uint8_t(modDestDComboBox.getSelectedItemIndex()));
+        tone->matrixModDestCD = uint8_t(modDestCComboBox.getSelectedItemIndex() + (modDestDComboBox.getSelectedItemIndex() << 4));
+        break;
+    case AT1Target:
+        sendSysexPatchToneChange1Byte(0x12, uint8_t(aftDestAComboBox.getSelectedItemIndex()));
+        tone->matrixAftDestAB = uint8_t(aftDestAComboBox.getSelectedItemIndex() + (aftDestBComboBox.getSelectedItemIndex() << 4));
+        break;
+    case AT2Target:
+        sendSysexPatchToneChange1Byte(0x14, uint8_t(aftDestBComboBox.getSelectedItemIndex()));
+        tone->matrixAftDestAB = uint8_t(aftDestAComboBox.getSelectedItemIndex() + (aftDestBComboBox.getSelectedItemIndex() << 4));
+        break;
+    case AT3Target:
+        sendSysexPatchToneChange1Byte(0x16, uint8_t(aftDestCComboBox.getSelectedItemIndex()));
+        tone->matrixAftDestCD = uint8_t(aftDestCComboBox.getSelectedItemIndex() + (aftDestDComboBox.getSelectedItemIndex() << 4));
+        break;
+    case AT4Target:
+        sendSysexPatchToneChange1Byte(0x18, uint8_t(aftDestDComboBox.getSelectedItemIndex()));
+        tone->matrixAftDestCD = uint8_t(aftDestCComboBox.getSelectedItemIndex() + (aftDestDComboBox.getSelectedItemIndex() << 4));
+        break;
+    case EXP1Target:
+        sendSysexPatchToneChange1Byte(0x1a, uint8_t(expDestAComboBox.getSelectedItemIndex()));
+        tone->matrixExpDestAB = uint8_t(expDestAComboBox.getSelectedItemIndex() + (expDestBComboBox.getSelectedItemIndex() << 4));
+        break;
+    case EXP2Target:
+        sendSysexPatchToneChange1Byte(0x1c, uint8_t(expDestBComboBox.getSelectedItemIndex()));
+        tone->matrixExpDestAB = uint8_t(expDestAComboBox.getSelectedItemIndex() + (expDestBComboBox.getSelectedItemIndex() << 4));
+        break;
+    case EXP3Target:
+        sendSysexPatchToneChange1Byte(0x1e, uint8_t(expDestCComboBox.getSelectedItemIndex()));
+        tone->matrixExpDestCD = uint8_t(expDestCComboBox.getSelectedItemIndex() + (expDestDComboBox.getSelectedItemIndex() << 4));
+        break;
+    case EXP4Target:
+        sendSysexPatchToneChange1Byte(0x20, uint8_t(expDestDComboBox.getSelectedItemIndex()));
+        tone->matrixExpDestCD = uint8_t(expDestCComboBox.getSelectedItemIndex() + (expDestDComboBox.getSelectedItemIndex() << 4));
+        break;
+    case LFO1Waveform:
+        sendSysexPatchToneChange1Byte(0x22, uint8_t(lfo1FormComboBox.getSelectedItemIndex()));
+        tone->lfo1Flags = uint8_t(lfo1FormComboBox.getSelectedItemIndex() + (lfo1OffsetComboBox.getSelectedItemIndex() << 3) + (lfo1SyncToggle.getToggleState() << 6) + (lfo1FadeToggle.getToggleState() << 7));
+        break;
+    case LFO1Offset:
+        sendSysexPatchToneChange1Byte(0x23, uint8_t(lfo1OffsetComboBox.getSelectedItemIndex()));
+        tone->lfo1Flags = uint8_t(lfo1FormComboBox.getSelectedItemIndex() + (lfo1OffsetComboBox.getSelectedItemIndex() << 3) + (lfo1SyncToggle.getToggleState() << 6) + (lfo1FadeToggle.getToggleState() << 7));
+        break;
+    case LFO2Waveform:
+        sendSysexPatchToneChange1Byte(0x2d, uint8_t(lfo2FormComboBox.getSelectedItemIndex()));
+        tone->lfo2Flags = uint8_t(lfo2FormComboBox.getSelectedItemIndex() + (lfo2OffsetComboBox.getSelectedItemIndex() << 3) + (lfo2SyncToggle.getToggleState() << 6) + (lfo2FadeToggle.getToggleState() << 7));
+        break;
+    case LFO2Offset:
+        sendSysexPatchToneChange1Byte(0x2e, uint8_t(lfo2OffsetComboBox.getSelectedItemIndex()));
+        tone->lfo2Flags = uint8_t(lfo2FormComboBox.getSelectedItemIndex() + (lfo2OffsetComboBox.getSelectedItemIndex() << 3) + (lfo2SyncToggle.getToggleState() << 6) + (lfo2FadeToggle.getToggleState() << 7));
+        break;
+    case PitchRandom:
+        sendSysexPatchToneChange1Byte(0x3a, uint8_t(pitchRandomComboBox.getSelectedItemIndex()));
+        tone->tvaPanKFpitchRandom = uint8_t(pitchRandomComboBox.getSelectedItemIndex() + (panKFComboBox.getSelectedItemIndex() << 4));
+        break;
+    case PitchKeyfollow:
+        sendSysexPatchToneChange1Byte(0x3b, uint8_t(pitchKFComboBox.getSelectedItemIndex()));
+        tone->tvpKFtvaTimeKF = uint8_t(pitchKFComboBox.getSelectedItemIndex() + (penvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case PitchEnvTime1Sense:
+        sendSysexPatchToneChange1Byte(0x3d, uint8_t(penvTime1SensComboBox.getSelectedItemIndex()));
+        tone->tvpT1T4Velocity = uint8_t(penvTime1SensComboBox.getSelectedItemIndex() + (penvTime4SensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case PitchEnvTime4Sense:
+        sendSysexPatchToneChange1Byte(0x3e, uint8_t(penvTime4SensComboBox.getSelectedItemIndex()));
+        tone->tvpT1T4Velocity = uint8_t(penvTime1SensComboBox.getSelectedItemIndex() + (penvTime4SensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case PitchEnvTimeKeyfollow:
+        sendSysexPatchToneChange1Byte(0x3f, uint8_t(penvTimeKFSensComboBox.getSelectedItemIndex()));
+        tone->tvpKFtvaTimeKF = uint8_t(pitchKFComboBox.getSelectedItemIndex() + (penvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case FilterMode:
+        sendSysexPatchToneChange1Byte(0x49, uint8_t(filterModeComboBox.getSelectedItemIndex()));
+        tone->tvfVeloCurveLpfHpf = uint8_t(fenvVelCurveComboBox.getSelectedItemIndex() + (filterModeComboBox.getSelectedItemIndex() << 3));
+        break;
+    case FilterResoMode:
+        sendSysexPatchToneChange1Byte(0x4c, uint8_t(filterResoModeComboBox.getSelectedItemIndex()));
+        tone->tvfResonance = uint8_t(filterResoSlider.getValue() + (filterResoModeComboBox.getSelectedItemIndex() << 7));
+        break;
+    case FilterKeyfollow:
+        sendSysexPatchToneChange1Byte(0x4d, uint8_t(filterKFComboBox.getSelectedItemIndex()));
+        tone->tvfTimeKFKeyfollow = uint8_t(filterKFComboBox.getSelectedItemIndex() + (fenvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case FilterVelCurve:
+        sendSysexPatchToneChange1Byte(0x4e, uint8_t(fenvVelCurveComboBox.getSelectedItemIndex()));
+        tone->tvfVeloCurveLpfHpf = uint8_t(fenvVelCurveComboBox.getSelectedItemIndex() + (filterModeComboBox.getSelectedItemIndex() << 3));
+        break;
+    case FilterEnvTime1Sense:
+        sendSysexPatchToneChange1Byte(0x50, uint8_t(fenvTime1SensComboBox.getSelectedItemIndex()));
+        tone->tvfT1T4Velocity = uint8_t(fenvTime1SensComboBox.getSelectedItemIndex() + (fenvTime4SensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case FilterEnvTime4Sense:
+        sendSysexPatchToneChange1Byte(0x51, uint8_t(fenvTime4SensComboBox.getSelectedItemIndex()));
+        tone->tvfT1T4Velocity = uint8_t(fenvTime1SensComboBox.getSelectedItemIndex() + (fenvTime4SensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case FilterEnvTimeKeyfollow:
+        sendSysexPatchToneChange1Byte(0x52, uint8_t(fenvTimeKFSensComboBox.getSelectedItemIndex()));
+        tone->tvfTimeKFKeyfollow = uint8_t(filterKFComboBox.getSelectedItemIndex() + (fenvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case LevelKeyfollow:
+        sendSysexPatchToneChange1Byte(0x5d, uint8_t(levelKFComboBox.getSelectedItemIndex()));
+        tone->tvaTimeKFDelayTimeKeyfollow = uint8_t(levelKFComboBox.getSelectedItemIndex() + (aenvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case PanKeyfollow:
+        sendSysexPatchToneChange1Byte(0x60, uint8_t(panKFComboBox.getSelectedItemIndex()));
+        tone->tvaPanKFpitchRandom = uint8_t(pitchRandomComboBox.getSelectedItemIndex() + (panKFComboBox.getSelectedItemIndex() << 4));
+        break;
+    case DelayMode:
+        sendSysexPatchToneChange1Byte(0x61, uint8_t(toneDelayComboBox.getSelectedItemIndex()));
+        tone->tvaDelayModeVeloCurve = uint8_t(aenvVelCurveComboBox.getSelectedItemIndex() + (toneDelayComboBox.getSelectedItemIndex() << 3) + (holdSwitchToggle.getToggleState() << 6) + (volumeSwitchToggle.getToggleState() << 7));
+        break;
+    case AmpVelCurve:
+        sendSysexPatchToneChange1Byte(0x64, uint8_t(aenvVelCurveComboBox.getSelectedItemIndex()));
+        tone->tvaDelayModeVeloCurve = uint8_t(aenvVelCurveComboBox.getSelectedItemIndex() + (toneDelayComboBox.getSelectedItemIndex() << 3) + (holdSwitchToggle.getToggleState() << 6) + (volumeSwitchToggle.getToggleState() << 7));
+        break;
+    case AmpEnvTime1Sense:
+        sendSysexPatchToneChange1Byte(0x66, uint8_t(aenvTime1SensComboBox.getSelectedItemIndex()));
+        tone->tvaT1T4Velocity = uint8_t(aenvTime1SensComboBox.getSelectedItemIndex() + (aenvTime4SensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case AmpEnvTime4Sense:
+        sendSysexPatchToneChange1Byte(0x67, uint8_t(aenvTime4SensComboBox.getSelectedItemIndex()));
+        tone->tvaT1T4Velocity = uint8_t(aenvTime1SensComboBox.getSelectedItemIndex() + (aenvTime4SensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case AmpEnvTimeKeyfollow:
+        sendSysexPatchToneChange1Byte(0x68, uint8_t(aenvTimeKFSensComboBox.getSelectedItemIndex()));
+        tone->tvaTimeKFDelayTimeKeyfollow = uint8_t(levelKFComboBox.getSelectedItemIndex() + (aenvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+        break;
+    case Output:
+        sendSysexPatchToneChange1Byte(0x73, uint8_t(outputComboBox.getSelectedItemIndex()));
+        break;
+    }
 }
 
 void EditToneTab::sendSysexPatchToneChange1Byte(uint8_t address, uint8_t value)
@@ -1213,11 +1548,9 @@ void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
     processor.mcuLock.exit();
 }
 
-
+/*
 void EditToneTab::sendSysexPatchToneChange()
 {
-    sendSysexPatchToneChange1Byte(0x00, uint8_t(waveGroupComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange2Byte(0x01, uint8_t(waveformComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x03, toneSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x04, FXMSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x05, uint8_t(FXMDepthSlider.getValue() - 1));
@@ -1225,32 +1558,18 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x07, uint8_t(velRangeHighSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x08, volumeSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x09, holdSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x0a, uint8_t(modDestAComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x0b, uint8_t(modSensASlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x0c, uint8_t(modDestBComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x0d, uint8_t(modSensBSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x0e, uint8_t(modDestCComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x0f, uint8_t(modSensCSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x10, uint8_t(modDestDComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x11, uint8_t(modSensDSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x12, uint8_t(aftDestAComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x13, uint8_t(aftSensASlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x14, uint8_t(aftDestBComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x15, uint8_t(aftSensBSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x16, uint8_t(aftDestCComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x17, uint8_t(aftSensCSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x18, uint8_t(aftDestDComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x19, uint8_t(aftSensDSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x1a, uint8_t(expDestAComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x1b, uint8_t(expSensASlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x1c, uint8_t(expDestBComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x1d, uint8_t(expSensBSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x1e, uint8_t(expDestCComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x1f, uint8_t(expSensCSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x20, uint8_t(expDestDComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x21, uint8_t(expSensDSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x22, uint8_t(lfo1FormComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x23, uint8_t(lfo1OffsetComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x24, lfo1SyncToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x25, uint8_t(lfo1RateSlider.getValue()));
     sendSysexPatchToneChange2Byte(0x26, uint8_t(lfo1DelaySlider.getValue()));
@@ -1259,8 +1578,6 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x2a, uint8_t(lfo1PitchDepthSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x2b, uint8_t(lfo1TVFDepthSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x2c, uint8_t(lfo1TVADepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x2d, uint8_t(lfo2FormComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x2e, uint8_t(lfo2OffsetComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x2f, lfo2SyncToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
     sendSysexPatchToneChange1Byte(0x30, uint8_t(lfo2RateSlider.getValue()));
     sendSysexPatchToneChange2Byte(0x31, uint8_t(lfo2DelaySlider.getValue()));
@@ -1271,12 +1588,7 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x37, uint8_t(lfo2TVADepthSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x38, uint8_t(pitchCoarseSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x39, uint8_t(pitchFineSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x3a, uint8_t(pitchRandomComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x3b, uint8_t(pitchKFComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x3c, uint8_t(penvLevSensSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x3d, uint8_t(penvTime1SensComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x3e, uint8_t(penvTime4SensComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x3f, uint8_t(penvTimeKFSensComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x40, uint8_t(penvDepthSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x41, uint8_t(penv1TimeSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x42, uint8_t(penv1LevelSlider.getValue() + 64));
@@ -1286,16 +1598,9 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x46, uint8_t(penv3LevelSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x47, uint8_t(penv4TimeSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x48, uint8_t(penv4LevelSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x49, uint8_t(filterModeComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x4a, uint8_t(filterCutoffSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x4b, uint8_t(filterResoSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x4c, uint8_t(filterResoModeComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x4d, uint8_t(filterKFComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x4e, uint8_t(fenvVelCurveComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x4f, uint8_t(fenvLevSensSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x50, uint8_t(fenvTime1SensComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x51, uint8_t(fenvTime4SensComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x52, uint8_t(fenvTimeKFSensComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x53, uint8_t(fenvDepthSlider.getValue() + 64));
     sendSysexPatchToneChange1Byte(0x54, uint8_t(fenv1TimeSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x55, uint8_t(fenv1LevelSlider.getValue()));
@@ -1306,16 +1611,9 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x5a, uint8_t(fenv4TimeSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x5b, uint8_t(fenv4LevelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x5c, uint8_t(levelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x5d, uint8_t(levelKFComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange2Byte(0x5e, uint8_t(panSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x60, uint8_t(panKFComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x61, uint8_t(toneDelayComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange2Byte(0x62, uint8_t(toneDelayTimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x64, uint8_t(aenvVelCurveComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x65, uint8_t(aenvLevSensSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x66, uint8_t(aenvTime1SensComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x67, uint8_t(aenvTime4SensComboBox.getSelectedItemIndex()));
-    sendSysexPatchToneChange1Byte(0x68, uint8_t(aenvTimeKFSensComboBox.getSelectedItemIndex()));
     sendSysexPatchToneChange1Byte(0x69, uint8_t(aenv1TimeSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x6a, uint8_t(aenv1LevelSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x6b, uint8_t(aenv2TimeSlider.getValue()));
@@ -1326,7 +1624,6 @@ void EditToneTab::sendSysexPatchToneChange()
     sendSysexPatchToneChange1Byte(0x70, uint8_t(drySlider.getValue()));
     sendSysexPatchToneChange1Byte(0x71, uint8_t(reverbSlider.getValue()));
     sendSysexPatchToneChange1Byte(0x72, uint8_t(chorusSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x73, uint8_t(outputComboBox.getSelectedItemIndex()));
 
     Patch* patch = (Patch*)processor.status.patch;
     Tone* tone = &patch->tones[toneCount];
@@ -1337,7 +1634,7 @@ void EditToneTab::sendSysexPatchToneChange()
     tone->velocityRangeLow = uint8_t(velRangeLowSlider.getValue());
     tone->velocityRangeUp = uint8_t(velRangeHighSlider.getValue());
     tone->matrixModDestAB = uint8_t(modDestAComboBox.getSelectedItemIndex() + (modDestBComboBox.getSelectedItemIndex() << 4));
-    tone->matrixModDestCB = uint8_t(modDestCComboBox.getSelectedItemIndex() + (modDestDComboBox.getSelectedItemIndex() << 4));
+    tone->matrixModDestCD = uint8_t(modDestCComboBox.getSelectedItemIndex() + (modDestDComboBox.getSelectedItemIndex() << 4));
     tone->matrixModSensA = uint8_t(modSensASlider.getValue());
     tone->matrixModSensB = uint8_t(modSensBSlider.getValue());
     tone->matrixModSensC = uint8_t(modSensCSlider.getValue());
@@ -1370,8 +1667,9 @@ void EditToneTab::sendSysexPatchToneChange()
     tone->lfo2TvaDepth = uint8_t(lfo2TVADepthSlider.getValue());
     tone->pitchCoarse = uint8_t(pitchCoarseSlider.getValue());
     tone->pitchFine = uint8_t(pitchFineSlider.getValue());
-    tone->tvaPanningKFRandomPitch = uint8_t(pitchRandomComboBox.getSelectedItemIndex() + (panKFComboBox.getSelectedItemIndex() << 4));
-    tone->tvpTimeKFKeyfollow = uint8_t(pitchKFComboBox.getSelectedItemIndex() + (penvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+    tone->tvaPanKFpitchRandom = uint8_t(pitchRandomComboBox.getSelectedItemIndex() + (panKFComboBox.getSelectedItemIndex() << 4));
+    tone->tvpKFtvaTimeKF = uint8_t(pitchKFComboBox.getSelectedItemIndex() + (penvTimeKFSensComboBox.getSelectedItemIndex() << 4));
+    tone->tvpVelocity= uint8_t(penvLevSensSlider.getValue());
     tone->tvpT1T4Velocity = uint8_t(penvTime1SensComboBox.getSelectedItemIndex() + (penvTime4SensComboBox.getSelectedItemIndex() << 4));
     tone->tvpEnvDepth = uint8_t(penvDepthSlider.getValue());
     tone->tvpEnvTime1 = uint8_t(penv1TimeSlider.getValue());
@@ -1415,3 +1713,4 @@ void EditToneTab::sendSysexPatchToneChange()
     tone->reverbSend = uint8_t(reverbSlider.getValue());
     tone->chorusSend = uint8_t(chorusSlider.getValue());
 }
+*/
