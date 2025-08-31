@@ -88,10 +88,10 @@ private:
   juce::Label reverbLevelLabel{ "", "Level" };
   juce::Label reverbTimeLabel{ "", "Time" };
   juce::Label delayFeedbackLabel{ "", "Feedback" };
-  Menu reverbTypeComboBox{ ReverbType };
-  Slider reverbLevelSlider{ ReverbLevel, 0, 127, 1 };
-  Slider reverbTimeSlider{ ReverbTime, 0, 127, 1 };
-  Slider delayFeedbackSlider{ DelayFeedback, 0, 127, 1 };
+  Menu reverbTypeComboBox{ ReverbType, 4 };
+  Slider reverbLevelSlider{ ReverbLevel, 0, 127, 1, 64 };
+  Slider reverbTimeSlider{ ReverbTime, 0, 127, 1, 64 };
+  Slider delayFeedbackSlider{ DelayFeedback, 0, 127, 1, 64 };
 
   juce::Label chorusTypeLabel{ "", "Chorus" };
   juce::Label chorusLevelLabel{ "", "Level" };
@@ -99,10 +99,10 @@ private:
   juce::Label chorusRateLabel{ "", "Rate" };
   juce::Label chorusFeedbackLabel{ "", "Feedback" };
   juce::Label chorusOutputLabel{ "", "Output" };
-  Menu chorusTypeComboBox{ ChorusType };
-  Slider chorusLevelSlider{ ChorusLevel, 0, 127, 1 };
-  Slider chorusDepthSlider{ ChorusDepth, 0, 127, 1 };
-  Slider chorusRateSlider{ ChorusRate, 0, 127, 1 };
+  Menu chorusTypeComboBox{ ChorusType, 1 };
+  Slider chorusLevelSlider{ ChorusLevel, 0, 127, 1, 64 };
+  Slider chorusDepthSlider{ ChorusDepth, 0, 127, 1, 64 };
+  Slider chorusRateSlider{ ChorusRate, 0, 127, 1, 64 };
   Slider chorusFeedbackSlider{ ChorusFeedback, 0, 127, 1 };
   Menu chorusOutputComboBox{ ChorusOutput };
 
@@ -110,16 +110,16 @@ private:
   juce::Label levelLabel{ "", "Level" };
   juce::Label panLabel{ "", "Pan" };
   Slider analogFeelSlider{ AnalogFeel, 0, 127, 1 };
-  Slider levelSlider{ Level, 0, 127, 1 };
-  Slider panSlider{ Pan, 0, 127, 1 };
+  Slider levelSlider{ Level, 0, 127, 1, 96 };
+  Slider panSlider{ Pan, -64, 63, 1, 0, true };
 
   juce::Label bendRangeLabel{ "", "Bend Range" };
   juce::Label keyAssignLabel{ "", "Key Assign" };
   juce::Label portamentoModeLabel{ "", "Mode" };
   juce::Label portamentoTypeLabel{ "", "Type" };
   juce::Label portamentoTimeLabel{ "", "Time" };
-  Slider bendRangeDownSlider{ BendRangeDown, -48, 0, 1 };
-  Slider bendRangeUpSlider{ BendRangeUp, 0, 12, 1 };
+  Slider bendRangeDownSlider{ BendRangeDown, -48, 0, 1, -2 };
+  Slider bendRangeUpSlider{ BendRangeUp, 0, 12, 1, 2 };
   Menu keyAssignComboBox{ KeyAssign };
   Button soloLegatoToggle{ SoloLegato, "Legato" };
   Button portamentoToggle{ Portamento, "Portamento" };

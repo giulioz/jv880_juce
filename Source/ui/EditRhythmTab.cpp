@@ -61,11 +61,15 @@ EditRhythmTab::EditRhythmTab
     addAndMakeVisible(toneSwitchToggle);
     toneSwitchToggle.addListener(this);
 
-    addAndMakeVisible(muteSlider);
-    muteSlider.addListener(this);
+    addAndMakeVisible(muteGroupSlider);
+    muteGroupSlider.addListener(this);
+    muteGroupSlider.textFromValueFunction = [this](double value)
+        {
+            return value == 0 ? "Off" : std::to_string((int)value);
+        };
 
     addAndMakeVisible(muteLabel);
-    muteLabel.attachToComponent(&muteSlider, true);
+    muteLabel.attachToComponent(&muteGroupSlider, true);
 
     addAndMakeVisible(envModeComboBox);
     envModeComboBox.addListener(this);
@@ -260,6 +264,13 @@ EditRhythmTab::EditRhythmTab
 
     addAndMakeVisible(panSlider);
     panSlider.addListener(this);
+    panSlider.textFromValueFunction = [this](double value)
+        {
+            return value == 64 ? "Random"
+                               : value == 0 ? "C"
+                                            : value < 0 ? "L" + std::to_string((int)abs(value))
+                                                        : "R" + std::to_string((int)value);
+        };
 
     addAndMakeVisible(panLabel);
     panLabel.attachToComponent(&panSlider, true);
@@ -394,7 +405,7 @@ void EditRhythmTab::updateValues()
 
     updateWaveformComboBox(waveformComboBox);
 
-    muteSlider.setValue(int8_t(tone.muteGroup & 0x1f), juce::dontSendNotification);
+    muteGroupSlider.setValue(int8_t(tone.muteGroup & 0x1f), juce::dontSendNotification);
     envModeComboBox.setSelectedItemIndex(((tone.muteGroup) >> 5) & 0x01, juce::dontSendNotification);
 
     pitchCoarseSlider.setValue(int8_t(tone.pitchCoarse) - 64, juce::dontSendNotification);
@@ -482,7 +493,7 @@ void EditRhythmTab::resized()
     penv4TimeSlider.setBounds(sliderLeft2, top + height * 10 + vMargin * 0, halfWidth, height);
     penv4LevelSlider.setBounds(sliderLeft2 + halfWidth, top + height * 10 + vMargin * 0, halfWidth, height);
 
-    muteSlider.setBounds(sliderLeft1, top + height * 3 + vMargin * 2, width, height);
+    muteGroupSlider.setBounds(sliderLeft1, top + height * 3 + vMargin * 2, width, height);
     envModeComboBox.setBounds(sliderLeft1, top + height * 4 + vMargin * 2, width, height);
     levelSlider.setBounds(sliderLeft1, top + height * 5 + vMargin * 2, width, height);
     panSlider.setBounds(sliderLeft1, top + height * 6 + vMargin * 2, width, height);
@@ -537,8 +548,8 @@ void EditRhythmTab::sliderValueChanged(juce::Slider* slider)
         tone->waveNumber = uint8_t(waveformComboBox.getSelectedItemIndex());
         break;
     case MuteGroup:
-        sendSysexPatchRhythmChange1Byte(0x05, uint8_t(muteSlider.getValue()));
-        tone->muteGroup = uint8_t((uint8_t(muteSlider.getValue()) << 0) + (envModeComboBox.getSelectedItemIndex() << 5));
+        sendSysexPatchRhythmChange1Byte(0x05, uint8_t(muteGroupSlider.getValue()));
+        tone->muteGroup = uint8_t((uint8_t(muteGroupSlider.getValue()) << 0) + (envModeComboBox.getSelectedItemIndex() << 5));
         break;
     case PitchCoarse:
         sendSysexPatchRhythmChange1Byte(0x04, uint8_t(pitchCoarseSlider.getValue() + 64));
@@ -749,7 +760,7 @@ void EditRhythmTab::comboBoxChanged(juce::ComboBox* comboBox)
         break;
     case EnvMode:
         sendSysexPatchRhythmChange1Byte(0x06, uint8_t(envModeComboBox.getSelectedItemIndex()));
-        tone->muteGroup = uint8_t((uint8_t(muteSlider.getValue()) << 0) + (envModeComboBox.getSelectedItemIndex() << 5));
+        tone->muteGroup = uint8_t((uint8_t(muteGroupSlider.getValue()) << 0) + (envModeComboBox.getSelectedItemIndex() << 5));
         break;
     case PitchRandom:
         sendSysexPatchRhythmChange1Byte(0x08, uint8_t(pitchRandomComboBox.getSelectedItemIndex()));

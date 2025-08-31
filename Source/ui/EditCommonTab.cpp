@@ -183,7 +183,7 @@ void EditCommonTab::updateValues()
     chorusOutputComboBox    .setSelectedItemIndex((patch->chorusLevel & 0x80) != 0, juce::dontSendNotification);
     analogFeelSlider        .setValue(patch->analogFeel, juce::dontSendNotification);
     levelSlider             .setValue(patch->level, juce::dontSendNotification);
-    panSlider               .setValue(patch->pan, juce::dontSendNotification);
+    panSlider               .setValue(patch->pan - 64, juce::dontSendNotification);
     bendRangeDownSlider     .setValue(((patch->bendRange) & 0x3f) - 64, juce::dontSendNotification);
     bendRangeUpSlider       .setValue(patch->flags & 0xf, juce::dontSendNotification);
     keyAssignComboBox       .setSelectedItemIndex((patch->flags & 0x80) != 0, juce::dontSendNotification);
@@ -303,8 +303,8 @@ void EditCommonTab::sliderValueChanged(juce::Slider* slider)
         patch->level = uint8_t(levelSlider.getValue());
         break;
     case Pan:
-        sendSysexPatchCommonParamChange(0x19, uint8_t(panSlider.getValue()));
-        patch->pan = uint8_t(panSlider.getValue());
+        sendSysexPatchCommonParamChange(0x19, uint8_t(panSlider.getValue() + 64));
+        patch->pan = uint8_t(panSlider.getValue() + 64);
         break;
     case BendRangeDown:
         sendSysexPatchCommonParamChange(0x1a, uint8_t(bendRangeDownSlider.getValue()));

@@ -229,6 +229,10 @@ EditToneTab::EditToneTab
 
     addAndMakeVisible(lfo1DelaySlider);
     lfo1DelaySlider.addListener(this);
+    lfo1DelaySlider.textFromValueFunction = [this](double value)
+        {
+            return value == 128 ? "Key Off" : std::to_string((uint8_t)value);
+        };
 
     addAndMakeVisible(lfo1DelayLabel);
     lfo1DelayLabel.attachToComponent(&lfo1DelaySlider, true);
@@ -285,6 +289,10 @@ EditToneTab::EditToneTab
 
     addAndMakeVisible(lfo2DelaySlider);
     lfo2DelaySlider.addListener(this);
+    lfo2DelaySlider.textFromValueFunction = [this](double value)
+        {
+            return value == 128 ? "Key Off" : std::to_string((uint8_t)value);
+        };
 
     addAndMakeVisible(lfo2DelayLabel);
     lfo2DelayLabel.attachToComponent(&lfo2DelaySlider, true);
@@ -549,6 +557,13 @@ EditToneTab::EditToneTab
 
     addAndMakeVisible(panSlider);
     panSlider.addListener(this);
+    panSlider.textFromValueFunction = [this](double value)
+        {
+            return value == 64 ? "Random"
+                               : value == 0 ? "C"
+                                            : value < 0 ? "L" + std::to_string((int)abs(value))
+                                                        : "R" + std::to_string((int)value);
+        };
 
     addAndMakeVisible(panLabel);
     panLabel.attachToComponent(&panSlider, true);
@@ -568,6 +583,10 @@ EditToneTab::EditToneTab
 
     addAndMakeVisible(toneDelayTimeSlider);
     toneDelayTimeSlider.addListener(this);
+    toneDelayTimeSlider.textFromValueFunction = [this](double value)
+    {
+        return value == 128 ? "Key Off" : std::to_string((uint8_t)value);
+    };
 
     addAndMakeVisible(toneDelayTimeLabel);
     toneDelayTimeLabel.attachToComponent(&toneDelayTimeSlider, true);
@@ -1547,170 +1566,3 @@ void EditToneTab::sendSysexPatchToneChange2Byte(uint8_t address, uint8_t value)
     processor.mcu->postMidiSC55(buf, 13);
     processor.mcuLock.exit();
 }
-
-/*
-void EditToneTab::sendSysexPatchToneChange()
-{
-    sendSysexPatchToneChange1Byte(0x03, toneSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x04, FXMSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x05, uint8_t(FXMDepthSlider.getValue() - 1));
-    sendSysexPatchToneChange1Byte(0x06, uint8_t(velRangeLowSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x07, uint8_t(velRangeHighSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x08, volumeSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x09, holdSwitchToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x0b, uint8_t(modSensASlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x0d, uint8_t(modSensBSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x0f, uint8_t(modSensCSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x11, uint8_t(modSensDSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x13, uint8_t(aftSensASlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x15, uint8_t(aftSensBSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x17, uint8_t(aftSensCSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x19, uint8_t(aftSensDSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x1b, uint8_t(expSensASlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x1d, uint8_t(expSensBSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x1f, uint8_t(expSensCSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x21, uint8_t(expSensDSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x24, lfo1SyncToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x25, uint8_t(lfo1RateSlider.getValue()));
-    sendSysexPatchToneChange2Byte(0x26, uint8_t(lfo1DelaySlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x28, lfo1FadeToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x29, uint8_t(lfo1FadeTimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x2a, uint8_t(lfo1PitchDepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x2b, uint8_t(lfo1TVFDepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x2c, uint8_t(lfo1TVADepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x2f, lfo2SyncToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x30, uint8_t(lfo2RateSlider.getValue()));
-    sendSysexPatchToneChange2Byte(0x31, uint8_t(lfo2DelaySlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x33, lfo2FadeToggle.getToggleStateValue() == 1 ? 0x01 : 0x00);
-    sendSysexPatchToneChange1Byte(0x34, uint8_t(lfo2FadeTimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x35, uint8_t(lfo2PitchDepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x36, uint8_t(lfo2TVFDepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x37, uint8_t(lfo2TVADepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x38, uint8_t(pitchCoarseSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x39, uint8_t(pitchFineSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x3c, uint8_t(penvLevSensSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x40, uint8_t(penvDepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x41, uint8_t(penv1TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x42, uint8_t(penv1LevelSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x43, uint8_t(penv2TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x44, uint8_t(penv2LevelSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x45, uint8_t(penv3TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x46, uint8_t(penv3LevelSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x47, uint8_t(penv4TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x48, uint8_t(penv4LevelSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x4a, uint8_t(filterCutoffSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x4b, uint8_t(filterResoSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x4f, uint8_t(fenvLevSensSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x53, uint8_t(fenvDepthSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x54, uint8_t(fenv1TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x55, uint8_t(fenv1LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x56, uint8_t(fenv2TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x57, uint8_t(fenv2LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x58, uint8_t(fenv3TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x59, uint8_t(fenv3LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x5a, uint8_t(fenv4TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x5b, uint8_t(fenv4LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x5c, uint8_t(levelSlider.getValue()));
-    sendSysexPatchToneChange2Byte(0x5e, uint8_t(panSlider.getValue() + 64));
-    sendSysexPatchToneChange2Byte(0x62, uint8_t(toneDelayTimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x65, uint8_t(aenvLevSensSlider.getValue() + 64));
-    sendSysexPatchToneChange1Byte(0x69, uint8_t(aenv1TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x6a, uint8_t(aenv1LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x6b, uint8_t(aenv2TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x6c, uint8_t(aenv2LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x6d, uint8_t(aenv3TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x6e, uint8_t(aenv3LevelSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x6f, uint8_t(aenv4TimeSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x70, uint8_t(drySlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x71, uint8_t(reverbSlider.getValue()));
-    sendSysexPatchToneChange1Byte(0x72, uint8_t(chorusSlider.getValue()));
-
-    Patch* patch = (Patch*)processor.status.patch;
-    Tone* tone = &patch->tones[toneCount];
-
-    tone->flags = uint8_t(waveGroupComboBox.getSelectedItemIndex() + (toneSwitchToggle.getToggleState() << 7));
-    tone->waveNumber = uint8_t(waveformComboBox.getSelectedItemIndex());
-    tone->fxmConfig = uint8_t((uint8_t(FXMDepthSlider.getValue() - 1) << 0) + (FXMSwitchToggle.getToggleState() << 7));
-    tone->velocityRangeLow = uint8_t(velRangeLowSlider.getValue());
-    tone->velocityRangeUp = uint8_t(velRangeHighSlider.getValue());
-    tone->matrixModDestAB = uint8_t(modDestAComboBox.getSelectedItemIndex() + (modDestBComboBox.getSelectedItemIndex() << 4));
-    tone->matrixModDestCD = uint8_t(modDestCComboBox.getSelectedItemIndex() + (modDestDComboBox.getSelectedItemIndex() << 4));
-    tone->matrixModSensA = uint8_t(modSensASlider.getValue());
-    tone->matrixModSensB = uint8_t(modSensBSlider.getValue());
-    tone->matrixModSensC = uint8_t(modSensCSlider.getValue());
-    tone->matrixModSensD = uint8_t(modSensDSlider.getValue());
-    tone->matrixAftDestAB = uint8_t(aftDestAComboBox.getSelectedItemIndex() + (aftDestBComboBox.getSelectedItemIndex() << 4));
-    tone->matrixAftDestCD = uint8_t(aftDestCComboBox.getSelectedItemIndex() + (aftDestDComboBox.getSelectedItemIndex() << 4));
-    tone->matrixAftSensA = uint8_t(aftSensASlider.getValue());
-    tone->matrixAftSensB = uint8_t(aftSensBSlider.getValue());
-    tone->matrixAftSensC = uint8_t(aftSensCSlider.getValue());
-    tone->matrixAftSensD = uint8_t(aftSensDSlider.getValue());
-    tone->matrixExpDestAB = uint8_t(expDestAComboBox.getSelectedItemIndex() + (expDestBComboBox.getSelectedItemIndex() << 4));
-    tone->matrixExpDestCD = uint8_t(expDestCComboBox.getSelectedItemIndex() + (expDestDComboBox.getSelectedItemIndex() << 4));
-    tone->matrixExpSensA = uint8_t(expSensASlider.getValue());
-    tone->matrixExpSensB = uint8_t(expSensBSlider.getValue());
-    tone->matrixExpSensC = uint8_t(expSensCSlider.getValue());
-    tone->matrixExpSensD = uint8_t(expSensDSlider.getValue());
-    tone->lfo1Flags = uint8_t(lfo1FormComboBox.getSelectedItemIndex() + (lfo1OffsetComboBox.getSelectedItemIndex() << 3) + (lfo1SyncToggle.getToggleState() << 6) + (lfo1FadeToggle.getToggleState() << 7));
-    tone->lfo1Rate = uint8_t(lfo1RateSlider.getValue());
-    tone->lfo1Delay = uint8_t(lfo1DelaySlider.getValue());
-    tone->lfo1Fade = uint8_t(lfo1FadeTimeSlider.getValue());
-    tone->lfo1PitchDepth = uint8_t(lfo1PitchDepthSlider.getValue());
-    tone->lfo1TvfDepth = uint8_t(lfo1TVFDepthSlider.getValue());
-    tone->lfo1TvaDepth = uint8_t(lfo1TVADepthSlider.getValue());
-    tone->lfo2Flags = uint8_t(lfo2FormComboBox.getSelectedItemIndex() + (lfo2OffsetComboBox.getSelectedItemIndex() << 3) + (lfo2SyncToggle.getToggleState() << 6) + (lfo2FadeToggle.getToggleState() << 7));
-    tone->lfo2Rate = uint8_t(lfo2RateSlider.getValue());
-    tone->lfo2Delay = uint8_t(lfo2DelaySlider.getValue());
-    tone->lfo2Fade = uint8_t(lfo2FadeTimeSlider.getValue());
-    tone->lfo2PitchDepth = uint8_t(lfo2PitchDepthSlider.getValue());
-    tone->lfo2TvfDepth = uint8_t(lfo2TVFDepthSlider.getValue());
-    tone->lfo2TvaDepth = uint8_t(lfo2TVADepthSlider.getValue());
-    tone->pitchCoarse = uint8_t(pitchCoarseSlider.getValue());
-    tone->pitchFine = uint8_t(pitchFineSlider.getValue());
-    tone->tvaPanKFpitchRandom = uint8_t(pitchRandomComboBox.getSelectedItemIndex() + (panKFComboBox.getSelectedItemIndex() << 4));
-    tone->tvpKFtvaTimeKF = uint8_t(pitchKFComboBox.getSelectedItemIndex() + (penvTimeKFSensComboBox.getSelectedItemIndex() << 4));
-    tone->tvpVelocity= uint8_t(penvLevSensSlider.getValue());
-    tone->tvpT1T4Velocity = uint8_t(penvTime1SensComboBox.getSelectedItemIndex() + (penvTime4SensComboBox.getSelectedItemIndex() << 4));
-    tone->tvpEnvDepth = uint8_t(penvDepthSlider.getValue());
-    tone->tvpEnvTime1 = uint8_t(penv1TimeSlider.getValue());
-    tone->tvpEnvLevel1 = uint8_t(penv1LevelSlider.getValue());
-    tone->tvpEnvTime2 = uint8_t(penv2TimeSlider.getValue());
-    tone->tvpEnvLevel2 = uint8_t(penv2LevelSlider.getValue());
-    tone->tvpEnvTime3 = uint8_t(penv3TimeSlider.getValue());
-    tone->tvpEnvLevel3 = uint8_t(penv3LevelSlider.getValue());
-    tone->tvpEnvTime4 = uint8_t(penv4TimeSlider.getValue());
-    tone->tvpEnvLevel4 = uint8_t(penv4LevelSlider.getValue());
-    tone->tvfVeloCurveLpfHpf = uint8_t(fenvVelCurveComboBox.getSelectedItemIndex() + (filterModeComboBox.getSelectedItemIndex() << 3));
-    tone->tvfCutoff = uint8_t(filterCutoffSlider.getValue());
-    tone->tvfResonance = uint8_t(filterResoSlider.getValue() + (filterResoModeComboBox.getSelectedItemIndex() << 7));
-    tone->tvfTimeKFKeyfollow = uint8_t(filterKFComboBox.getSelectedItemIndex() + (fenvTimeKFSensComboBox.getSelectedItemIndex() << 4));
-    tone->tvfVelocity = uint8_t(fenvLevSensSlider.getValue());
-    tone->tvfT1T4Velocity = uint8_t(fenvTime1SensComboBox.getSelectedItemIndex() + (fenvTime4SensComboBox.getSelectedItemIndex() << 4));
-    tone->tvfEnvDepth = uint8_t(fenvDepthSlider.getValue());
-    tone->tvfEnvTime1 = uint8_t(fenv1TimeSlider.getValue());
-    tone->tvfEnvLevel1 = uint8_t(fenv1LevelSlider.getValue());
-    tone->tvfEnvTime2 = uint8_t(fenv2TimeSlider.getValue());
-    tone->tvfEnvLevel2 = uint8_t(fenv2LevelSlider.getValue());
-    tone->tvfEnvTime3 = uint8_t(fenv3TimeSlider.getValue());
-    tone->tvfEnvLevel3 = uint8_t(fenv3LevelSlider.getValue());
-    tone->tvfEnvTime4 = uint8_t(fenv4TimeSlider.getValue());
-    tone->tvfEnvLevel4 = uint8_t(fenv4LevelSlider.getValue());
-    tone->tvaLevel = uint8_t(levelSlider.getValue());
-    tone->tvaTimeKFDelayTimeKeyfollow = uint8_t(levelKFComboBox.getSelectedItemIndex() + (aenvTimeKFSensComboBox.getSelectedItemIndex() << 4));
-    tone->tvaPan = uint8_t(panSlider.getValue() + 64);
-    tone->tvaDelayModeVeloCurve = uint8_t(aenvVelCurveComboBox.getSelectedItemIndex() + (toneDelayComboBox.getSelectedItemIndex() << 3) + (holdSwitchToggle.getToggleState() << 6) + (volumeSwitchToggle.getToggleState() << 7));
-    tone->tvaDelayTime = uint8_t(toneDelayTimeSlider.getValue());
-    tone->tvaVelocity = uint8_t(aenvLevSensSlider.getValue());
-    tone->tvaT1T4Velocity = uint8_t(aenvTime1SensComboBox.getSelectedItemIndex() + (aenvTime4SensComboBox.getSelectedItemIndex() << 4));
-    tone->tvaEnvTime1 = uint8_t(aenv1TimeSlider.getValue());
-    tone->tvaEnvLevel1 = uint8_t(aenv1LevelSlider.getValue());
-    tone->tvaEnvTime2 = uint8_t(aenv2TimeSlider.getValue());
-    tone->tvaEnvLevel2 = uint8_t(aenv2LevelSlider.getValue());
-    tone->tvaEnvTime3 = uint8_t(aenv3TimeSlider.getValue());
-    tone->tvaEnvLevel3 = uint8_t(aenv3LevelSlider.getValue());
-    tone->tvaEnvTime4 = uint8_t(aenv4TimeSlider.getValue());
-    tone->drySend = uint8_t(drySlider.getValue());
-    tone->reverbSend = uint8_t(reverbSlider.getValue());
-    tone->chorusSend = uint8_t(chorusSlider.getValue());
-}
-*/
