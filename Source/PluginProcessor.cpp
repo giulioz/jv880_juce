@@ -316,35 +316,40 @@ bool VirtualJVProcessor::isBusesLayoutSupported(
   return true;
 }
 
-void VirtualJVProcessor::processBlock(juce::AudioBuffer<float> &buffer,
-                                            juce::MidiBuffer &midiMessages) {
+void VirtualJVProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages)
+{
   mcuLock.enter();
 
-  for (const auto metadata : midiMessages) {
+  for (const auto metadata : midiMessages)
+  {
     auto message = metadata.getMessage();
-    if (status.isDrums)
-      message.setChannel(10);
-    else
-      message.setChannel(1);
+
+    message.setChannel(status.isDrums ? 10 : 1);
+
     int samplePos = int(((double)metadata.samplePosition / getSampleRate()) * 64000.0);
-    mcu->enqueueMidiSC55(message.getRawData(), message.getRawDataSize(),
-                         samplePos);
+
+    mcu->enqueueMidiSC55(message.getRawData(), message.getRawDataSize(), samplePos);
   }
 
   juce::ScopedNoDenormals noDenormals;
+
   auto totalNumInputChannels = getTotalNumInputChannels();
   auto totalNumOutputChannels = getTotalNumOutputChannels();
 
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+  {
     buffer.clear(i, 0, buffer.getNumSamples());
+  }
 
-  if (!loaded) {
+  if (!loaded)
+  {
     mcuLock.exit();
     return;
   }
 
   float *channelDataL = buffer.getWritePointer(0);
   float *channelDataR = buffer.getWritePointer(1);
+
   mcu->updateSC55WithSampleRate(channelDataL, channelDataR,
                                 buffer.getNumSamples(), (int)getSampleRate());
 

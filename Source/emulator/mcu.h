@@ -288,6 +288,8 @@ static const int audio_page_size = 512;
 
 static const int ROM_SET_N_FILES = 6;
 
+static constexpr int MIDI_EVENT_DATA_SIZE = 32;
+
 struct MCU {
     int romset = 0;
 
@@ -374,7 +376,7 @@ struct MCU {
     double samplesError = 0;
     
     struct MidiEvent {
-        uint8_t data[32];
+        uint8_t data[MIDI_EVENT_DATA_SIZE];
         int length;
         int samplePos;
         bool processed;

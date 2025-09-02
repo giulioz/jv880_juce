@@ -1378,6 +1378,11 @@ void MCU::postMidiSC55(const uint8_t* message, int length) {
 }
 
 void MCU::enqueueMidiSC55(const uint8_t* message, int length, int samplePos) {
+    if (length >= MIDI_EVENT_DATA_SIZE)
+    {
+        return;
+    }
+
     MidiEvent event = {0};
     event.length = length;
     event.samplePos = samplePos;
