@@ -4,8 +4,8 @@ ROOT=$(cd "$(dirname "$0")/.."; pwd)
 "$ROOT/build/bin/JUCE/Projucer.exe" --resave "$ROOT/VirtualJV.jucer"
 
 VS_WHERE="C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
-  
-MSBUILD_EXE=$("$VS_WHERE" -latest -requires Microsoft.Component.MSBuild -find "MSBuild\**\Bin\MSBuild.exe")
+
+MSBUILD_EXE=$("$VS_WHERE" -latest -requires Microsoft.Component.MSBuild -find "MSBuild/**/Bin/amd64/MSBuild.exe")
 echo $MSBUILD_EXE
 
 cd "$ROOT/Builds/VisualStudio2022"
