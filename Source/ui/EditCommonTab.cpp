@@ -307,7 +307,7 @@ void EditCommonTab::sliderValueChanged(juce::Slider* slider)
         patch->pan = uint8_t(panSlider.getValue() + 64);
         break;
     case BendRangeDown:
-        sendSysexPatchCommonParamChange(0x1a, uint8_t(bendRangeDownSlider.getValue()));
+        sendSysexPatchCommonParamChange(0x1a, uint8_t(bendRangeDownSlider.getValue() + 64));
         patch->bendRange = uint8_t(bendRangeDownSlider.getValue() + 64);
         break;
     case BendRangeUp:
