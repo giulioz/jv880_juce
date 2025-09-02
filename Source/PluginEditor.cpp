@@ -12,15 +12,20 @@
 #include <algorithm>
 
 //==============================================================================
-VirtualJVEditor::VirtualJVEditor(
-    VirtualJVProcessor &p)
+VirtualJVEditor::VirtualJVEditor(VirtualJVProcessor &p)
     : AudioProcessorEditor(&p), processor(p),
-      lcd(p), tabs(juce::TabbedButtonBar::TabsAtTop), patchBrowser(p), editCommonTab(p),
+      lcd(p), tabs(), patchBrowser(p), editCommonTab(p),
       editTone1Tab(p, this, 0U), editTone2Tab(p, this, 1U), editTone3Tab(p, this, 2U), editTone4Tab(p, this, 3U), editRhythmTab(p, this),
       settingsTab(p)
 {
   addAndMakeVisible(lcd);
   addAndMakeVisible(tabs);
+
+  tabs.tabChangedFunction =
+      [this](int index)
+      {
+        processor.status.selectedTab = index;
+      };
 
   setSize(820, 900);
 
@@ -45,12 +50,16 @@ VirtualJVEditor::VirtualJVEditor(
   }
   else
   {
-      updateEditTabs();
       showToneOrRhythmEditTabs(processor.status.isDrums);
+      setSelectedTab(processor.status.selectedTab);
+      updateEditTabs();
   }
 }
 
-VirtualJVEditor::~VirtualJVEditor() {}
+VirtualJVEditor::~VirtualJVEditor()
+{
+    processor.status.selectedTab = tabs.getCurrentTabIndex();
+}
 
 void VirtualJVEditor::updateEditTabs()
 {
@@ -66,7 +75,7 @@ void VirtualJVEditor::updateEditTabs()
 void VirtualJVEditor::showToneOrRhythmEditTabs(const bool isRhythm)
 {
     const auto bgColor = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
-    const auto selTab = tabs.getCurrentTabIndex();
+    const auto selTab = processor.status.selectedTab;
 
     tabs.clearTabs();
 
@@ -87,6 +96,8 @@ void VirtualJVEditor::showToneOrRhythmEditTabs(const bool isRhythm)
         tabs.addTab("Tone 3", bgColor, &editTone3Tab, false);
         tabs.addTab("Tone 4", bgColor, &editTone4Tab, false);
     }
+
+    processor.status.selectedTab = selTab;
 
     // I don't know if the selected tab index resets after calling clearTabs(),
     // so just making sure that we stay where we were before the tab clearout
@@ -112,7 +123,8 @@ uint8_t VirtualJVEditor::getSelectedRomIdx()
     }
 }
 
-void VirtualJVEditor::resized() {
+void VirtualJVEditor::resized()
+{
   lcd.setBounds(0, 0, 820, 100);
   tabs.setBounds(0, 100, 820, 800);
 }

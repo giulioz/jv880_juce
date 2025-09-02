@@ -364,8 +364,8 @@ juce::AudioProcessorEditor *VirtualJVProcessor::createEditor() {
 }
 
 //==============================================================================
-void VirtualJVProcessor::getStateInformation(
-    juce::MemoryBlock &destData) {
+void VirtualJVProcessor::getStateInformation(juce::MemoryBlock &destData)
+{
   mcuLock.enter();
   status.masterTune = mcu->nvram[0x00];
   status.reverbEnabled = ((mcu->nvram[0x02] >> 0) & 1) == 1;
@@ -376,8 +376,8 @@ void VirtualJVProcessor::getStateInformation(
   destData.replaceAll(&status, sizeof(DataToSave));
 }
 
-void VirtualJVProcessor::setStateInformation(const void *data,
-                                                   int /* sizeInBytes */) {
+void VirtualJVProcessor::setStateInformation(const void *data, int /* sizeInBytes */)
+{
   memcpy(&status, data, sizeof(DataToSave));
 
   mcuLock.enter();

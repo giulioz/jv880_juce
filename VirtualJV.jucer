@@ -25,6 +25,7 @@
           <FILE id="rT02ip" name="LCDisplay.h" compile="0" resource="0" file="Source/ui/widgets/LCDisplay.h"/>
           <FILE id="zXQ57H" name="Menu.h" compile="0" resource="0" file="Source/ui/widgets/Menu.h"/>
           <FILE id="LoE4qt" name="Slider.h" compile="0" resource="0" file="Source/ui/widgets/Slider.h"/>
+          <FILE id="LGmaEG" name="TabBar.h" compile="0" resource="0" file="Source/ui/widgets/TabBar.h"/>
           <FILE id="Ie0u9n" name="TextEdit.h" compile="0" resource="0" file="Source/ui/widgets/TextEdit.h"/>
         </GROUP>
         <FILE id="CEIonD" name="EditCommonTab.cpp" compile="1" resource="0"
@@ -161,8 +162,10 @@
     </LINUX_MAKE>
     <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="DiWlj3" bigIcon="DiWlj3">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"
+                       winArchitecture="x64"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="jv880" headerPath="C:\Program Files (x86)\Steinberg\ASIOSDK\common\"
+                       winArchitecture="x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_plugin_client" path="./JUCE/modules"/>

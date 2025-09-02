@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     EditToneTab.h
@@ -249,11 +249,11 @@ private:
     Button lfo1FadeToggle{ LFO1FadeOut, "Fade Out" };
     juce::Label lfo1FadeTimeLabel{ "", "Fade Time" };
     Slider lfo1FadeTimeSlider{ LFO1FadeTime, 0, 127, 1 };
-    juce::Label lfo1PitchDepthLabel{ "", u8"→Pitch" };
+    juce::Label lfo1PitchDepthLabel{ "", u8"/U2192Pitch" };
     Slider lfo1PitchDepthSlider{ LFO1ToPitch, -60, 60, 1, 0, true };
-    juce::Label lfo1TVFDepthLabel{ "", u8"→Filter" };
+    juce::Label lfo1TVFDepthLabel{ "", u8"\U00002192Filter" };
     Slider lfo1TVFDepthSlider{ LFO1ToFilter, -63, 63, 1, 0, true };
-    juce::Label lfo1TVADepthLabel{ "", u8"→Amp" };
+    juce::Label lfo1TVADepthLabel{ "", u8"\U00002192Amp" };
     Slider lfo1TVADepthSlider{ LFO1ToAmp, -63, 63, 1, 0, true };
 
     juce::Label lfo2FormLabel{ "", "LFO 2" };
@@ -268,11 +268,11 @@ private:
     Button lfo2FadeToggle{ LFO2FadeOut, "Fade Out" };
     juce::Label lfo2FadeTimeLabel{ "", "Fade Time" };
     Slider lfo2FadeTimeSlider{ LFO2FadeTime, 0, 127, 1 };
-    juce::Label lfo2PitchDepthLabel{ "", u8"→Pitch" };
+    juce::Label lfo2PitchDepthLabel{ "", u8"\U00002192Pitch" };
     Slider lfo2PitchDepthSlider{ LFO2ToPitch, -60, 60, 1, 0, true };
-    juce::Label lfo2TVFDepthLabel{ "", u8"→Filter" };
+    juce::Label lfo2TVFDepthLabel{ "", u8"\U00002192Filter" };
     Slider lfo2TVFDepthSlider{ LFO2ToFilter, -63, 63, 1, 0, true };
-    juce::Label lfo2TVADepthLabel{ "", u8"→Amp" };
+    juce::Label lfo2TVADepthLabel{ "", u8"\U00002192Amp" };
     Slider lfo2TVADepthSlider{ LFO2ToAmp, -63, 63, 1, 0, true };
 
     juce::Label pitchCoarseLabel{ "", "Coarse" };
@@ -282,16 +282,16 @@ private:
     juce::Label pitchRandomLabel{ "", "Random | KF" };
     Menu pitchRandomComboBox{ PitchRandom };
     Menu pitchKFComboBox{ PitchKeyfollow, 12 };
-    juce::Label penvLevSensLabel{ "", u8"Vel→Env Depth" };
+    juce::Label penvLevSensLabel{ "", u8"Vel\U00002192Env Depth" };
     Slider penvLevSensSlider{ PitchEnvLevelSense, -63, 63, 1, 0, true };
-    juce::Label penvTime1SensLabel{ "", u8"Vel→Env T1 | T4" };
+    juce::Label penvTime1SensLabel{ "", u8"Vel\U00002192Env T1 | T4" };
     Menu penvTime1SensComboBox{ PitchEnvTime1Sense, 7 };
     Menu penvTime4SensComboBox{ PitchEnvTime4Sense, 7 };
-    juce::Label penvTimeKFSensLabel{ "", u8"KF→Env Time" };
+    juce::Label penvTimeKFSensLabel{ "", u8"KF\U00002192Env Time" };
     Menu penvTimeKFSensComboBox{ PitchEnvTimeKeyfollow, 7 };
-    juce::Label penvDepthLabel{ "", u8"Env→Pitch" };
+    juce::Label penvDepthLabel{ "", u8"Env\U00002192Pitch" };
     Slider penvDepthSlider{ PitchEnvDepth, -12, 12, 1, 0, true };
-    juce::Label penv1TimeLabel{ "", "Time | Level 1"};
+    juce::Label penv1TimeLabel{ "", "Time | Level 1" };
     Slider penv1TimeSlider{ PitchEnvTime1, 0, 127, 1 };
     Slider penv1LevelSlider{ PitchEnvLevel1, -63, 63, 1, 63, true };
     juce::Label penv2TimeLabel{ "", "2" };
@@ -314,14 +314,14 @@ private:
     juce::Label filterKFLabel{ "", "KF | Vel Curve" };
     Menu filterKFComboBox{ FilterKeyfollow, 5 };
     Menu fenvVelCurveComboBox{ FilterVelCurve };
-    juce::Label fenvLevSensLabel{ "", u8"Vel→Env Depth" };
+    juce::Label fenvLevSensLabel{ "", u8"Vel\U00002192Env Depth" };
     Slider fenvLevSensSlider{ FilterEnvLevelSense, -63, 63, 1, 0, true };
-    juce::Label fenvTime1SensLabel{ "", u8"Vel→Env T1 | T4" };
+    juce::Label fenvTime1SensLabel{ "", u8"Vel\U00002192Env T1 | T4" };
     Menu fenvTime1SensComboBox{ FilterEnvTime1Sense, 7 };
     Menu fenvTime4SensComboBox{ FilterEnvTime4Sense, 7 };
-    juce::Label fenvTimeKFSensLabel{ "", u8"KF→Env Time" };
+    juce::Label fenvTimeKFSensLabel{ "", u8"KF\U00002192Env Time" };
     Menu fenvTimeKFSensComboBox{ FilterEnvTimeKeyfollow, 7 };
-    juce::Label fenvDepthLabel{ "", u8"Env→Cutoff" };
+    juce::Label fenvDepthLabel{ "", u8"Env\U00002192Cutoff" };
     Slider fenvDepthSlider{ FilterEnvDepth, -63, 63, 1, 0, true };
     juce::Label fenv1TimeLabel{ "", "Time | Level 1" };
     Slider fenv1TimeSlider{ FilterEnvTime1, 0, 127, 1, 127 };
@@ -340,7 +340,7 @@ private:
     Slider levelSlider{ Level, 0, 127, 1, 96 };
     juce::Label panLabel{ "", "Pan" };
     Slider panSlider{ Pan, -64, 64, 1, 0, true };
-    juce::Label levelKFLabel{ "", u8"KF→Level | Pan" };
+    juce::Label levelKFLabel{ "", u8"KF\U00002192Level | Pan" };
     Menu levelKFComboBox{ LevelKeyfollow, 7 };
     Menu panKFComboBox{ PanKeyfollow, 7 };
     juce::Label toneDelayLabel{ "", "Delay Mode" };
@@ -349,9 +349,9 @@ private:
     Slider toneDelayTimeSlider{ DelayTime, 0, 128, 1 };
     juce::Label aenvVelCurveLabel{ "", "Vel Curve" };
     Menu aenvVelCurveComboBox{ AmpVelCurve };
-    juce::Label aenvLevSensLabel{ "", u8"Vel→Amp" };
+    juce::Label aenvLevSensLabel{ "", u8"Vel\U00002192Amp" };
     Slider aenvLevSensSlider{ AmpEnvLevelSense, -63, 63, 1, 0, true };
-    juce::Label aenvTime1SensLabel{ "", u8"Vel→Env T1 | T4" };
+    juce::Label aenvTime1SensLabel{ "", u8"Vel\U00002192Env T1 | T4" };
     Menu aenvTime1SensComboBox{ AmpEnvTime1Sense, 7 };
     Menu aenvTime4SensComboBox{ AmpEnvTime4Sense, 7 };
     juce::Label aenvTimeKFSensLabel{ "", "Time KF" };

@@ -13,6 +13,7 @@
 #include "PluginProcessor.h"
 
 #include "ui/widgets/LCDisplay.h"
+#include "ui/widgets/TabBar.h"
 #include "ui/PatchBrowser.h"
 #include "ui/EditCommonTab.h"
 #include "ui/EditToneTab.h"
@@ -35,11 +36,13 @@ public:
     void updateEditTabs();
     void showToneOrRhythmEditTabs(const bool isRhythm);
 
+    void setSelectedTab(const int index) { tabs.setCurrentTabIndex(index); }
+
 private:
     VirtualJVProcessor& processor;
 
     LCDisplay lcd;
-    juce::TabbedComponent tabs;
+    TabBar tabs;
     PatchBrowser patchBrowser;
     EditCommonTab editCommonTab;
     EditToneTab editTone1Tab;
