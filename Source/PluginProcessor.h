@@ -89,7 +89,8 @@ public:
         uint8_t drums[0xa7c] = {0};
 
         int selectedTab{0};
-        uint8_t selectedRom{0};
+        int selectedRom{-1};
+        int selectedPatch{-1};
     };
 
     DataToSave status;
