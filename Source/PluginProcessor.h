@@ -91,6 +91,8 @@ public:
         int selectedTab{0};
         int selectedRom{-1};
         int selectedPatch{-1};
+
+        uint8_t selectedLCDColor{0};
     };
 
     DataToSave status;
