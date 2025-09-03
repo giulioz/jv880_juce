@@ -59,64 +59,64 @@ void LCDisplay::setLCDColor(const Color color)
     {
     case Color::Green:
     default:
-        processor.mcu->lcd.lcd_bg = 0xff03be51;
-        processor.mcu->lcd.lcd_col1 = 0xff204000;
-        processor.mcu->lcd.lcd_col2 = 0xff08aa45;
+        processor.mcu->lcd.lcd_bg = 0x03be51;
+        processor.mcu->lcd.lcd_col1 = 0x204000;
+        processor.mcu->lcd.lcd_col2 = 0x08aa45;
         break;
     case Color::Amber:
-        processor.mcu->lcd.lcd_bg = 0xffbe9f03;
-        processor.mcu->lcd.lcd_col1 = 0xff502000;
-        processor.mcu->lcd.lcd_col2 = 0xffac8c02;
+        processor.mcu->lcd.lcd_bg = 0xbe9f03;
+        processor.mcu->lcd.lcd_col1 = 0x502000;
+        processor.mcu->lcd.lcd_col2 = 0xac8c02;
         break;
     case Color::Red:
-        processor.mcu->lcd.lcd_bg = 0xff600000;
-        processor.mcu->lcd.lcd_col1 = 0xffff3040;
-        processor.mcu->lcd.lcd_col2 = 0xff88090f;
+        processor.mcu->lcd.lcd_bg = 0x600000;
+        processor.mcu->lcd.lcd_col1 = 0xff3040;
+        processor.mcu->lcd.lcd_col2 = 0x88090f;
         break;
     case Color::Blue:
-        processor.mcu->lcd.lcd_bg = 0xff1860ff;
-        processor.mcu->lcd.lcd_col1 = 0xffdcdcdc;
-        processor.mcu->lcd.lcd_col2 = 0xff557ef8;
+        processor.mcu->lcd.lcd_bg = 0x1860ff;
+        processor.mcu->lcd.lcd_col1 = 0xdcdcdc;
+        processor.mcu->lcd.lcd_col2 = 0x557ef8;
         break;
     case Color::WhiteBlack:
-        processor.mcu->lcd.lcd_bg = 0xffe8f8f8;
-        processor.mcu->lcd.lcd_col1 = 0xff181818;
-        processor.mcu->lcd.lcd_col2 = 0xffcacaca;
+        processor.mcu->lcd.lcd_bg = 0xe8f8f8;
+        processor.mcu->lcd.lcd_col1 = 0x181818;
+        processor.mcu->lcd.lcd_col2 = 0xcacaca;
         break;
     case Color::WhiteBlue:
-        processor.mcu->lcd.lcd_bg = 0xffe8f8f8;
-        processor.mcu->lcd.lcd_col1 = 0xff2040ff;
-        processor.mcu->lcd.lcd_col2 = 0xffd3d5ec;
+        processor.mcu->lcd.lcd_bg = 0xe8f8f8;
+        processor.mcu->lcd.lcd_col1 = 0x2040ff;
+        processor.mcu->lcd.lcd_col2 = 0xd3d5ec;
         break;
     case Color::BlackWhite:
-        processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xffdcdcdc;
-        processor.mcu->lcd.lcd_col2 = 0xff4a4a4a;
+        processor.mcu->lcd.lcd_bg = 0x000000;
+        processor.mcu->lcd.lcd_col1 = 0xdcdcdc;
+        processor.mcu->lcd.lcd_col2 = 0x4a4a4a;
         break;
     case Color::BlackAmber:
-        processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xffc0b400;
-        processor.mcu->lcd.lcd_col2 = 0xff403b00;
+        processor.mcu->lcd.lcd_bg = 0x000000;
+        processor.mcu->lcd.lcd_col1 = 0xc0b400;
+        processor.mcu->lcd.lcd_col2 = 0x403b00;
         break;
     case Color::BlackRed:
-        processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xffff3040;
-        processor.mcu->lcd.lcd_col2 = 0xff58090f;
+        processor.mcu->lcd.lcd_bg = 0x000000;
+        processor.mcu->lcd.lcd_col1 = 0xff3040;
+        processor.mcu->lcd.lcd_col2 = 0x58090f;
         break;
     case Color::BlackGreen:
-        processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xff00c040;
-        processor.mcu->lcd.lcd_col2 = 0xff00400f;
+        processor.mcu->lcd.lcd_bg = 0x000000;
+        processor.mcu->lcd.lcd_col1 = 0x00c040;
+        processor.mcu->lcd.lcd_col2 = 0x00400f;
         break;
     case Color::BlackBlue:
-        processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xff4080ff;
-        processor.mcu->lcd.lcd_col2 = 0xff0b1f47;
+        processor.mcu->lcd.lcd_bg = 0x000000;
+        processor.mcu->lcd.lcd_col1 = 0x4080ff;
+        processor.mcu->lcd.lcd_col2 = 0x0b1f47;
         break;
     case Color::BlackVFD:
-        processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xffc0ffff;
-        processor.mcu->lcd.lcd_col2 = 0xff484848;
+        processor.mcu->lcd.lcd_bg = 0x000000;
+        processor.mcu->lcd.lcd_col1 = 0xc0ffff;
+        processor.mcu->lcd.lcd_col2 = 0x484848;
         break;
     };
 

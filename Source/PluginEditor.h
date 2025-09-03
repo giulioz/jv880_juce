@@ -37,6 +37,8 @@ public:
     void showToneOrRhythmEditTabs(const bool isRhythm);
 
     void setSelectedTab(const int index) { tabs.setCurrentTabIndex(index); }
+    void setSelectedROM(const int index) { patchBrowser.categoriesListBox.selectRow(index); }
+    void setLCDColor(const LCDisplay::Color color) { lcd.setLCDColor(color); }
 
 private:
     VirtualJVProcessor& processor;

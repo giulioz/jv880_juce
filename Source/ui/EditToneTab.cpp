@@ -731,6 +731,9 @@ void EditToneTab::updateValues()
 {
     Patch* patch = (Patch*)processor.status.patch;
     Tone tone = patch->tones[toneCount];
+
+    updateWaveformComboBox(waveformComboBox);
+
     waveGroupComboBox.setSelectedItemIndex((tone.flags & 0x3), juce::dontSendNotification);
     waveformComboBox.setSelectedItemIndex((tone.waveNumber & 0xff), juce::dontSendNotification);
     toneSwitchToggle.setToggleState(((tone.flags >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
@@ -738,8 +741,6 @@ void EditToneTab::updateValues()
     FXMDepthSlider.setValue(((tone.fxmConfig) & 0x0f) + 1, juce::dontSendNotification);
     velRangeLowSlider.setValue(((tone.velocityRangeLow) & 0x7f), juce::dontSendNotification);
     velRangeHighSlider.setValue(((tone.velocityRangeUp) & 0x7f), juce::dontSendNotification);
-
-    updateWaveformComboBox(waveformComboBox);
 
     volumeSwitchToggle.setToggleState(((tone.tvaDelayModeVeloCurve >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
     holdSwitchToggle.setToggleState(((tone.tvaDelayModeVeloCurve >> 6) & 0x01) ? 1 : 0, juce::dontSendNotification);

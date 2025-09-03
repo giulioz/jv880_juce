@@ -403,8 +403,15 @@ void VirtualJVProcessor::setStateInformation(const void *data, int /* sizeInByte
   {
       auto e = dynamic_cast<VirtualJVEditor*>(editor);
 
+      e->setLCDColor((LCDisplay::Color)status.selectedLCDColor);
       e->showToneOrRhythmEditTabs(status.isDrums);
+      e->setSelectedTab(status.selectedTab);
       e->updateEditTabs();
+
+      if (status.selectedRom > -1)
+      {
+          e->setSelectedROM(status.selectedRom);
+      }
   }
 }
 

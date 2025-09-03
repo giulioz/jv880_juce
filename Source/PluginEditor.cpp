@@ -99,9 +99,8 @@ void VirtualJVEditor::showToneOrRhythmEditTabs(const bool isRhythm)
 
     processor.status.selectedTab = selTab;
 
-    // I don't know if the selected tab index resets after calling clearTabs(),
-    // so just making sure that we stay where we were before the tab clearout
-    if (selTab >= 3 && selTab <= 6)
+    // just in case...
+    if (selTab > 3 && processor.status.isDrums)
     {
         tabs.setCurrentTabIndex(3);
     }
