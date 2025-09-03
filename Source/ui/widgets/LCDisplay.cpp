@@ -71,7 +71,7 @@ void LCDisplay::setLCDColor(const Color color)
     case Color::Red:
         processor.mcu->lcd.lcd_bg = 0xff600000;
         processor.mcu->lcd.lcd_col1 = 0xfffa2b4f;
-        processor.mcu->lcd.lcd_col2 = 0xff6a0508;
+        processor.mcu->lcd.lcd_col2 = 0xff6c0609;
         break;
     case Color::Blue:
         processor.mcu->lcd.lcd_bg = 0xff135dfe;

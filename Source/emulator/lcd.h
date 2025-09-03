@@ -47,8 +47,9 @@ struct LCD {
 
     int lcd_width = 741;
     int lcd_height = 268;
-    uint32_t lcd_col1 = 0x000000;
-    uint32_t lcd_col2 = 0x0050c8;
+    uint32_t lcd_bg = 0xff03be51;
+    uint32_t lcd_col1 = 0xff000000;
+    uint32_t lcd_col2 = 0xff0050c8;
 
     uint32_t LCD_DL, LCD_N, LCD_F, LCD_D, LCD_C, LCD_B, LCD_ID, LCD_S;
     uint32_t LCD_DD_RAM, LCD_AC, LCD_CG_RAM;
