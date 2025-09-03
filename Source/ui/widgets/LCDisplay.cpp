@@ -18,8 +18,7 @@ LCDisplay::LCDisplay(VirtualJVProcessor &p) : redrawTimer(this), processor(p)
 
   if (processor.loaded)
   {
-      lcdColor = (Color)processor.status.selectedLCDColor;
-      setLCDColor(lcdColor);
+      setLCDColor((Color)processor.status.selectedLCDColor);
   }
 }
 
@@ -121,6 +120,7 @@ void LCDisplay::setLCDColor(const Color color)
     };
 
     lcdColor = color;
+    processor.status.selectedLCDColor = (uint8_t)lcdColor;
 }
 
 void LCDisplay::mouseDown(const juce::MouseEvent& e)

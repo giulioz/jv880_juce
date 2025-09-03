@@ -144,6 +144,7 @@ public:
     void changeListenerCallback(juce::ChangeBroadcaster *source) override {
       if (source == categoriesListModel) {
         groupI = categoriesListBox->getSelectedRow();
+        parent->processor.status.selectedRom = groupI;
         owner->updateContent();
         owner->deselectAllRows();
         owner->repaint();

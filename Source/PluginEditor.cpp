@@ -18,42 +18,47 @@ VirtualJVEditor::VirtualJVEditor(VirtualJVProcessor &p)
       editTone1Tab(p, this, 0U), editTone2Tab(p, this, 1U), editTone3Tab(p, this, 2U), editTone4Tab(p, this, 3U), editRhythmTab(p, this),
       settingsTab(p)
 {
-  addAndMakeVisible(lcd);
-  addAndMakeVisible(tabs);
+    addAndMakeVisible(lcd);
+    addAndMakeVisible(tabs);
 
-  tabs.tabChangedFunction =
-      [this](int index)
-      {
-        processor.status.selectedTab = index;
-      };
+    tabs.tabChangedFunction =
+        [this](int index)
+        {
+            processor.status.selectedTab = index;
+        };
 
-  setSize(820, 900);
+    setSize(820, 900);
 
-  if (!processor.loaded) {
-    juce::AlertWindow::showAsync(
-        juce::MessageBoxOptions()
-            .withIconType(juce::MessageBoxIconType::WarningIcon)
-            .withTitle("Error")
-            .withMessage("Cannot load ROMs. Please copy the ROM files to the "
-                         "ROM folder and restart the plugin to continue.")
-            .withButton("Open ROMs Folder")
-            .withAssociatedComponent(this)
-            .withParentComponent(this),
-        [](int /* param */) {
-          juce::File romsDir(juce::File::getSpecialLocation(
-                                 juce::File::userApplicationDataDirectory)
-                                 .getChildFile("JV880"));
-          if (romsDir.exists()) {
-            juce::Process::openDocument(romsDir.getFullPathName(), "");
-          }
-        });
-  }
-  else
-  {
-      showToneOrRhythmEditTabs(processor.status.isDrums);
-      setSelectedTab(processor.status.selectedTab);
-      updateEditTabs();
-  }
+    if (!processor.loaded)
+    {
+        auto msgBox = juce::MessageBoxOptions()
+                      .withIconType(juce::MessageBoxIconType::WarningIcon)
+                      .withTitle("Error")
+                      .withMessage("Cannot load ROMs. Please copy the ROM files to the ROM folder and restart the plugin to continue.")
+                      .withButton("Open ROM Folder")
+                      .withAssociatedComponent(this)
+                      .withParentComponent(this);
+
+        juce::AlertWindow::showAsync
+        (
+            msgBox,   
+            [](int /* param */)
+                {
+                    juce::File romsDir(juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory).getChildFile("JV880"));
+
+                    if (romsDir.exists())
+                    {
+                        juce::Process::openDocument(romsDir.getFullPathName(), "");
+                    }
+                }
+        );
+    }
+    else
+    {
+        showToneOrRhythmEditTabs(processor.status.isDrums);
+        setSelectedTab(processor.status.selectedTab);
+        updateEditTabs();
+    }
 }
 
 VirtualJVEditor::~VirtualJVEditor()
@@ -75,7 +80,7 @@ void VirtualJVEditor::updateEditTabs()
 void VirtualJVEditor::showToneOrRhythmEditTabs(const bool isRhythm)
 {
     const auto bgColor = getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId);
-    const auto selTab = processor.status.selectedTab;
+    auto selTab = processor.status.selectedTab;
 
     tabs.clearTabs();
 
@@ -97,13 +102,14 @@ void VirtualJVEditor::showToneOrRhythmEditTabs(const bool isRhythm)
         tabs.addTab("Tone 4", bgColor, &editTone4Tab, false);
     }
 
-    processor.status.selectedTab = selTab;
-
     // just in case...
     if (selTab > 3 && processor.status.isDrums)
     {
-        tabs.setCurrentTabIndex(3);
+        selTab = 3;
+        tabs.setCurrentTabIndex(selTab);
     }
+
+    processor.status.selectedTab = selTab;
 
     editCommonTab.rhythmSetMode(isRhythm);
 }
@@ -124,6 +130,6 @@ uint8_t VirtualJVEditor::getSelectedRomIdx()
 
 void VirtualJVEditor::resized()
 {
-  lcd.setBounds(0, 0, 820, 100);
-  tabs.setBounds(0, 100, 820, 800);
+    lcd.setBounds(0, 0, 820, 100);
+    tabs.setBounds(0, 100, 820, 800);
 }
