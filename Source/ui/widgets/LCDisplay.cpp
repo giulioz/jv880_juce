@@ -60,33 +60,63 @@ void LCDisplay::setLCDColor(const Color color)
     case Color::Green:
     default:
         processor.mcu->lcd.lcd_bg = 0xff03be51;
-        processor.mcu->lcd.lcd_col1 = 0xff2b4000;
-        processor.mcu->lcd.lcd_col2 = 0xff04b430;
+        processor.mcu->lcd.lcd_col1 = 0xff204000;
+        processor.mcu->lcd.lcd_col2 = 0xff08aa45;
         break;
     case Color::Amber:
         processor.mcu->lcd.lcd_bg = 0xffbe9f03;
-        processor.mcu->lcd.lcd_col1 = 0xff581600;
-        processor.mcu->lcd.lcd_col2 = 0xffb98c04;
+        processor.mcu->lcd.lcd_col1 = 0xff502000;
+        processor.mcu->lcd.lcd_col2 = 0xffac8c02;
         break;
     case Color::Red:
         processor.mcu->lcd.lcd_bg = 0xff600000;
-        processor.mcu->lcd.lcd_col1 = 0xfffa2b4f;
-        processor.mcu->lcd.lcd_col2 = 0xff6c0609;
+        processor.mcu->lcd.lcd_col1 = 0xffff3040;
+        processor.mcu->lcd.lcd_col2 = 0xff88090f;
         break;
     case Color::Blue:
-        processor.mcu->lcd.lcd_bg = 0xff135dfe;
-        processor.mcu->lcd.lcd_col1 = 0xffdddddd;
-        processor.mcu->lcd.lcd_col2 = 0xff3776fe;
+        processor.mcu->lcd.lcd_bg = 0xff1860ff;
+        processor.mcu->lcd.lcd_col1 = 0xffdcdcdc;
+        processor.mcu->lcd.lcd_col2 = 0xff557ef8;
         break;
-    case Color::White:
-        processor.mcu->lcd.lcd_bg = 0xffebfbfb;
-        processor.mcu->lcd.lcd_col1 = 0xff191919;
-        processor.mcu->lcd.lcd_col2 = 0xffdbebeb;
+    case Color::WhiteBlack:
+        processor.mcu->lcd.lcd_bg = 0xffe8f8f8;
+        processor.mcu->lcd.lcd_col1 = 0xff181818;
+        processor.mcu->lcd.lcd_col2 = 0xffcacaca;
         break;
-    case Color::Black:
+    case Color::WhiteBlue:
+        processor.mcu->lcd.lcd_bg = 0xffe8f8f8;
+        processor.mcu->lcd.lcd_col1 = 0xff2040ff;
+        processor.mcu->lcd.lcd_col2 = 0xffd3d5ec;
+        break;
+    case Color::BlackWhite:
         processor.mcu->lcd.lcd_bg = 0xff000000;
-        processor.mcu->lcd.lcd_col1 = 0xffffffff;
-        processor.mcu->lcd.lcd_col2 = 0xff292929;
+        processor.mcu->lcd.lcd_col1 = 0xffdcdcdc;
+        processor.mcu->lcd.lcd_col2 = 0xff4a4a4a;
+        break;
+    case Color::BlackAmber:
+        processor.mcu->lcd.lcd_bg = 0xff000000;
+        processor.mcu->lcd.lcd_col1 = 0xffc0b400;
+        processor.mcu->lcd.lcd_col2 = 0xff403b00;
+        break;
+    case Color::BlackRed:
+        processor.mcu->lcd.lcd_bg = 0xff000000;
+        processor.mcu->lcd.lcd_col1 = 0xffff3040;
+        processor.mcu->lcd.lcd_col2 = 0xff58090f;
+        break;
+    case Color::BlackGreen:
+        processor.mcu->lcd.lcd_bg = 0xff000000;
+        processor.mcu->lcd.lcd_col1 = 0xff00c040;
+        processor.mcu->lcd.lcd_col2 = 0xff00400f;
+        break;
+    case Color::BlackBlue:
+        processor.mcu->lcd.lcd_bg = 0xff000000;
+        processor.mcu->lcd.lcd_col1 = 0xff4080ff;
+        processor.mcu->lcd.lcd_col2 = 0xff0b1f47;
+        break;
+    case Color::BlackVFD:
+        processor.mcu->lcd.lcd_bg = 0xff000000;
+        processor.mcu->lcd.lcd_col1 = 0xffc0ffff;
+        processor.mcu->lcd.lcd_col2 = 0xff484848;
         break;
     };
 
@@ -108,8 +138,14 @@ void LCDisplay::mouseDown(const juce::MouseEvent& e)
         addItem(menu, "Amber", Color::Amber);
         addItem(menu, "Red", Color::Red);
         addItem(menu, "Blue", Color::Blue);
-        addItem(menu, "White", Color::White);
-        addItem(menu, "Black", Color::Black);
+        addItem(menu, "White-Black", Color::WhiteBlack);
+        addItem(menu, "White-Blue", Color::WhiteBlue);
+        addItem(menu, "Black-White", Color::BlackWhite);
+        addItem(menu, "Black-Amber", Color::BlackAmber);
+        addItem(menu, "Black-Red", Color::BlackRed);
+        addItem(menu, "Black-Green", Color::BlackGreen);
+        addItem(menu, "Black-Blue", Color::BlackBlue);
+        addItem(menu, "VFD", Color::BlackVFD);
 
         auto o = juce::PopupMenu::Options();
 

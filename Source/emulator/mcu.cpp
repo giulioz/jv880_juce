@@ -1176,9 +1176,6 @@ int MCU::startSC55(const uint8_t* s_rom1, const uint8_t* s_rom2, const uint8_t* 
             rom2_mask /= 2; // rom is half the size
             lcd.lcd_width = 820;
             lcd.lcd_height = 100;
-            lcd.lcd_bg = 0xff03be51;
-            lcd.lcd_col1 = 0xff000000;
-            lcd.lcd_col2 = 0xff0050c8;
             break;
         case ROM_SET_SCB55:
         case ROM_SET_RLP3237:
