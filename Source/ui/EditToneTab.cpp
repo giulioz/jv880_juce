@@ -811,8 +811,8 @@ void EditToneTab::updateValues()
     penv4LevelSlider.setValue(int8_t((tone.tvpEnvLevel4)), juce::dontSendNotification);
 
     filterModeComboBox.setSelectedItemIndex((tone.tvfVeloCurveLpfHpf & 0x18) >> 3, juce::dontSendNotification);
-    filterCutoffSlider.setValue(int8_t((tone.tvfCutoff)), juce::dontSendNotification);
-    filterResoSlider.setValue(int8_t((tone.tvfResonance)), juce::dontSendNotification);
+    filterCutoffSlider.setValue(tone.tvfCutoff, juce::dontSendNotification);
+    filterResoSlider.setValue(tone.tvfResonance & 0x7f, juce::dontSendNotification);
     filterResoModeComboBox.setSelectedItemIndex((tone.tvfResonance & 0x80) >> 7, juce::dontSendNotification);
     filterKFComboBox.setSelectedItemIndex((tone.tvfTimeKFKeyfollow & 0xf), juce::dontSendNotification);
     fenvVelCurveComboBox.setSelectedItemIndex((tone.tvfVeloCurveLpfHpf & 0x7), juce::dontSendNotification);

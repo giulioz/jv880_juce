@@ -3,9 +3,8 @@
 <JUCERPROJECT id="DSwmeO" name="virtual_jv" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturerCode="GlZs" pluginCode="VRJV" cppLanguageStandard="latest"
-              pluginFormats="buildAU,buildAUv3,buildLV2,buildStandalone,buildVST3"
-              pluginName="VirtualJV" pluginDesc="VirtualJV" companyName="Giulio Zausa"
-              lv2Uri="https://www.GiulioZausa.com/plugins/virtual_jv">
+              pluginFormats="buildAU,buildLV2,buildStandalone,buildVST3" pluginName="VirtualJV"
+              pluginDesc="VirtualJV" companyName="Giulio Zausa" lv2Uri="https://www.GiulioZausa.com/plugins/virtual_jv">
   <MAINGROUP id="U4zWTk" name="virtual_jv">
     <GROUP id="{BA05F489-649E-6AE4-7F62-10742B1AC120}" name="Assets">
       <FILE id="DiWlj3" name="VirtualJV Logo.svg" compile="0" resource="1"

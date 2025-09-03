@@ -425,8 +425,8 @@ void EditRhythmTab::updateValues()
     penv4LevelSlider.setValue(int8_t(tone.tvpEnvLevel4), juce::dontSendNotification);
 
     filterModeComboBox.setSelectedItemIndex((tone.tvfTimeVelLpfHpf & 0x30) >> 4, juce::dontSendNotification);
-    filterCutoffSlider.setValue(int8_t(tone.tvfCutoff), juce::dontSendNotification);
-    filterResoSlider.setValue(int8_t(tone.tvfResonance), juce::dontSendNotification);
+    filterCutoffSlider.setValue(tone.tvfCutoff, juce::dontSendNotification);
+    filterResoSlider.setValue(tone.tvfResonance & 0x7f, juce::dontSendNotification);
     filterResoModeComboBox.setSelectedItemIndex((tone.tvfResonance & 0x80) >> 7, juce::dontSendNotification);
     fenvLevSensSlider.setValue(int8_t(tone.tvfVelocity), juce::dontSendNotification);
     fenvTimeSensComboBox.setSelectedItemIndex((tone.tvfTimeVelLpfHpf & 0xf), juce::dontSendNotification);
