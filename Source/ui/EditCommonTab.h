@@ -118,7 +118,7 @@ private:
   juce::Label portamentoModeLabel{ "", "Mode" };
   juce::Label portamentoTypeLabel{ "", "Type" };
   juce::Label portamentoTimeLabel{ "", "Time" };
-  Slider bendRangeDownSlider{ BendRangeDown, -48, 0, 1, -2 };
+  Slider bendRangeDownSlider{ BendRangeDown, -48, 0, 1, -2, false, false, true };
   Slider bendRangeUpSlider{ BendRangeUp, 0, 12, 1, 2 };
   Menu keyAssignComboBox{ KeyAssign };
   Button soloLegatoToggle{ SoloLegato, "Legato" };

@@ -106,7 +106,7 @@ struct Tone
 struct Patch
 {
   char name[12];
-  uint8_t recChorConfig; // 0-3: rev type | 4-5: chorus type | 6: ? | 7: velocity
+  uint8_t revChorConfig; // 0-3: rev type | 4-5: chorus type | 6: ? | 7: velocity
   uint8_t reverbLevel;
   uint8_t reverbTime;
   uint8_t reverbFeedback;
@@ -118,7 +118,7 @@ struct Patch
   uint8_t level;
   uint8_t pan;
   uint8_t bendRange;
-  uint8_t flags; // 0-3: ? | 4: porta mode | 5: solo legato | 6: porta switch | 7: key assign
+  uint8_t flags; // 0-3: bend up range | 4: porta mode | 5: solo legato | 6: porta switch | 7: key assign
   uint8_t portamentoTime; // 7: porta type
 
   Tone tones[4];

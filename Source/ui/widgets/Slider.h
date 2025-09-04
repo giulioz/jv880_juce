@@ -9,6 +9,7 @@ public:
     SliderLookAndFeel() {};
 
     void setBipolar(bool b) { bipolar = b; };
+    void setInvert(bool i) { invert = i; };
 
     void drawLinearSlider(juce::Graphics& g, int x, int y, int w, int h,
         float sliderPos, float /* minSliderPos */, float /* maxSliderPos */,
@@ -20,13 +21,33 @@ public:
         {
             const float midpoint = slider.isHorizontal() ? x + (w / 2.f) : y + (h / 2.f);
 
-            g.fillRect(slider.isHorizontal() ? juce::Rectangle<float>(std::min(sliderPos, midpoint), (float)y + 0.5f, std::abs(midpoint - sliderPos), (float)h - 1.0f)
-                : juce::Rectangle<float>((float)x + 0.5f, std::min(sliderPos, midpoint), (float)w - 1.0f, std::abs(midpoint - sliderPos)));
+            if (invert)
+            {
+                g.fillRect(slider.isHorizontal()
+                    ? juce::Rectangle<float>(std::min(w - sliderPos, midpoint), (float)y + 0.5f, std::abs(midpoint - sliderPos), (float)(h - 1))
+                    : juce::Rectangle<float>((float)x + 0.5f, std::min(h - sliderPos, midpoint), (float)(w - 1), std::abs(midpoint - sliderPos)));
+            }
+            else
+            {
+                g.fillRect(slider.isHorizontal()
+                    ? juce::Rectangle<float>(std::min(sliderPos, midpoint), (float)y + 0.5f, std::abs(midpoint - sliderPos), (float)(h - 1))
+                    : juce::Rectangle<float>((float)x + 0.5f, std::min(sliderPos, midpoint), (float)(w - 1), std::abs(midpoint - sliderPos)));
+            }
         }
         else
         {
-            g.fillRect(slider.isHorizontal() ? juce::Rectangle<float>((float)x, (float)y + 0.5f, sliderPos - (float)x, (float)h - 1.0f)
-                : juce::Rectangle<float>((float)x + 0.5f, sliderPos, (float)w - 1.0f, (float)y + ((float)h - sliderPos)));
+            if (invert)
+            {
+                g.fillRect(slider.isHorizontal()
+                    ? juce::Rectangle<float>(sliderPos, (float)y + 0.5f, (float)(x + w), (float)(h - 1))
+                    : juce::Rectangle<float>((float)x + 0.5f, (float)y, (float)(w - 1), (float)(sliderPos)));
+            }
+            else
+            {
+                g.fillRect(slider.isHorizontal()
+                    ? juce::Rectangle<float>((float)x, (float)y + 0.5f, sliderPos - (float)x, (float)(h - 1))
+                    : juce::Rectangle<float>((float)x + 0.5f, sliderPos, (float)(w - 1), (float)y + (float)(h - sliderPos)));
+            }
         }
 
         drawLinearSliderOutline(g, x, y, w, h, style, slider);
@@ -34,6 +55,7 @@ public:
 
 private:
     bool bipolar{ false };
+    bool invert{ false };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SliderLookAndFeel)
 };
@@ -41,7 +63,7 @@ private:
 class Slider : public juce::Slider
 {
 public:
-    Slider(uint32_t _id, double min, double max, double interval, double _defval = 0, bool bipolar = false, bool vertical = false)
+    Slider(uint32_t _id, double min, double max, double interval, double _defval = 0, bool bipolar = false, bool vertical = false, bool invert = false)
         : juce::Slider("Slider"), id(_id), defval(_defval)
     {
         setSliderStyle(vertical ? juce::Slider::SliderStyle::LinearBarVertical
@@ -49,13 +71,14 @@ public:
         setRange(min, max, interval);
 
         lookAndFeel.setBipolar(bipolar);
+        lookAndFeel.setInvert(invert);
 
         setLookAndFeel(&lookAndFeel);
     };
 
     void mouseDown(const juce::MouseEvent& e) override
     {
-        if (e.mods.isRightButtonDown())
+        if (isEnabled() && e.mods.isRightButtonDown())
         {
             setValue(defval);
         }

@@ -249,7 +249,7 @@ private:
     Button lfo1FadeToggle{ LFO1FadeOut, "Fade Out" };
     juce::Label lfo1FadeTimeLabel{ "", "Fade Time" };
     Slider lfo1FadeTimeSlider{ LFO1FadeTime, 0, 127, 1 };
-    juce::Label lfo1PitchDepthLabel{ "", u8"/U2192Pitch" };
+    juce::Label lfo1PitchDepthLabel{ "", u8"\U00002192Pitch" };
     Slider lfo1PitchDepthSlider{ LFO1ToPitch, -60, 60, 1, 0, true };
     juce::Label lfo1TVFDepthLabel{ "", u8"\U00002192Filter" };
     Slider lfo1TVFDepthSlider{ LFO1ToFilter, -63, 63, 1, 0, true };

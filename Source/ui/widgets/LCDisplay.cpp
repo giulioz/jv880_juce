@@ -59,7 +59,7 @@ void LCDisplay::setLCDColor(const Color color)
     case Color::Green:
     default:
         processor.mcu->lcd.lcd_bg = 0x03be51;
-        processor.mcu->lcd.lcd_col1 = 0x204000;
+        processor.mcu->lcd.lcd_col1 = 0x103000;
         processor.mcu->lcd.lcd_col2 = 0x08aa45;
         break;
     case Color::Amber:
