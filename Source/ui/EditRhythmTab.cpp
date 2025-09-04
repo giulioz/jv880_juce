@@ -401,9 +401,10 @@ void EditRhythmTab::updateValues()
     toneSwitchToggle.setToggleState(((tone.flags >> 7) & 0x01) ? 1 : 0, juce::dontSendNotification);
 
     waveGroupComboBox.setSelectedItemIndex(tone.flags & 0x3, juce::dontSendNotification);
-    waveformComboBox.setSelectedItemIndex(tone.waveNumber & 0xff, juce::dontSendNotification);
 
     updateWaveformComboBox(waveformComboBox);
+
+    waveformComboBox.setSelectedItemIndex(tone.waveNumber & 0xff, juce::dontSendNotification);
 
     muteGroupSlider.setValue(int8_t(tone.muteGroup & 0x1f), juce::dontSendNotification);
     envModeComboBox.setSelectedItemIndex(((tone.muteGroup) >> 5) & 0x01, juce::dontSendNotification);
