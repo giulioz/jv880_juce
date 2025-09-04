@@ -12,20 +12,26 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-SettingsTab::SettingsTab(VirtualJVProcessor &p) : processor(p) {
+SettingsTab::SettingsTab(VirtualJVProcessor &p) : processor(p)
+{
   addAndMakeVisible(masterTuneSlider);
 
   masterTuneSlider.setRange(1, 127);
   masterTuneSlider.setTextValueSuffix(" Hz");
   masterTuneSlider.addListener(this);
-  masterTuneSlider.textFromValueFunction = [this](double value) {
-    double floatValue = (value - 1) / 126;
-    return juce::String(floatValue * (452.6 - 427.4) + 427.4, 0, false);
-  };
-  masterTuneSlider.valueFromTextFunction = [this](const juce::String &text) {
-    double floatValue = text.getDoubleValue();
-    return (floatValue - 427.4) / (452.6 - 427.4) * 126 + 1;
-  };
+  masterTuneSlider.textFromValueFunction =
+      [this](double value)
+      {
+        double floatValue = (value - 1) / 126;
+        return juce::String(floatValue * (452.6 - 427.4) + 427.4, 0, false);
+      };
+  masterTuneSlider.valueFromTextFunction = 
+      [this](const juce::String &text)
+      {
+        double floatValue = text.getDoubleValue();
+        return (floatValue - 427.4) / (452.6 - 427.4) * 126 + 1;
+      };
+
   addAndMakeVisible(masterTuneLabel);
   masterTuneLabel.setText("Master Tune", juce::dontSendNotification);
   masterTuneLabel.attachToComponent(&masterTuneSlider, true);
@@ -37,46 +43,50 @@ SettingsTab::SettingsTab(VirtualJVProcessor &p) : processor(p) {
   addAndMakeVisible(chorusToggle);
   chorusToggle.addListener(this);
   chorusToggle.setButtonText("Chorus");
+
+  const auto buildTime = juce::Time::getCompilationDate();
+  const juce::String buildInfo = "Build Date: " + buildTime.formatted("%d %b %Y, %H:%M:%S");
+
+  addAndMakeVisible(buildDateLabel);
+  buildDateLabel.setText(buildInfo, juce::dontSendNotification);
+  buildDateLabel.setJustificationType(juce::Justification::centredRight);
 }
 
 SettingsTab::~SettingsTab() {}
 
-void SettingsTab::updateValues() {
-  masterTuneSlider.setValue(((int8_t *)processor.mcu->nvram)[0x00] + 64,
-                            juce::dontSendNotification);
-  reverbToggle.setToggleState(((processor.mcu->nvram[0x02] >> 0) & 1) == 1,
-                              juce::dontSendNotification);
-  chorusToggle.setToggleState(((processor.mcu->nvram[0x02] >> 1) & 1) == 1,
-                              juce::dontSendNotification);
+void SettingsTab::updateValues()
+{
+  masterTuneSlider.setValue(((int8_t *)processor.mcu->nvram)[0x00] + 64, juce::dontSendNotification);
+  reverbToggle.setToggleState((processor.mcu->nvram[0x02] >> 0) & 1, juce::dontSendNotification);
+  chorusToggle.setToggleState((processor.mcu->nvram[0x02] >> 1) & 1, juce::dontSendNotification);
 }
 
-void SettingsTab::resized() {
+void SettingsTab::resized()
+{
   auto sliderLeft = 120;
+
   masterTuneSlider.setBounds(sliderLeft, 40, getWidth() - sliderLeft - 10, 40);
   reverbToggle.setBounds(sliderLeft, 100, 200, 40);
   chorusToggle.setBounds(sliderLeft, 140, 200, 40);
+  buildDateLabel.setBounds(10, 735, 800, 20);
 }
 
-void SettingsTab::sliderValueChanged(juce::Slider *slider) {
+void SettingsTab::sliderValueChanged(juce::Slider *slider)
+{
   if (slider == &masterTuneSlider)
   {
-    uint32_t address = 0x01;
-    uint8_t value = (uint8_t)masterTuneSlider.getValue();
-    processor.sendSysexParamChange(address, value);
+    processor.sendSysexParamChange(0x01, (uint8_t)masterTuneSlider.getValue());
   }
 }
 
-void SettingsTab::buttonClicked(juce::Button *button) {
+void SettingsTab::buttonClicked(juce::Button *button)
+{
   if (button == &reverbToggle)
   {
-    uint32_t address = 0x04;
-    uint8_t value = reverbToggle.getToggleState() ? 1U : 0U;
-    processor.sendSysexParamChange(address, value);
+    processor.sendSysexParamChange(0x04, reverbToggle.getToggleState());
   }
   else if (button == &chorusToggle)
   {
-    uint32_t address = 0x05;
-    uint8_t value = chorusToggle.getToggleState() ? 1U : 0U;
-    processor.sendSysexParamChange(address, value);
+    processor.sendSysexParamChange(0x05, chorusToggle.getToggleState());
   }
 }

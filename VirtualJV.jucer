@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="DSwmeO" name="virtual_jv" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
-              pluginManufacturerCode="GlZs" pluginCode="VRJV" cppLanguageStandard="latest"
+              pluginManufacturerCode="GlZs" pluginCode="VRJV" cppLanguageStandard="17"
               pluginFormats="buildAU,buildLV2,buildStandalone,buildVST3" pluginName="VirtualJV"
               pluginDesc="VirtualJV" companyName="Giulio Zausa" lv2Uri="https://www.GiulioZausa.com/plugins/virtual_jv">
   <MAINGROUP id="U4zWTk" name="virtual_jv">

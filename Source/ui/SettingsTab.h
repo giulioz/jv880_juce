@@ -35,6 +35,7 @@ private:
     juce::Label masterTuneLabel;
     juce::ToggleButton reverbToggle;
     juce::ToggleButton chorusToggle;
+    juce::Label buildDateLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsTab)
 };
