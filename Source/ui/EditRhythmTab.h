@@ -24,9 +24,9 @@ class VirtualJVEditor;
 //==============================================================================
 
 class EditRhythmTab : public juce::Component,
-    public juce::Slider::Listener,
-    public juce::Button::Listener,
-    public juce::ComboBox::Listener
+                      public juce::Slider::Listener,
+                      public juce::Button::Listener,
+                      public juce::ComboBox::Listener
 {
 public:
     EditRhythmTab(VirtualJVProcessor&, VirtualJVEditor*);
@@ -138,7 +138,7 @@ private:
     Menu pitchRandomComboBox{ PitchRandom };
     juce::Label penvLevSensLabel{ "", juce::String::fromUTF8(u8"Vel\U00002192Env Depth") };
     Slider penvLevSensSlider{ PitchEnvLevelSense, -63, 63, 1, 0, true };
-    juce::Label penvTimeSensLabel{ "", juce::String::fromUTF8(u8"Vel\U00002192Env Time") };
+    juce::Label penvTimeSensLabel{ "", juce::String::fromUTF8(u8"Vel\U00002192Env Times") };
     Menu penvTimeSensComboBox{ PitchEnvTimeSense, 7 };
     juce::Label penvDepthLabel{ "", juce::String::fromUTF8(u8"Env\U00002192Pitch") };
     Slider penvDepthSlider{ PitchEnvDepth, -12, 12, 1, 0, true };

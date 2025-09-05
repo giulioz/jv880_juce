@@ -13,10 +13,14 @@
 #include <JuceHeader.h>
 #include "../PluginProcessor.h"
 
+#include "widgets/Button.h"
+#include "widgets/Slider.h"
+
 //==============================================================================
-/*
-*/
-class SettingsTab  : public juce::Component, public juce::Slider::Listener, public juce::Button::Listener
+
+class SettingsTab  : public juce::Component,
+                     public juce::Slider::Listener,
+                     public juce::Button::Listener
 {
 public:
     SettingsTab(VirtualJVProcessor&);
@@ -31,10 +35,17 @@ public:
 private:
     VirtualJVProcessor& processor;
 
-    juce::Slider masterTuneSlider;
+    enum SettingsWidgets
+    {
+        MasterTune = 10U,
+        Reverb     = 11U,
+        Chorus     = 12U,
+    };
+
+    Slider masterTuneSlider{ MasterTune, 1, 127, 1, 64, true };
     juce::Label masterTuneLabel;
-    juce::ToggleButton reverbToggle;
-    juce::ToggleButton chorusToggle;
+    Button reverbToggle{ Reverb, "Reverb" };
+    Button chorusToggle{ Chorus, "Chorus" };
     juce::Label buildDateLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsTab)

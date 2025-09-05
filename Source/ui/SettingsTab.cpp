@@ -15,10 +15,8 @@
 SettingsTab::SettingsTab(VirtualJVProcessor &p) : processor(p)
 {
   addAndMakeVisible(masterTuneSlider);
-
-  masterTuneSlider.setRange(1, 127);
-  masterTuneSlider.setTextValueSuffix(" Hz");
   masterTuneSlider.addListener(this);
+  masterTuneSlider.setTextValueSuffix(" Hz");
   masterTuneSlider.textFromValueFunction =
       [this](double value)
       {
@@ -38,11 +36,9 @@ SettingsTab::SettingsTab(VirtualJVProcessor &p) : processor(p)
 
   addAndMakeVisible(reverbToggle);
   reverbToggle.addListener(this);
-  reverbToggle.setButtonText("Reverb");
 
   addAndMakeVisible(chorusToggle);
   chorusToggle.addListener(this);
-  chorusToggle.setButtonText("Chorus");
 
   const auto buildTime = juce::Time::getCompilationDate();
   const juce::String buildInfo = "Build Date: " + buildTime.formatted("%d %b %Y, %H:%M:%S");
@@ -63,17 +59,31 @@ void SettingsTab::updateValues()
 
 void SettingsTab::resized()
 {
+  const auto top = 10;
+  const auto sliderLeft1 = 100;
+  const auto width = getWidth() / 3 - sliderLeft1 - 10;
+  const auto sliderLeft2 = sliderLeft1 + getWidth() / 3 + 2;
+  const auto sliderLeft3 = sliderLeft2 + getWidth() / 3;
+  const auto height = 24;
+
   auto sliderLeft = 120;
 
-  masterTuneSlider.setBounds(sliderLeft, 40, getWidth() - sliderLeft - 10, 40);
-  reverbToggle.setBounds(sliderLeft, 100, 200, 40);
-  chorusToggle.setBounds(sliderLeft, 140, 200, 40);
-  buildDateLabel.setBounds(10, 735, 800, 20);
+  reverbToggle    .setBounds(sliderLeft1 - 90, top, width, height);
+  chorusToggle    .setBounds(sliderLeft2 - 90, top, width, height);
+  masterTuneSlider.setBounds(sliderLeft3, top, width, height);
+  buildDateLabel  .setBounds(10, 735, 800, 20);
 }
 
 void SettingsTab::sliderValueChanged(juce::Slider *slider)
 {
-  if (slider == &masterTuneSlider)
+  uint32_t id = 0xFFFFFFF;
+
+  if (auto i = dynamic_cast<Slider*>(slider))
+  {
+    id = i->getID();
+  }
+
+  if (id == MasterTune)
   {
     processor.sendSysexParamChange(0x01, (uint8_t)masterTuneSlider.getValue());
   }
@@ -81,12 +91,20 @@ void SettingsTab::sliderValueChanged(juce::Slider *slider)
 
 void SettingsTab::buttonClicked(juce::Button *button)
 {
-  if (button == &reverbToggle)
+  uint32_t id = 0xFFFFFFF;
+
+  if (auto i = dynamic_cast<Button*>(button))
   {
-    processor.sendSysexParamChange(0x04, reverbToggle.getToggleState());
+    id = i->getID();
   }
-  else if (button == &chorusToggle)
+
+  switch (id)
   {
+  case Reverb:
+    processor.sendSysexParamChange(0x04, reverbToggle.getToggleState());
+    break;
+  case Chorus:
     processor.sendSysexParamChange(0x05, chorusToggle.getToggleState());
+    break;
   }
 }
