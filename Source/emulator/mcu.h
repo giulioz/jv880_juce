@@ -425,6 +425,11 @@ struct MCU {
     uint8_t MCU_DeviceRead(uint32_t address);
     void MCU_DeviceReset(void);
     void MCU_UpdateAnalog(uint64_t cycles);
+
+    // Earliest mcu.cycles value (a multiple of 12, strictly greater than the
+    // current one) at which any peripheral could do something observable. Used
+    // to fast-forward through SLEEP; UINT64_MAX if nothing is scheduled.
+    uint64_t MCU_NextEventCycles(void);
     void MCU_ReadInstruction(void);
     void MCU_Init(void);
     void MCU_Reset(void);

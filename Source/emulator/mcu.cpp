@@ -1232,6 +1232,56 @@ int MCU::startSC55(const uint8_t* s_rom1, const uint8_t* s_rom2, const uint8_t* 
     return 0;
 }
 
+uint64_t MCU::MCU_NextEventCycles(void)
+{
+    const uint64_t STEP = 12;
+    const uint64_t now = mcu.cycles; // always a multiple of STEP
+
+    // First multiple of STEP strictly greater than x / greater-or-equal to x.
+    auto nextStepAfter = [STEP](uint64_t x) { return (x / STEP + 1) * STEP; };
+    auto stepAtLeast = [STEP](uint64_t x) { return ((x + STEP - 1) / STEP) * STEP; };
+
+    uint64_t best = mcu_timer.TIMER_NextEventCycles(now);
+    auto bound = [&best](uint64_t when) { if (when < best) best = when; };
+
+    // UART RX fires when RX is enabled, a byte is queued, RDRF is clear and
+    // mcu.cycles has reached uart_rx_delay. The queue only grows via
+    // MCU_PostUART, which runs at the top of the emulation loop (from the MIDI
+    // queue) and only when sample_write_ptr moves — which needs a PCM step,
+    // which the bound below never skips. The SCR/SSR gates are firmware-owned
+    // and the firmware is asleep, so all of this is invariant across the jump.
+    if ((dev_register[DEV_SCR] & 16) && (uart_write_ptr != uart_read_ptr)
+        && !(dev_register[DEV_SSR] & 0x40))
+        bound(uart_rx_delay <= now ? now + STEP : stepAtLeast(uart_rx_delay));
+
+    // UART TX likewise: enabled, TDRE clear, and past uart_tx_delay.
+    if ((dev_register[DEV_SCR] & 32) && !(dev_register[DEV_SSR] & 0x80))
+        bound(uart_tx_delay <= now ? now + STEP : stepAtLeast(uart_tx_delay));
+
+    // A/D. With ADST set and no conversion scheduled, the next call schedules
+    // one at cycles+200 — a cycle-value-dependent write, so it must not be
+    // skipped. With one scheduled, the sample lands on the first call whose
+    // cycles exceeds analog_end_time. With ADST clear but a stale end time, the
+    // next call clears it, which is also a state change.
+    {
+        const int ctrl = dev_register[DEV_ADCSR];
+        if (ctrl & 0x20)
+            bound(analog_end_time == 0 ? now + STEP : nextStepAfter(analog_end_time));
+        else if (analog_end_time != 0)
+            bound(now + STEP);
+    }
+
+    // PCM. PCM_Update advances while pcm.cycles < the cycles handed to it, so
+    // its next body runs at the first step strictly past pcm.cycles. Binding
+    // here does double duty: it keeps sample pacing identical (no PCM step is
+    // ever skipped, so the loop cannot jump over the sample that satisfies the
+    // block), and it keeps sample_write_ptr — and therefore MIDI-queue
+    // eligibility — frozen across every skipped step.
+    bound(nextStepAfter(pcm.pcm.cycles));
+
+    return best;
+}
+
 void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFrames, int destSampleRate) {
     double renderBufferFramesFloat = (double)nFrames / destSampleRate * 64000;
     auto renderBufferFrames = (unsigned int)std::ceil(renderBufferFramesFloat);
@@ -1296,6 +1346,40 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
         }
         else
             mcu.ex_ignore = 0;
+
+        // Fast-forward through SLEEP. No instruction executes while the CPU is
+        // asleep, so the only state that can change comes from the peripherals;
+        // jump straight to the soonest step at which one of them could act
+        // instead of running the whole per-step machinery every 12 cycles.
+        //
+        // Gating on mcu.sleep alone is both correct and necessary. During SLEEP
+        // the firmware is waiting on an interrupt that is pending-but-masked, so
+        // interrupt_pending_any stays raised the entire time; gating on it too
+        // would disable this completely. Reaching here with mcu.sleep still set
+        // proves the MCU_Interrupt_Handle call above did not dispatch (a
+        // dispatch clears sleep), i.e. nothing is currently servable -- and that
+        // verdict can only change through a fresh request from a peripheral, or
+        // through a change to the SR interrupt mask. The mask only moves in
+        // firmware (asleep) or in StartVector (not reached), and the peripherals
+        // that can raise a request are exactly the ones MCU_NextEventCycles
+        // enumerates. External input (MIDI via the queue at the top of the loop,
+        // buttons and the encoder from outside this call) is accounted for
+        // there too, via the UART and PCM bounds.
+        //
+        // The `mcu_mk1 || mcu_jv880` test mirrors the UART/sub-MCU branch below:
+        // the sub-MCU's schedule is not modelled here, so machines that use it
+        // never fast-forward.
+        if (mcu.sleep && (mcu_mk1 || mcu_jv880))
+        {
+            const uint64_t target = MCU_NextEventCycles();
+            if (target != UINT64_MAX && target > mcu.cycles + 12)
+            {
+                // Replay the free-running counters for the TIMER_Clock calls
+                // being skipped; by construction none of them is observable.
+                mcu_timer.TIMER_AdvanceSkipped((target - 12 - mcu.cycles) / 12);
+                mcu.cycles = target - 12; // the += 12 below lands exactly on target
+            }
+        }
 
         if (!mcu.sleep)
             MCU_ReadInstruction();

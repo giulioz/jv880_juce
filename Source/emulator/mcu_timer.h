@@ -70,6 +70,18 @@ struct MCU_Timer {
     uint8_t TIMER_Read(uint32_t address);
     void TIMER_Clock(uint64_t cycles);
 
+    // Support for the SLEEP fast-forward in MCU::updateSC55WithSampleRate.
+    //
+    // TIMER_NextEventCycles returns the earliest cycle count strictly greater
+    // than `now` (always a multiple of 12) at which TIMER_Clock could do
+    // something the rest of the machine can observe, or UINT64_MAX if it never
+    // can. TIMER_AdvanceSkipped then replays the free-running-counter arithmetic
+    // for the TIMER_Clock calls the jump skipped. The two must be read together:
+    // the caller may only skip up to the boundary the first reports, which is
+    // what makes it safe for the second to omit the interrupt requests.
+    uint64_t TIMER_NextEventCycles(uint64_t now) const;
+    void TIMER_AdvanceSkipped(uint64_t n);
+
     void TIMER2_Write(uint32_t address, uint8_t data);
     uint8_t TIMER_Read2(uint32_t address);
 };

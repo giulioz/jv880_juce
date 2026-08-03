@@ -174,6 +174,99 @@ uint8_t MCU_Timer::TIMER_Read2(uint32_t address)
     return 0xff;
 }
 
+uint64_t MCU_Timer::TIMER_NextEventCycles(uint64_t now) const
+{
+    const uint64_t STEP = 12;
+    uint64_t best = UINT64_MAX;
+
+    // timer8 sets timer8_cmfa (and optionally requests CMIA) whenever
+    // (cycles & 0x3f) == 0. In this loop cycles is always a multiple of 12, so
+    // that condition holds exactly on the multiples of lcm(12, 64) = 192.
+    if (timer8_enabled)
+    {
+        uint64_t next192 = (now / 192 + 1) * 192;
+        if (next192 < best)
+            best = next192;
+    }
+
+    // Each FRT advances frc by +6 per CALL — the cadence is call-count driven,
+    // not cycle-value driven — and matches when (frc >> 2) >= ocra at the start
+    // of a call, i.e. when frc >= ocra * 4. So the match falls on call j, the
+    // smallest j >= 1 with frc + 6 * (j - 1) >= ocra * 4, which is the step at
+    // cycle now + 12 * j.
+    //
+    // A match is only observable from outside the timer when it raises an
+    // interrupt (ociea set) or when it flips ocfa from clear to set. When ociea
+    // is clear and ocfa is already set the match changes nothing anyone can see:
+    // it merely resets frc, which TIMER_AdvanceSkipped reproduces exactly. That
+    // is the common case here — this firmware leaves timer2 with ocra == 0 and
+    // ociea clear, so it "matches" on every single call while being invisible.
+    //
+    // frc is 16-bit, so an ocra whose target exceeds 0xffff can never be reached.
+    // Where the +6 stride overshoots past 0xffff the real counter wraps and does
+    // NOT match, which only ever makes the true event later than predicted —
+    // predicting early is safe here, it just ends the skip sooner.
+    auto frt_next = [&](uint16_t frc, uint16_t ocra, bool ociea,
+                        bool ocfa) -> uint64_t {
+        if (!ociea && ocfa)
+            return UINT64_MAX;
+        uint64_t target = (uint64_t)ocra << 2;
+        if (target > 0xffff)
+            return UINT64_MAX;
+        if ((uint64_t)frc >= target)
+            return now + STEP; // matches on the very next call
+        uint64_t jm1 = (target - frc + 5) / 6; // ceil((target - frc) / 6) >= 1
+        return now + STEP * (jm1 + 1);
+    };
+
+    uint64_t t;
+    t = frt_next(timer0_frc, timer0_ocra, timer0_ociea, timer0_ocfa);
+    if (t < best) best = t;
+    t = frt_next(timer1_frc, timer1_ocra, timer1_ociea, timer1_ocfa);
+    if (t < best) best = t;
+    t = frt_next(timer2_frc, timer2_ocra, timer2_ociea, timer2_ocfa);
+    if (t < best) best = t;
+
+    return best;
+}
+
+void MCU_Timer::TIMER_AdvanceSkipped(uint64_t n)
+{
+    // Mirrors TIMER_Clock's per-FRT arithmetic verbatim, minus the interrupt
+    // requests and minus timer8. Both omissions are licensed by the caller
+    // having stopped at or before TIMER_NextEventCycles(): any match replayed
+    // here has ociea clear and ocfa already set, so its request would not exist
+    // and its `ocfa |= 0x20` is a no-op; and no skipped step can be a multiple
+    // of 192, so timer8 cannot have fired. frc still has to be reproduced
+    // exactly, because a match resets it to 0.
+    for (uint64_t s = 0; s < n; s++)
+    {
+        if ((timer0_frc >> 2) >= timer0_ocra)
+        {
+            timer0_frc = 0;
+            timer0_ocfa |= 0x20;
+        }
+        else
+            timer0_frc += 6;
+
+        if ((timer1_frc >> 2) >= timer1_ocra)
+        {
+            timer1_frc = 0;
+            timer1_ocfa |= 0x20;
+        }
+        else
+            timer1_frc += 6;
+
+        if ((timer2_frc >> 2) >= timer2_ocra)
+        {
+            timer2_frc = 0;
+            timer2_ocfa |= 0x20;
+        }
+        else
+            timer2_frc += 6;
+    }
+}
+
 void MCU_Timer::TIMER_Clock(uint64_t cycles)
 {
     if (timer8_enabled && (cycles & 0x3f) == 0)
