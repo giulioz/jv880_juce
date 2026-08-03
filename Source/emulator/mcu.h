@@ -193,6 +193,13 @@ struct mcu_t {
     uint8_t interrupt_pending[INTERRUPT_SOURCE_MAX];
     uint8_t trapa_pending[16];
     uint64_t cycles;
+    // 1 = MCU_Interrupt_Handle must run its full scan; 0 = provably nothing is
+    // pending anywhere (no trapa, no exception, no interrupt request), so the
+    // scan can be skipped entirely. Set by every path that can make something
+    // pending; cleared only by a full scan that observed zero pending sources,
+    // so a pending-but-masked request keeps it set and still fires once the
+    // firmware lowers IMASK. See MCU_Interrupt_Handle.
+    uint8_t interrupt_pending_any;
 };
 
 enum {

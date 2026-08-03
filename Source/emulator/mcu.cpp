@@ -990,6 +990,7 @@ void MCU::MCU_Reset(void)
     mcu.pc = reset_address & 0xffff;
 
     mcu.exception_pending = -1;
+    mcu.interrupt_pending_any = 1; // force the first scan after a reset
 
     MCU_DeviceReset();
 
@@ -1286,7 +1287,13 @@ void MCU::updateSC55WithSampleRate(float *dataL, float *dataR, unsigned int nFra
        }
 
         if (!mcu.ex_ignore)
-            MCU_Interrupt_Handle(this);
+        {
+            // Same gate MCU_Interrupt_Handle applies internally, hoisted here so
+            // the common "nothing pending" case does not even pay for the
+            // cross-translation-unit call.
+            if (mcu.interrupt_pending_any)
+                MCU_Interrupt_Handle(this);
+        }
         else
             mcu.ex_ignore = 0;
 
