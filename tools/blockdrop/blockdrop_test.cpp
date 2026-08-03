@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 // ---------------------------------------------------------------- ROM loading
 
@@ -176,6 +177,8 @@ struct Result {
     double fullDb;
     double peak;
     unsigned int renderBufferFrames;
+    double renderSeconds;   // wall time of the render loop alone
+    uint64_t emulatedCycles; // mcu.cycles at the end -- the emulated timeline
     uint64_t hash;       // FNV-1a over the rendered samples, for bit-exactness
     long long dropped;   // emulator samples that never reached the resampler
     long long carried;   // emulator samples held over for the next block
@@ -222,12 +225,16 @@ static Result renderChord(MCU &mcu, const std::vector<uint8_t> &rom1,
 
     long long dropped = 0, carried = 0;
 
+    const auto t0 = std::chrono::steady_clock::now();
+
     for (int b = 0; b < blocks; b++) {
         if (b == 2) {
             // A four-note chord: far more broadband content than one note, and
             // the same notes our fork's harness uses.
             const uint8_t notes[4] = {60, 64, 67, 71};
-            for (uint8_t n : notes) {
+            const int nNotes = getenv("JV880_NOTES") ? atoi(getenv("JV880_NOTES")) : 4;
+            for (int ni = 0; ni < nNotes && ni < 4; ni++) {
+                const uint8_t n = notes[ni];
                 const uint8_t msg[3] = {0x90, n, 100};
                 mcu.postMidiSC55(msg, 3);
             }
@@ -260,7 +267,11 @@ static Result renderChord(MCU &mcu, const std::vector<uint8_t> &rom1,
         rec.insert(rec.end(), l.begin(), l.end());
     }
 
+    const auto t1 = std::chrono::steady_clock::now();
+
     Result out{};
+    out.renderSeconds = std::chrono::duration<double>(t1 - t0).count();
+    out.emulatedCycles = mcu.mcu.cycles;
     out.bandDb = db(bandRms(rec, rate, 4000.0, 8000.0));
     out.fullDb = db(bandRms(rec, rate, 0.0, rate / 2.0));
     out.peak = 0.0;
@@ -295,6 +306,7 @@ int main(int argc, char **argv) {
     const double seconds = getenv("JV880_SECS") ? atof(getenv("JV880_SECS")) : 3.0;
 
     std::unique_ptr<MCU> scanMcu(new MCU());
+    std::unique_ptr<MCU> mcu(new MCU());
 
     // --scan: rank every internal patch by how much 4-8 kHz content it makes on
     // its own, rendered in a configuration that has no artifact (even length,
@@ -324,6 +336,105 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    // --stress <rate> <block>: the bit-exactness workload the plain sweep does
+    // NOT cover. A sustained chord exercises almost no MIDI traffic and never
+    // releases a voice, which is exactly the wrong shape for validating changes
+    // to interrupt dispatch, timer scheduling and PCM voice state. This drives
+    // continuous note on/off churn across the whole keyboard plus periodic
+    // program changes, so the UART keeps delivering bytes, voices keep entering
+    // and leaving release, and the firmware keeps being interrupted.
+    if (argc > 4 && std::string(argv[2]) == "--stress") {
+        const int rate = atoi(argv[3]);
+        const int block = atoi(argv[4]);
+        mcu->startSC55(rom1.data(), rom2.data(), wave1.data(), wave2.data(), nvram.data());
+        selectPatch(*mcu, rom2, 1, 48);
+
+        std::vector<float> l((size_t)block), r((size_t)block);
+        const int warmup = (int)(2.0 * rate / block);
+        for (int b = 0; b < warmup; b++)
+            mcu->updateSC55WithSampleRate(l.data(), r.data(), (unsigned)block, rate);
+
+        const int blocks = (int)(seconds * rate / block);
+        std::vector<float> rec;
+        rec.reserve((size_t)blocks * (size_t)block);
+
+        // Deterministic pseudo-random churn: same sequence in both trees, so a
+        // hash mismatch means the emulator diverged, not the stimulus.
+        uint32_t rng = 0x12345678;
+        auto next = [&rng]() { rng = rng * 1664525u + 1013904223u; return rng >> 16; };
+        std::vector<uint8_t> held;
+
+        for (int b = 0; b < blocks; b++) {
+            const uint32_t roll = next() % 100;
+            if (roll < 30) {
+                const uint8_t note = (uint8_t)(36 + next() % 48);
+                const uint8_t on[3] = {0x90, note, (uint8_t)(40 + next() % 80)};
+                mcu->postMidiSC55(on, 3);
+                held.push_back(note);
+            } else if (roll < 55 && !held.empty()) {
+                const size_t k = next() % held.size();
+                const uint8_t off[3] = {0x80, held[k], 64};
+                mcu->postMidiSC55(off, 3);
+                held.erase(held.begin() + (long)k);
+            } else if (roll < 60) {
+                const uint8_t cc[3] = {0xB0, 1, (uint8_t)(next() % 128)}; // mod wheel
+                mcu->postMidiSC55(cc, 3);
+            } else if (roll == 61) {
+                const uint8_t pc[2] = {0xC0, (uint8_t)(next() % 64)};
+                mcu->postMidiSC55(pc, 2);
+            } else if (roll == 62) {
+                // Front-panel input. Named explicitly in the SLEEP
+                // fast-forward's correctness argument as state arriving from
+                // outside the render call, so it has to be in the workload that
+                // validates it -- MIDI alone would leave that claim untested.
+                mcu->MCU_EncoderTrigger((int)(next() & 1));
+            } else if (roll == 63) {
+                mcu->mcu_button_pressed = 1u << (next() % 8);
+            } else if (roll == 64) {
+                mcu->mcu_button_pressed = 0;
+            }
+            mcu->updateSC55WithSampleRate(l.data(), r.data(), (unsigned)block, rate);
+            rec.insert(rec.end(), l.begin(), l.end());
+        }
+
+        double peak = 0.0;
+        for (float v : rec) peak = std::max(peak, (double)std::fabs(v));
+        printf("stress %d/%d  %.1fs  events~%d  peak=%.5f  cycles=%llu  hash=%llx\n",
+               rate, block, seconds, blocks, peak,
+               (unsigned long long)mcu->mcu.cycles,
+               (unsigned long long)hashSamples(rec));
+        if (peak < 1e-4) { printf("FAIL: stress rendered silence\n"); return 1; }
+        return 0;
+    }
+
+    // --bench <rate> <block> [reps]: time the render loop alone, best of reps.
+    // Best-of rather than mean: scheduling noise only ever ADDS time, so the
+    // minimum is the least-contaminated estimate of the work actually done.
+    // Also reports mcu.cycles, the emulated timeline -- an optimisation that is
+    // genuinely just doing less work per step leaves this identical, while one
+    // that changed WHEN things happen would move it.
+    if (argc > 4 && std::string(argv[2]) == "--bench") {
+        const int rate = atoi(argv[3]);
+        const int block = atoi(argv[4]);
+        const int reps = argc > 5 ? atoi(argv[5]) : 5;
+        const int bank = argc > 7 ? atoi(argv[6]) : 1;
+        const int idx  = argc > 7 ? atoi(argv[7]) : 48;
+
+        double best = 1e30;
+        uint64_t cycles = 0, hash = 0;
+        for (int i = 0; i < reps; i++) {
+            Result r = renderChord(*scanMcu, rom1, rom2, wave1, wave2, nvram,
+                                   rate, block, seconds, bank, idx);
+            best = std::min(best, r.renderSeconds);
+            cycles = r.emulatedCycles;
+            hash = r.hash;
+        }
+        printf("bench %d/%d  %.1fs audio  best-of-%d: %.4f s   cycles=%llu   hash=%llx\n",
+               rate, block, seconds, reps, best,
+               (unsigned long long)cycles, (unsigned long long)hash);
+        return 0;
+    }
+
     // --patch <bank> <idx> selects one for the sweep; default -1 keeps the
     // power-on patch.
     int useBank = -1, useIdx = 0;
@@ -345,7 +456,6 @@ int main(int argc, char **argv) {
         {48000, 48, "even (control)"},
     };
 
-    std::unique_ptr<MCU> mcu(new MCU());
 
     printf("%-7s %-6s %-6s %-5s %10s %9s %8s %18s  %s\n",
            "rate", "block", "rbFrm", "par", "4-8kHz dB", "DROPPED", "carried", "render hash", "note");
