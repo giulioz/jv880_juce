@@ -161,6 +161,48 @@ static std::string patchName(const std::vector<uint8_t> &rom2, int bank, int j) 
     return n;
 }
 
+// Loads a descrambled expansion card into the PCM expansion window, exactly as
+// setCurrentProgram does when the selected patch lives on a card. The Cache
+// copies written by the plugin are already descrambled, so they go in verbatim.
+static std::vector<uint8_t> g_card;
+static bool loadCard(MCU &mcu, const std::string &cachePath) {
+    if (!readFile(cachePath, g_card, 0)) return false;
+    if (g_card.size() < 0x800000) g_card.resize(0x800000, 0);
+    memcpy(mcu.pcm.waverom_exp, g_card.data(), 0x800000);
+    return true;
+}
+
+// Card patch / rhythm-set tables, at the offsets PluginProcessor.cpp reads.
+static int cardPatchCount(const std::vector<uint8_t> &c) {
+    return c[0x67] | c[0x66] << 8;
+}
+static size_t cardPatchOffset(const std::vector<uint8_t> &c) {
+    return (size_t)(c[0x8f] | c[0x8e] << 8 | c[0x8d] << 16 | (uint32_t)c[0x8c] << 24);
+}
+static int cardDrumCount(const std::vector<uint8_t> &c) {
+    return c[0x69] | c[0x68] << 8;
+}
+static size_t cardDrumOffset(const std::vector<uint8_t> &c) {
+    return (size_t)(c[0x93] | c[0x92] << 8 | c[0x91] << 16 | (uint32_t)c[0x90] << 24);
+}
+
+// A card patch: same nvram write as an internal one, but the record comes from
+// the card image rather than ROM2.
+static void selectCardPatch(MCU &mcu, int j) {
+    mcu.nvram[0x11] = 1;
+    memcpy(&mcu.nvram[0x0d70], &g_card[cardPatchOffset(g_card) + (size_t)j * 0x16a], 0x16a);
+    mcu.SC55_Reset();
+}
+
+// A rhythm set. Different area, different size, and nvram[0x11] = 0 -- this is
+// the drum path, which keys many slots at once and is therefore the workload
+// most unlike a sustained melodic patch.
+static void selectDrumKit(MCU &mcu, int j) {
+    mcu.nvram[0x11] = 0;
+    memcpy(&mcu.nvram[0x67f0], &g_card[cardDrumOffset(g_card) + (size_t)j * 0xa7c], 0xa7c);
+    mcu.SC55_Reset();
+}
+
 // Mirrors the non-drum half of VirtualJVProcessor::setCurrentProgram: mark the
 // temp area as holding a patch, copy the record in, reset. Must run AFTER
 // startSC55, which reloads nvram from the dump and resets on its own.
@@ -209,7 +251,10 @@ static Result renderChord(MCU &mcu, const std::vector<uint8_t> &rom1,
     // ROM and calls SC55_Reset, so no state can leak between configurations and
     // bias the comparison.
     mcu.startSC55(rom1.data(), rom2.data(), wave1.data(), wave2.data(), nvram.data());
-    if (bank >= 0) selectPatch(mcu, rom2, bank, patchIdx);
+    if (!g_card.empty()) memcpy(mcu.pcm.waverom_exp, g_card.data(), 0x800000);
+    if (bank >= 0)        selectPatch(mcu, rom2, bank, patchIdx);
+    else if (bank == -2)  selectCardPatch(mcu, patchIdx);
+    else if (bank == -3)  selectDrumKit(mcu, patchIdx);
 
     std::vector<float> l((size_t)block), r((size_t)block);
 
@@ -346,8 +391,20 @@ int main(int argc, char **argv) {
     if (argc > 4 && std::string(argv[2]) == "--stress") {
         const int rate = atoi(argv[3]);
         const int block = atoi(argv[4]);
+        // Optional trailing "<cache-file> patch|drum <idx>" runs the churn on a
+        // card patch or a rhythm set instead of the default internal patch.
+        int sBank = 1, sIdx = 48;
+        if (argc > 7) {
+            if (!loadCard(*mcu, argv[5])) return 1;
+            sBank = std::string(argv[6]) == "drum" ? -3 : -2;
+            sIdx = atoi(argv[7]);
+            printf("card: %s %s #%d\n", argv[5], argv[6], sIdx);
+        }
         mcu->startSC55(rom1.data(), rom2.data(), wave1.data(), wave2.data(), nvram.data());
-        selectPatch(*mcu, rom2, 1, 48);
+        if (!g_card.empty()) memcpy(mcu->pcm.waverom_exp, g_card.data(), 0x800000);
+        if (sBank >= 0)       selectPatch(*mcu, rom2, sBank, sIdx);
+        else if (sBank == -2) selectCardPatch(*mcu, sIdx);
+        else                  selectDrumKit(*mcu, sIdx);
 
         std::vector<float> l((size_t)block), r((size_t)block);
         const int warmup = (int)(2.0 * rate / block);
@@ -435,15 +492,30 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    // --card <cache-file> <patch|drum> <idx>: run the same 5-config sweep, but
+    // with an expansion card mapped into the PCM expansion window and either one
+    // of its patches or one of its rhythm sets selected. Rhythm sets matter most
+    // here: they key many PCM slots at once, which is the workload least like
+    // the sustained melodic patches the other modes render.
+    int useBank = -1, useIdx = 0;
+    if (argc > 5 && std::string(argv[2]) == "--card") {
+        if (!loadCard(*mcu, argv[3])) return 1;
+        const bool drum = std::string(argv[4]) == "drum";
+        useIdx = atoi(argv[5]);
+        useBank = drum ? -3 : -2;
+        printf("card: %s  %s #%d  (card has %d patches, %d rhythm sets)\n\n",
+               argv[3], drum ? "rhythm set" : "patch", useIdx,
+               cardPatchCount(g_card), cardDrumCount(g_card));
+    }
+
     // --patch <bank> <idx> selects one for the sweep; default -1 keeps the
     // power-on patch.
-    int useBank = -1, useIdx = 0;
     if (argc > 4 && std::string(argv[2]) == "--patch") {
         useBank = atoi(argv[3]);
         useIdx = atoi(argv[4]);
         printf("patch: %s #%d  \"%s\"\n\n", kBanks[useBank].bank, useIdx,
                patchName(rom2, useBank, useIdx).c_str());
-    } else {
+    } else if (useBank == -1) {
         printf("patch: power-on default\n\n");
     }
 
