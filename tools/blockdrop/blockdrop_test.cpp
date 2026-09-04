@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 // ---------------------------------------------------------------- ROM loading
 
@@ -160,6 +161,48 @@ static std::string patchName(const std::vector<uint8_t> &rom2, int bank, int j) 
     return n;
 }
 
+// Loads a descrambled expansion card into the PCM expansion window, exactly as
+// setCurrentProgram does when the selected patch lives on a card. The Cache
+// copies written by the plugin are already descrambled, so they go in verbatim.
+static std::vector<uint8_t> g_card;
+static bool loadCard(MCU &mcu, const std::string &cachePath) {
+    if (!readFile(cachePath, g_card, 0)) return false;
+    if (g_card.size() < 0x800000) g_card.resize(0x800000, 0);
+    memcpy(mcu.pcm.waverom_exp, g_card.data(), 0x800000);
+    return true;
+}
+
+// Card patch / rhythm-set tables, at the offsets PluginProcessor.cpp reads.
+static int cardPatchCount(const std::vector<uint8_t> &c) {
+    return c[0x67] | c[0x66] << 8;
+}
+static size_t cardPatchOffset(const std::vector<uint8_t> &c) {
+    return (size_t)(c[0x8f] | c[0x8e] << 8 | c[0x8d] << 16 | (uint32_t)c[0x8c] << 24);
+}
+static int cardDrumCount(const std::vector<uint8_t> &c) {
+    return c[0x69] | c[0x68] << 8;
+}
+static size_t cardDrumOffset(const std::vector<uint8_t> &c) {
+    return (size_t)(c[0x93] | c[0x92] << 8 | c[0x91] << 16 | (uint32_t)c[0x90] << 24);
+}
+
+// A card patch: same nvram write as an internal one, but the record comes from
+// the card image rather than ROM2.
+static void selectCardPatch(MCU &mcu, int j) {
+    mcu.nvram[0x11] = 1;
+    memcpy(&mcu.nvram[0x0d70], &g_card[cardPatchOffset(g_card) + (size_t)j * 0x16a], 0x16a);
+    mcu.SC55_Reset();
+}
+
+// A rhythm set. Different area, different size, and nvram[0x11] = 0 -- this is
+// the drum path, which keys many slots at once and is therefore the workload
+// most unlike a sustained melodic patch.
+static void selectDrumKit(MCU &mcu, int j) {
+    mcu.nvram[0x11] = 0;
+    memcpy(&mcu.nvram[0x67f0], &g_card[cardDrumOffset(g_card) + (size_t)j * 0xa7c], 0xa7c);
+    mcu.SC55_Reset();
+}
+
 // Mirrors the non-drum half of VirtualJVProcessor::setCurrentProgram: mark the
 // temp area as holding a patch, copy the record in, reset. Must run AFTER
 // startSC55, which reloads nvram from the dump and resets on its own.
@@ -176,6 +219,8 @@ struct Result {
     double fullDb;
     double peak;
     unsigned int renderBufferFrames;
+    double renderSeconds;   // wall time of the render loop alone
+    uint64_t emulatedCycles; // mcu.cycles at the end -- the emulated timeline
     uint64_t hash;       // FNV-1a over the rendered samples, for bit-exactness
     long long dropped;   // emulator samples that never reached the resampler
     long long carried;   // emulator samples held over for the next block
@@ -206,7 +251,10 @@ static Result renderChord(MCU &mcu, const std::vector<uint8_t> &rom1,
     // ROM and calls SC55_Reset, so no state can leak between configurations and
     // bias the comparison.
     mcu.startSC55(rom1.data(), rom2.data(), wave1.data(), wave2.data(), nvram.data());
-    if (bank >= 0) selectPatch(mcu, rom2, bank, patchIdx);
+    if (!g_card.empty()) memcpy(mcu.pcm.waverom_exp, g_card.data(), 0x800000);
+    if (bank >= 0)        selectPatch(mcu, rom2, bank, patchIdx);
+    else if (bank == -2)  selectCardPatch(mcu, patchIdx);
+    else if (bank == -3)  selectDrumKit(mcu, patchIdx);
 
     std::vector<float> l((size_t)block), r((size_t)block);
 
@@ -222,12 +270,16 @@ static Result renderChord(MCU &mcu, const std::vector<uint8_t> &rom1,
 
     long long dropped = 0, carried = 0;
 
+    const auto t0 = std::chrono::steady_clock::now();
+
     for (int b = 0; b < blocks; b++) {
         if (b == 2) {
             // A four-note chord: far more broadband content than one note, and
             // the same notes our fork's harness uses.
             const uint8_t notes[4] = {60, 64, 67, 71};
-            for (uint8_t n : notes) {
+            const int nNotes = getenv("JV880_NOTES") ? atoi(getenv("JV880_NOTES")) : 4;
+            for (int ni = 0; ni < nNotes && ni < 4; ni++) {
+                const uint8_t n = notes[ni];
                 const uint8_t msg[3] = {0x90, n, 100};
                 mcu.postMidiSC55(msg, 3);
             }
@@ -260,7 +312,11 @@ static Result renderChord(MCU &mcu, const std::vector<uint8_t> &rom1,
         rec.insert(rec.end(), l.begin(), l.end());
     }
 
+    const auto t1 = std::chrono::steady_clock::now();
+
     Result out{};
+    out.renderSeconds = std::chrono::duration<double>(t1 - t0).count();
+    out.emulatedCycles = mcu.mcu.cycles;
     out.bandDb = db(bandRms(rec, rate, 4000.0, 8000.0));
     out.fullDb = db(bandRms(rec, rate, 0.0, rate / 2.0));
     out.peak = 0.0;
@@ -295,6 +351,7 @@ int main(int argc, char **argv) {
     const double seconds = getenv("JV880_SECS") ? atof(getenv("JV880_SECS")) : 3.0;
 
     std::unique_ptr<MCU> scanMcu(new MCU());
+    std::unique_ptr<MCU> mcu(new MCU());
 
     // --scan: rank every internal patch by how much 4-8 kHz content it makes on
     // its own, rendered in a configuration that has no artifact (even length,
@@ -324,15 +381,141 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    // --stress <rate> <block>: the bit-exactness workload the plain sweep does
+    // NOT cover. A sustained chord exercises almost no MIDI traffic and never
+    // releases a voice, which is exactly the wrong shape for validating changes
+    // to interrupt dispatch, timer scheduling and PCM voice state. This drives
+    // continuous note on/off churn across the whole keyboard plus periodic
+    // program changes, so the UART keeps delivering bytes, voices keep entering
+    // and leaving release, and the firmware keeps being interrupted.
+    if (argc > 4 && std::string(argv[2]) == "--stress") {
+        const int rate = atoi(argv[3]);
+        const int block = atoi(argv[4]);
+        // Optional trailing "<cache-file> patch|drum <idx>" runs the churn on a
+        // card patch or a rhythm set instead of the default internal patch.
+        int sBank = 1, sIdx = 48;
+        if (argc > 7) {
+            if (!loadCard(*mcu, argv[5])) return 1;
+            sBank = std::string(argv[6]) == "drum" ? -3 : -2;
+            sIdx = atoi(argv[7]);
+            printf("card: %s %s #%d\n", argv[5], argv[6], sIdx);
+        }
+        mcu->startSC55(rom1.data(), rom2.data(), wave1.data(), wave2.data(), nvram.data());
+        if (!g_card.empty()) memcpy(mcu->pcm.waverom_exp, g_card.data(), 0x800000);
+        if (sBank >= 0)       selectPatch(*mcu, rom2, sBank, sIdx);
+        else if (sBank == -2) selectCardPatch(*mcu, sIdx);
+        else                  selectDrumKit(*mcu, sIdx);
+
+        std::vector<float> l((size_t)block), r((size_t)block);
+        const int warmup = (int)(2.0 * rate / block);
+        for (int b = 0; b < warmup; b++)
+            mcu->updateSC55WithSampleRate(l.data(), r.data(), (unsigned)block, rate);
+
+        const int blocks = (int)(seconds * rate / block);
+        std::vector<float> rec;
+        rec.reserve((size_t)blocks * (size_t)block);
+
+        // Deterministic pseudo-random churn: same sequence in both trees, so a
+        // hash mismatch means the emulator diverged, not the stimulus.
+        uint32_t rng = 0x12345678;
+        auto next = [&rng]() { rng = rng * 1664525u + 1013904223u; return rng >> 16; };
+        std::vector<uint8_t> held;
+
+        for (int b = 0; b < blocks; b++) {
+            const uint32_t roll = next() % 100;
+            if (roll < 30) {
+                const uint8_t note = (uint8_t)(36 + next() % 48);
+                const uint8_t on[3] = {0x90, note, (uint8_t)(40 + next() % 80)};
+                mcu->postMidiSC55(on, 3);
+                held.push_back(note);
+            } else if (roll < 55 && !held.empty()) {
+                const size_t k = next() % held.size();
+                const uint8_t off[3] = {0x80, held[k], 64};
+                mcu->postMidiSC55(off, 3);
+                held.erase(held.begin() + (long)k);
+            } else if (roll < 60) {
+                const uint8_t cc[3] = {0xB0, 1, (uint8_t)(next() % 128)}; // mod wheel
+                mcu->postMidiSC55(cc, 3);
+            } else if (roll == 61) {
+                const uint8_t pc[2] = {0xC0, (uint8_t)(next() % 64)};
+                mcu->postMidiSC55(pc, 2);
+            } else if (roll == 62) {
+                // Front-panel input. Named explicitly in the SLEEP
+                // fast-forward's correctness argument as state arriving from
+                // outside the render call, so it has to be in the workload that
+                // validates it -- MIDI alone would leave that claim untested.
+                mcu->MCU_EncoderTrigger((int)(next() & 1));
+            } else if (roll == 63) {
+                mcu->mcu_button_pressed = 1u << (next() % 8);
+            } else if (roll == 64) {
+                mcu->mcu_button_pressed = 0;
+            }
+            mcu->updateSC55WithSampleRate(l.data(), r.data(), (unsigned)block, rate);
+            rec.insert(rec.end(), l.begin(), l.end());
+        }
+
+        double peak = 0.0;
+        for (float v : rec) peak = std::max(peak, (double)std::fabs(v));
+        printf("stress %d/%d  %.1fs  events~%d  peak=%.5f  cycles=%llu  hash=%llx\n",
+               rate, block, seconds, blocks, peak,
+               (unsigned long long)mcu->mcu.cycles,
+               (unsigned long long)hashSamples(rec));
+        if (peak < 1e-4) { printf("FAIL: stress rendered silence\n"); return 1; }
+        return 0;
+    }
+
+    // --bench <rate> <block> [reps]: time the render loop alone, best of reps.
+    // Best-of rather than mean: scheduling noise only ever ADDS time, so the
+    // minimum is the least-contaminated estimate of the work actually done.
+    // Also reports mcu.cycles, the emulated timeline -- an optimisation that is
+    // genuinely just doing less work per step leaves this identical, while one
+    // that changed WHEN things happen would move it.
+    if (argc > 4 && std::string(argv[2]) == "--bench") {
+        const int rate = atoi(argv[3]);
+        const int block = atoi(argv[4]);
+        const int reps = argc > 5 ? atoi(argv[5]) : 5;
+        const int bank = argc > 7 ? atoi(argv[6]) : 1;
+        const int idx  = argc > 7 ? atoi(argv[7]) : 48;
+
+        double best = 1e30;
+        uint64_t cycles = 0, hash = 0;
+        for (int i = 0; i < reps; i++) {
+            Result r = renderChord(*scanMcu, rom1, rom2, wave1, wave2, nvram,
+                                   rate, block, seconds, bank, idx);
+            best = std::min(best, r.renderSeconds);
+            cycles = r.emulatedCycles;
+            hash = r.hash;
+        }
+        printf("bench %d/%d  %.1fs audio  best-of-%d: %.4f s   cycles=%llu   hash=%llx\n",
+               rate, block, seconds, reps, best,
+               (unsigned long long)cycles, (unsigned long long)hash);
+        return 0;
+    }
+
+    // --card <cache-file> <patch|drum> <idx>: run the same 5-config sweep, but
+    // with an expansion card mapped into the PCM expansion window and either one
+    // of its patches or one of its rhythm sets selected. Rhythm sets matter most
+    // here: they key many PCM slots at once, which is the workload least like
+    // the sustained melodic patches the other modes render.
+    int useBank = -1, useIdx = 0;
+    if (argc > 5 && std::string(argv[2]) == "--card") {
+        if (!loadCard(*mcu, argv[3])) return 1;
+        const bool drum = std::string(argv[4]) == "drum";
+        useIdx = atoi(argv[5]);
+        useBank = drum ? -3 : -2;
+        printf("card: %s  %s #%d  (card has %d patches, %d rhythm sets)\n\n",
+               argv[3], drum ? "rhythm set" : "patch", useIdx,
+               cardPatchCount(g_card), cardDrumCount(g_card));
+    }
+
     // --patch <bank> <idx> selects one for the sweep; default -1 keeps the
     // power-on patch.
-    int useBank = -1, useIdx = 0;
     if (argc > 4 && std::string(argv[2]) == "--patch") {
         useBank = atoi(argv[3]);
         useIdx = atoi(argv[4]);
         printf("patch: %s #%d  \"%s\"\n\n", kBanks[useBank].bank, useIdx,
                patchName(rom2, useBank, useIdx).c_str());
-    } else {
+    } else if (useBank == -1) {
         printf("patch: power-on default\n\n");
     }
 
@@ -345,7 +528,6 @@ int main(int argc, char **argv) {
         {48000, 48, "even (control)"},
     };
 
-    std::unique_ptr<MCU> mcu(new MCU());
 
     printf("%-7s %-6s %-6s %-5s %10s %9s %8s %18s  %s\n",
            "rate", "block", "rbFrm", "par", "4-8kHz dB", "DROPPED", "carried", "render hash", "note");

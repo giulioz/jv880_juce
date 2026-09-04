@@ -52,6 +52,8 @@ void MCU_Interrupt_Start(MCU* mcu, int32_t mask)
 void MCU_Interrupt_SetRequest(MCU* mcu, uint32_t interrupt, uint32_t value)
 {
     mcu->mcu.interrupt_pending[interrupt] = value;
+    if (value)
+        mcu->mcu.interrupt_pending_any = 1;
 }
 
 void MCU_Interrupt_Exception(MCU* mcu, uint32_t exception)
@@ -63,11 +65,13 @@ void MCU_Interrupt_Exception(MCU* mcu, uint32_t exception)
         return;
 #endif
     mcu->mcu.exception_pending = exception;
+    mcu->mcu.interrupt_pending_any = 1;
 }
 
 void MCU_Interrupt_TRAPA(MCU* mcu, uint32_t vector)
 {
     mcu->mcu.trapa_pending[vector] = 1;
+    mcu->mcu.interrupt_pending_any = 1;
 }
 
 void MCU_Interrupt_StartVector(MCU* mcu, uint32_t vector, int32_t mask)
@@ -97,6 +101,23 @@ void MCU_Interrupt_Handle(MCU* mcu)
         return;
     }
 #endif
+    // Fast path: this scan touches ~29 sources and runs before every emulated
+    // instruction, but almost always finds nothing. The flag is raised by every
+    // path that can make something pending (SetRequest with a non-zero value,
+    // Exception, TRAPA) and lowered only at the bottom of this function, after a
+    // complete scan has observed that nothing at all is pending. A request that
+    // is pending but masked therefore leaves the flag raised and keeps getting
+    // re-scanned, so it still fires the moment the firmware lowers IMASK.
+    // Behaviour once anything is pending is byte-for-byte the original.
+    if (!mcu->mcu.interrupt_pending_any)
+        return;
+
+    // Tracks whether anything is still pending at the end of a scan that
+    // dispatched nothing. Only the masked-interrupt loop below needs to set it:
+    // the trapa / exception / NMI blocks all return, so reaching the bottom of
+    // the function already proves those three were clear.
+    bool any_pending = false;
+
     uint32_t i;
     for (i = 0; i < 16; i++)
     {
@@ -104,7 +125,7 @@ void MCU_Interrupt_Handle(MCU* mcu)
         {
             mcu->mcu.trapa_pending[i] = 0;
             MCU_Interrupt_StartVector(mcu, VECTOR_TRAPA_0 + i, -1);
-            return;
+            return; // flag stays raised: later trapas/interrupts may remain
         }
     }
     if (mcu->mcu.exception_pending >= 0)
@@ -138,6 +159,10 @@ void MCU_Interrupt_Handle(MCU* mcu)
         int32_t level = 0;
         if (!mcu->mcu.interrupt_pending[i])
             continue;
+        // Something is pending. Even if it turns out to be masked (or gated off
+        // by P1CR below), the flag must stay raised so the next mask change is
+        // noticed -- no fresh SetRequest will arrive to re-raise it.
+        any_pending = true;
         switch (i)
         {
             case INTERRUPT_SOURCE_IRQ0:
@@ -220,7 +245,14 @@ void MCU_Interrupt_Handle(MCU* mcu)
         {
             // mcu->mcu.interrupt_pending[INTERRUPT_SOURCE_NMI] = 0;
             MCU_Interrupt_StartVector(mcu, vector, level);
-            return;
+            return; // flag stays raised: lower-priority requests may remain
         }
     }
+
+    // A complete scan dispatched nothing. Lower the flag only if nothing at all
+    // is pending -- no trapa, no exception, no NMI (all three returned above if
+    // set) and no masked request (any_pending). Anything still pending keeps the
+    // flag up so the scan resumes when the mask drops.
+    if (!any_pending)
+        mcu->mcu.interrupt_pending_any = 0;
 }

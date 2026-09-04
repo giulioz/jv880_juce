@@ -193,6 +193,13 @@ struct mcu_t {
     uint8_t interrupt_pending[INTERRUPT_SOURCE_MAX];
     uint8_t trapa_pending[16];
     uint64_t cycles;
+    // 1 = MCU_Interrupt_Handle must run its full scan; 0 = provably nothing is
+    // pending anywhere (no trapa, no exception, no interrupt request), so the
+    // scan can be skipped entirely. Set by every path that can make something
+    // pending; cleared only by a full scan that observed zero pending sources,
+    // so a pending-but-masked request keeps it set and still fires once the
+    // firmware lowers IMASK. See MCU_Interrupt_Handle.
+    uint8_t interrupt_pending_any;
 };
 
 enum {
@@ -418,6 +425,11 @@ struct MCU {
     uint8_t MCU_DeviceRead(uint32_t address);
     void MCU_DeviceReset(void);
     void MCU_UpdateAnalog(uint64_t cycles);
+
+    // Earliest mcu.cycles value (a multiple of 12, strictly greater than the
+    // current one) at which any peripheral could do something observable. Used
+    // to fast-forward through SLEEP; UINT64_MAX if nothing is scheduled.
+    uint64_t MCU_NextEventCycles(void);
     void MCU_ReadInstruction(void);
     void MCU_Init(void);
     void MCU_Reset(void);
