@@ -1,6 +1,6 @@
 # NOTICE
 
-This plugin is not in active development anymore and it's gonna be replaced soon by [better alternatives](https://theusualsuspects.io/).
+**This plugin is not in active development anymore and it's gonna be replaced soon by [better alternatives](https://theusualsuspects.io/).**
 
 
 # VirtualJV
