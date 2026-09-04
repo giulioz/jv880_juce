@@ -1,3 +1,8 @@
+# NOTICE
+
+This plugin is not in active development anymore and it's gonna be replaced soon by [better alternatives](https://theusualsuspects.io/).
+
+
 # VirtualJV
 
 Emulator of a famous 1U rack unit rompler made by Roland in 1992, as a VST3 and AU plugin. Based on [NukeYKT's SC55](https://github.com/nukeykt/Nuked-SC55).
